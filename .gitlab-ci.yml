@@ -2,6 +2,7 @@ image: node:latest
 
 stages:
   - test
+  - deploy
 
 cache:
   paths:
@@ -13,6 +14,21 @@ test-ui:
     - cd ui/
     - npm ci
     - npm run test
+  only:
+    changes:
+      - "ui/**"
+
+deploy-ui:
+  stage: deploy
+  script:
+    - cd ui/
+    - npm ci
+    - npm run build
+    - cd build/
+    - cp index.html 200.html
+    - cp index.html 404.html
+    - echo "$DOMAIN_UI" > CNAME
+    - npx surge
   only:
     changes:
       - "ui/**"
