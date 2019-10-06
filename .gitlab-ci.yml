@@ -2,12 +2,10 @@ image: node:latest
 
 stages:
   - test
+  - build
   - deploy
 
-cache:
-  paths:
-    - ci/node_modules/
-
+# UI part
 test-ui:
   stage: test
   script:
@@ -29,10 +27,28 @@ deploy-ui:
     - cp index.html 200.html
     - cp index.html 404.html
     - echo "$DOMAIN_UI" > CNAME
-    - npx surge --domain "$DOMAIN_UI"
+    - npx surge .
   only:
     refs:
       - master
     changes:
       - ".gitlab-ci.yml"
       - "ui/**/*"
+
+# Blog part
+deploy-blog:
+  stage: deploy
+  script:
+    - cd blog/
+    - npm ci
+    - npm run build
+    - cd public/
+    - cp index.html 200.html
+    - echo "$DOMAIN_BLOG" > CNAME
+    - npx surge .
+  only:
+    refs:
+      - master
+    changes:
+      - ".gitlab-ci.yml"
+      - "blog/**/*"
