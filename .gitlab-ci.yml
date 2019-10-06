@@ -16,7 +16,8 @@ test-ui:
     - npm run test
   only:
     changes:
-      - "ui/**"
+      - ".gitlab-ci.yml"
+      - "ui/**/*"
 
 deploy-ui:
   stage: deploy
@@ -28,7 +29,10 @@ deploy-ui:
     - cp index.html 200.html
     - cp index.html 404.html
     - echo "$DOMAIN_UI" > CNAME
-    - npx surge
+    - npx surge --domain "$DOMAIN_UI"
   only:
+    refs:
+      - master
     changes:
-      - "ui/**"
+      - ".gitlab-ci.yml"
+      - "ui/**/*"
