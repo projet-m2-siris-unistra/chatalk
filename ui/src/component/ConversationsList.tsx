@@ -1,6 +1,8 @@
 import React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 import Conversation from './Conversation';
 import { makeStyles } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Link } from 'react-router-dom';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -16,6 +18,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'row',
     alignItems: 'stretch',
   },
+
   left: {
     display: 'flex',
     flexDirection: 'column',
@@ -27,6 +30,21 @@ const useStyles = makeStyles(theme => ({
     maxWidth: 360,
     backgroundColor: theme.palette.background.paper
   },
+  leftMobile: {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100vh',
+    minHeight: '100vh',
+    maxHeight: '100vh',
+    overflow: 'auto',
+    width: '100%',
+    backgroundColor: theme.palette.background.paper
+  },
+
+  hidden: {
+    display: 'none',
+  },
+
   right: {
     display: 'flex',
     flexDirection: 'column',
@@ -69,8 +87,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const ConversationsList: React.FC = () => {
+type TParams = { id?: string };
+
+const ConversationsList: React.FC<RouteComponentProps<TParams>> = ({ match }: RouteComponentProps<TParams>) => {
   const classes = useStyles();
+  const isDesktop = useMediaQuery('(min-width:1000px)');
 
   const conversations = [
     {
@@ -144,9 +165,21 @@ const ConversationsList: React.FC = () => {
     </Link>
   ));
 
+  const isConversation = !!match.params.id;
+  let leftClass = classes.left;
+  let rightClass = classes.right;
+  if (!isDesktop) {
+    if (isConversation) {
+      leftClass = classes.hidden;
+    } else {
+      leftClass = classes.leftMobile;
+      rightClass = classes.hidden;
+    }
+  }
+
   return (
     <div className={classes.layout}>
-      <div className={classes.left}>
+      <div className={leftClass}>
         <div className={classes.header}>
           User avatar, +, config
         </div>
@@ -156,7 +189,7 @@ const ConversationsList: React.FC = () => {
           </List>
         </div>
       </div>
-      <div className={classes.right}>
+      <div className={rightClass}>
         <Conversation />
       </div>
     </div>

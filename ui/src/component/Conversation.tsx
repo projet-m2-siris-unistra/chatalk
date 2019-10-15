@@ -1,7 +1,14 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
+  msg: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
+  },
   header: {
     padding: '10px',
     lineHeight: '30px',
@@ -34,11 +41,15 @@ const useStyles = makeStyles(theme => ({
     padding: '10px',
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.primary.contrastText,
-  }
+  },
+  hidden: {
+    display: 'none',
+  },
 }));
 
 const Conversation: React.FC = () => {
   const classes = useStyles();
+  const isDesktop = useMediaQuery('(min-width:1000px)');
 
   const me = {
     id: 'dbf302b3-3abf-4a48-9ab3-2cc1b99f3f9f'
@@ -46,7 +57,7 @@ const Conversation: React.FC = () => {
 
   const messages = [
     {
-      id: '1bf302b3-3abf-4a48-9ab3-2cc1b99f3f9d',
+      id: '1bf302b3-3abf-4a48-9ab3-2cc1b99f3f9a',
       timestamp: Date.now(),
       from: {
         id: 'dbf302b3-3abf-4a48-9ab3-2cc1b99f3f9d',
@@ -57,7 +68,7 @@ const Conversation: React.FC = () => {
       message: 'Hello',
     },
     {
-      id: '2bf302b3-3abf-4a48-9ab3-2cc1b99f3f9d',
+      id: '2bf302b3-3abf-4a48-9ab3-2cc1b99f3f9b',
       timestamp: Date.now(),
       from: {
         id: 'dbf302b3-3abf-4a48-9ab3-2cc1b99f3f9d',
@@ -87,19 +98,26 @@ const Conversation: React.FC = () => {
       classToUse = classes.msgMe;
     }
     return (
-      <>
+      <div key={`msg-${m.id}`} className={classes.msg}>
         {avatar}
-        <div key={m.id} className={classToUse}>
+        <div key={`msg-content-${m.id}`} className={classToUse}>
           {m.message}
         </div>
-      </>
+      </div>
     );
   });
+
+  let displayBackBtn = '';
+  if (isDesktop) {
+    displayBackBtn = classes.hidden;
+  }
 
   return (
     <>
       <div className={classes.header}>
-        «, Conversation name, config
+        <Link to="/conversation" className={displayBackBtn}>«</Link>
+        Conversation name
+        - config
       </div>
       <div className={classes.content}>
         {msg}
