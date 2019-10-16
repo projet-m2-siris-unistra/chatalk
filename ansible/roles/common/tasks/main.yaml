@@ -1,0 +1,49 @@
+- name: setup multiple authorized keys
+  authorized_key:
+    user: '{{ ansible_user }}'
+    state: present
+    key: '{{ item }}'
+  with_file:
+    - public_keys/ludovicm67
+  tags:
+    - first-run
+
+- name: sudo without password
+  template:
+    src: sudoers.j2
+    dest: /etc/sudoers.d/sudoers
+    mode: 0440
+    validate: 'visudo -cf %s'
+  tags:
+    - first-run
+
+- name: update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 300 # 5 minutes
+
+- name: upgrade packages
+  apt:
+    upgrade: yes
+
+- name: install required packages
+  apt:
+    pkg:
+      - aptitude
+      - curl
+      - git
+      - htop
+      - vim
+      - zsh
+
+- name: set zsh as default shell
+  user:
+    name: '{{ ansible_user }}'
+    shell: /usr/bin/zsh
+
+- name: copy zsh config files
+  copy:
+    src: '{{ item.src }}'
+    dest: '/etc/zsh/{{ item.path }}'
+  with_filetree: zsh/
+  when: item.state == 'file'

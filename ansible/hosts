@@ -1,0 +1,8 @@
+[unistra]
+chatalk-balzac.u-strasbg.fr
+chatalk-camus.u-strasbg.fr
+chatalk-zola.u-strasbg.fr
+
+[unistra:vars]
+ansible_user=info
+ansible_python_interpreter=/usr/bin/python3
