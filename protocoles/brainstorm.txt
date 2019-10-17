@@ -1,6 +1,85 @@
-salon de discussion de 2 à N personnes
-stream audio si demandé
-stream vidéo si demandé
-échange de clé de chiffrement symétrique de 2 à N personnes
+Client -( Init )-> Server
+  Sign in
+  Sign out
+  Sign up
+Server -( Init )-> Client
+  Signed in
+  Signed out
+  Signed up
+  SendInfo :
+      - UserID (himself) , etc
+      - User List (UserID, avatar, name, etc)
+      - ConvID (UserID list + pseudo, picture, messages list (100) )
 
-protocoles perso en protobuf
+Client -( Data )-> Server
+Server -( Data )-> Client
+Server -( Data )-> Database
+  Text
+  Video
+  Audio
+  File
+  … other
+
+Client -( Register )-> Server
+  Sign to channel
+  Sign to audio stream
+  Sign to video stream
+  Unsign from channel
+  Unsign from audio stream
+  Unsign from video stream
+
+Client -( Request )-> Server
+  Archives
+
+Client -( Key )-> Server
+  Request
+  Send public
+Server -( Key )-> Client
+  Send encrypted common key
+  
+Client -( Profile Management )-> Server
+  Change avatar
+  Change username
+  Change password
+
+Client -( Conversation Management) -> server
+  add user
+  UserIsWriting
+  Change: - name
+          - picture
+          - topic
+
+Server -( Conv. Management)-> Client
+  User Is Writing
+  Someone Left
+  Uptime
+  Connexion Quality
+  Someone changed:
+      - his name
+      - his picture
+      - the conversation name
+  Someone Is Streaming
+  Audio
+  Video
+
+Server -( Keep Alive )-> Client
+Client -( Update )-> Server
+  Update Current IP
+Client -( Info Request ) -> Server
+
+-------------------------------------------------------------------------------------------------------------
+
+Format des messages
+Message
+- Type
+- Destination // ConvID ou 0 pour serveur
+- Sender
+- Payload
+
+---------------------------------------------------------------------------------------------------------------
+
+
+Mécanisme de keep alive, serveur -> au client toutes les X secondes et le client peut request si changement d'ip
+      Ceci implique  que ces données (userID, convID, etc soient chiffrées avec la/les clé(s) plublique(s) du user 
+      
+------------------------------------------------------------------------------------------------------
