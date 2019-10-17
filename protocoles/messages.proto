@@ -1,0 +1,22 @@
+message Message {
+  enum MessageType {
+    INIT = 0;
+    DATA = 1;
+    REGISTER = 2;
+    REQUEST = 3;
+    KEY_XNCHG = 4;
+    PROFILE_MNGMT = 5;
+    CONV_MNGMT = 6;
+    KEEP_ALIVE = 7;
+    INFO_RQST = 8;
+  }
+  required MessageType type = 1;
+  required int64 destination_id = 2;
+  required int64 sender_id = 3;
+
+  message Payload {
+    required string content = 1;
+  }
+
+  required Payload payload = 4;
+}
