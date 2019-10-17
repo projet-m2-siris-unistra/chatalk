@@ -5,3 +5,6 @@ https://philzimmermann.com/EN/zrtp/index.html <= truc qui a l'air cool
 https://www.voip-info.org/zrtp/
 https://korben.info/articles/bien-securiser-sa-base-de-donnees
 https://www.orange-business.com/fr/blogs/securite/bonnes-pratiques/10-conseils-pour-la-securite-de-votre-base-de-donnees
+
+https://openclassrooms.com/fr/courses/1757741-securisez-vos-donnees-avec-la-cryptographie/6031881-utilisez-la-bibliotheque-libsodium-pour-vos-applications
+https://openclassrooms.com/fr/courses/2990451-echangez-par-e-mail-en-toute-securite/2990491-decouvrez-les-principes-du-chiffrement-pgp
