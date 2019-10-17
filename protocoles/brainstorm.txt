@@ -1,0 +1,6 @@
+salon de discussion de 2 à N personnes
+stream audio si demandé
+stream vidéo si demandé
+échange de clé de chiffrement symétrique de 2 à N personnes
+
+protocoles perso en protobuf
