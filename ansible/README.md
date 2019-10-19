@@ -5,7 +5,7 @@
 Fetch the Kubespray submodule:
 
 ```sh
-git submodule sync
+git submodule update --init
 ```
 
 Documentation: https://github.com/kubernetes-sigs/kubespray

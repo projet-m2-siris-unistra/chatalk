@@ -5,6 +5,7 @@
     key: '{{ item }}'
   with_file:
     - public_keys/ludovicm67
+    - public_keys/gvetrivel
   tags:
     - first-run
 
