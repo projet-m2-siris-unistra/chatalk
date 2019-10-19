@@ -12,7 +12,7 @@ Les idées ci-dessous sont succeptibles d'évoluer en fonction des problèmes te
     * Une clé aléatoire (clé de session) est générée pour l’algorithme symétrique (3DES, IDEA, AES, ...). L'algorithme de chiffrement symétrique est ensuite utilisé pour chiffrer le message. 
     * La clé de session est chiffrée grâce à la clé publique du destinataire (RSA ou ElGamal). 
     * On envoie le message chiffré avec l'algorithme symétrique et accompagné de la clé chiffrée correspondante. Le destinataire déchiffre la clé symétrique avec sa clé privée et via un déchiffrement symétrique, retrouve le message.
-    * Problème: qui est responsable de générer les clés symétriques?
+    * Problème: qui est responsable de générer les clés symétriques? (si serveur, problème potentiel)
 - Deuxième possibilité (<=> TLS):
     * On s'échange des clés (Diffie-Hellman)
     * On signe les messages avec des clés asymétriques
@@ -33,9 +33,9 @@ Les idées ci-dessous sont succeptibles d'évoluer en fonction des problèmes te
 - HTTPS privilégié
 - Les messages sur le serveur ne peuvent pas être déchiffrés par qui ne possède pas les clés (à priori, seulement les utilisateur les ont)
 - BDD: gestion de permissions et des accès, données chiffrées, bases de données pouvant être séparé (physiquement) du serveur de messagerie, logs externalisés
-- Historique chiffrés
+- Historique chiffré
 
 ## Modules
 
 - Modules officiels garantis sécurisés
-- Modules non-officiels sans garantis ni responsabilité de notre part
+- Modules non-officiels sans garanties ni responsabilités de notre part
