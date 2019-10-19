@@ -32,7 +32,7 @@ Les idées ci-dessous sont succeptibles d'évoluer en fonction des problèmes te
 ## Confidentialité des données
 
 - HTTPS privilégié
-- Les messages sur le serveur ne peuvent pas être déchiffrés par qui ne possède pas les clés (à priori, seulement les utilisateur les ont)
+- Les messages sur le serveur ne peuvent pas être déchiffrés par qui ne possède pas les clés (à priori, seulement les utilisateurs les ont)
 - BDD: 
     * gestion de permissions et des accès
     * données chiffrées (les messages)
