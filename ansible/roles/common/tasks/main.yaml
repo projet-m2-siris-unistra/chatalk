@@ -1,4 +1,4 @@
-- name: setup multiple authorized keys
+- name: setup multiple authorized keys for user {{ ansible_user }}
   authorized_key:
     user: '{{ ansible_user }}'
     state: present
@@ -8,7 +8,7 @@
   tags:
     - first-run
 
-- name: sudo without password
+- name: sudo without password for user {{ ansible_user }}
   template:
     src: sudoers.j2
     dest: /etc/sudoers.d/sudoers
@@ -36,7 +36,7 @@
       - vim
       - zsh
 
-- name: set zsh as default shell
+- name: set zsh as default shell for user {{ ansible_user }}
   user:
     name: '{{ ansible_user }}'
     shell: /usr/bin/zsh

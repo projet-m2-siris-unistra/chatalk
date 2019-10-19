@@ -1,8 +1,23 @@
 [unistra]
-chatalk-balzac.u-strasbg.fr
-chatalk-camus.u-strasbg.fr
-chatalk-zola.u-strasbg.fr
+balzac    ansible_host=chatalk-balzac.u-strasbg.fr
+camus     ansible_host=chatalk-camus.u-strasbg.fr
+zola      ansible_host=chatalk-zola.u-strasbg.fr
 
 [unistra:vars]
 ansible_user=info
 ansible_python_interpreter=/usr/bin/python3
+
+[kube-node:children]
+unistra
+
+[k8s-cluster:children]
+unistra
+
+[etcd:children]
+unistra
+
+[kube-master:children]
+unistra
+
+[kubespray:children]
+unistra

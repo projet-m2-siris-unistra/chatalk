@@ -1,21 +1,35 @@
-# Install Ansible
+# Preparation
 
-First of all, you will need to install Ansible.
+## Kubespray
+
+Fetch the Kubespray submodule:
 
 ```sh
-sudo apt install ansible
+git submodule sync
 ```
 
-or have a look at
-https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
+Documentation: https://github.com/kubernetes-sigs/kubespray
 
-# Config
+## Python dependencies
 
-Update your `~/.ssh/config` file so that you use the right user when trying to
-connect to the hosts listed in the `hosts` file.
+Install pipenv on yur local machine using for example `sudo apt install pipenv` if you are on Ubuntu.
 
+Documentation: https://pipenv.kennethreitz.org/en/latest/.
 
-# Check if it's working
+To install all required python dependencies, you can use `pipenv install`.
+It will install `ansible` and all required dependencies.
+In case there were no `Pipfile`, you can generate one using: `pipenv install -r kubespray/requirements.txt`.
+
+To activate the virtualenv, you will have to use `pipenv shell`.
+
+## SSH configuration
+
+You will need to connect using SSH to each of the hosts listed in `hosts` to save their fingerprints on your machine.
+
+Add your SSH public key in the `roles/common/files/public_keys` folder (create a new file).
+Update the `roles/common/tasks/main.yaml` file to append the key file to the list of files to process in the first task.
+
+## Check if it's working
 
 Run the following command to check if all hosts are reacheable:
 
@@ -25,8 +39,7 @@ ansible all -m ping -i hosts --ask-pass
 
 It will be asked to enter the SSH password.
 
-
-# First run
+## First run
 
 The first run will upload all public SSH keys that are in the repository and
 setup `sudo` without password.
@@ -42,7 +55,22 @@ You will be asked for the SSH password.
 After this step `--ask-pass` and `--ask-become-pass` won't be required anymore.
 
 
-# Reboot all VM
+# Next runs
+
+Get a `pipenv` shell using `pipvenv shell`.
+
+Run the whole playbook using the following command:
+
+```sh
+ansible-playbook -i hosts site.yaml --become
+```
+
+
+# Some other tasks
+
+## Reboot all VM
+
+Only use if absolutely required.
 
 To reboot all VM at the same time you can use the following command:
 
