@@ -1,4 +1,4 @@
-# IDEE
+# IDEES
 
 ## Remarque
 
@@ -17,11 +17,12 @@ Les idées ci-dessous sont succeptibles d'évoluer en fonction des problèmes te
     * On s'échange des clés (Diffie-Hellman)
     * On signe les messages avec des clés asymétriques
 - Implémentation: on peut utiliser Libsodium pour toute la partie chiffrement symétrique des messages. Libsodium est déjà utilisée, entre autre, par Discord. Libsodium est disponible dans énormement de langages
+- (Trouver une implem correspondant mieux à nos besoins?)
 
 ## Video/Voix
 
 - ZRTP (Z Real-time Transport Protocol).
-- IL existe une implémentation de ZRTP pour C++ (GNU ZRTP C++), C (dérivée de la précédente) et Java (ZRTP4J). Cette implem est utilisée entre par Jitsi
+- IL existe une implémentation de ZRTP pour C++ (GNU ZRTP C++), C (dérivée de la précédente) et Java (ZRTP4J). Cette implem est utilisée entre autre par Jitsi
 
 ## Redondance des données
 
