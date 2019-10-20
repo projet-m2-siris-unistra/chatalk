@@ -19,8 +19,17 @@ There are six mustaches representing the six members of the group for this proje
 
 The applications will propose, if we have time, two themes.
 
-We will use a color, something turquoise, to highlight things like buttons.
+We will use a color, a specific blue, to highlight things like buttons.
 This will be our primary color.
+
+![Primary color](0a6375.png)
+
+Here are the specifications of our main color:
+- HEX: `#0b6374`
+- RGB: `11, 99, 116`
+- CMYK: `91%, 15%, 0%, 55%`
+- HSV: `190°, 91%, 45%`
+- HSL: `190°, 84%, 25%`
 
 ### Light theme (default)
 
@@ -39,6 +48,14 @@ It will use dark colors, mostly black and dark grey variants.
 The application aims to be user-friendly.
 To offer a nice user experience, we decided to use a simple sans-serif font.
 
+We choosed the [Roboto](https://fonts.google.com/specimen/Roboto) font.
+
+![Preview of the Roboto font](roboto-preview.png)
+
 ## Icons
 
 We will use the icons provided by the Material Design here: https://material.io/resources/icons/.
+
+To give you an idea of what kind of icons they provide, here is a sample of some of their icons:
+
+![Some icons of Material Design](material-icons.png)
