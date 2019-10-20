@@ -9,10 +9,11 @@ description: 'In this blog post we describe our current resources and deployemen
 We currently use university resources for our project.
 
 We have three virtual machines (`balzac`, `camus` and `zola`) with following specifications:
-  - 4vCPU
-  - 4Go RAM
-  - 50Go disk space
-  - Ubuntu Server 18.04
+
+- 4vCPU
+- 4Go RAM
+- 50Go disk space
+- Ubuntu Server 18.04
 
 ## Current deployment
 
