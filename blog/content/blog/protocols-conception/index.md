@@ -1,3 +1,9 @@
+---
+title: Protocols design and choices
+date: '2019-10-20T22:37:35.284Z'
+description: 'How our custom protocols should be designed and implemented.'
+---
+
 # Protocols
 
 As the projects goes on some changes to these protocols might be required, however their principle should hardly change.
