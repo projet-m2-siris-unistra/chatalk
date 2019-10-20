@@ -5,7 +5,8 @@ The work is style in progress so some changes can be made, however the principle
 ## Brainstorming and Conception
 
 We need to set up prtocols that will allow the interactions between differents entities.
-There is three entities :
+There is three entities:
+
     * users,
     * the server,
     * and conversations (groups of users).
@@ -22,10 +23,11 @@ Once, we know this two informations, we need to know precisely to which entity w
 So, we need an id (userId, conversationId or server : by default, 0). Then we will also need the sender id,
 e.g. for example, to know which user sent the data.
 
-So far, each message will have the following structure : 
-1      | 2                | 3          |
------- | ---------------- | -----------|
-*Type* | *Destination Id* | *Sender Id*|
+So far, each message will have the following structure:
+
+| 1      | 2                | 3          |
+| ------ | ---------------- | -----------|
+| *Type* | *Destination Id* | *Sender Id*|
 
 ## Protobuf
 
