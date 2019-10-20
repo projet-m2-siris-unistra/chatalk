@@ -26,7 +26,7 @@ The applications will propose, if we have time, two themes.
 We will use a color, a specific blue, to highlight things like buttons.
 This will be our primary color.
 
-![Primary color](0a6375.png)
+![Primary color](0b6374.png)
 
 Here are the specifications of our main color:
 
