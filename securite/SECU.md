@@ -1,4 +1,4 @@
-# IDEES
+# Etude préliminaire
 
 ## Remarque
 
@@ -18,12 +18,24 @@ Les idées ci-dessous sont succeptibles d'évoluer en fonction des problèmes te
     * On s'échange des clés (Diffie-Hellman)
     * On signe les messages avec des clés asymétriques
 - Implémentation: on peut utiliser Libsodium pour toute la partie chiffrement symétrique des messages. Libsodium est déjà utilisée, entre autre, par Discord. Libsodium est disponible dans énormement de langages
-- (Trouver une implem correspondant mieux à nos besoins?)
+- Les possibilités 1 et 2 impliquent de devoir coder au moins en partie le chiffrement
+- (Trouver une implem correspondant mieux à nos besoins? -> OTR)
+- OTR (Off-the-Record Messaging): 
+    * Protocole combinant un algorithme de clés symétriques AES, le protocole d'échange de clés Diffie-Hellman et la fonction de hachage SHA-1. 
+    * OTR permet d'avoir des conversations privées sur de multiples protocoles de messagerie instantanée
+    * utilisé entre autre par Jitsi
+    * D'après Der Spiegel, pose problème à la NSA (+1 point)
+    * disponible en C, Python, Java, Javascript, Go, OCaml, Obective-C, Perl
+
+### Avis
+Personnellement, je pense qu'il faut partir sur OTR car cela évitera des failles dans l'implementation (par exemple, de RSA)
 
 ## Video/Voix
 
 - ZRTP (Z Real-time Transport Protocol).
 - Il existe une implémentation de ZRTP pour C++ (GNU ZRTP C++), C (dérivée de la précédente) et Java (ZRTP4J). Cette implem est utilisée entre autre par Jitsi
+
+Si OTR et ZRTP sont retenus, cela impliquera un client en C ou Java
 
 ## Redondance des données
 
@@ -34,11 +46,11 @@ Les idées ci-dessous sont succeptibles d'évoluer en fonction des problèmes te
 - HTTPS privilégié
 - Les messages sur le serveur ne peuvent pas être déchiffrés par qui ne possède pas les clés (à priori, seulement les utilisateurs les ont)
 - BDD: 
-    * gestion de permissions et des accès
+    * gestion des permissions et des accès
     * données chiffrées (les messages)
-    * (bases de données pouvant être séparé (physiquement) du serveur de messagerie) => dépend de l'architecture
+    * (bases de données pouvant être séparés (physiquement) du serveur de messagerie) => dépend de l'architecture
     * logs externalisés afin de pouvoir contrôler les accès
-- Historique chiffré
+- Historique des échanges chiffré
 
 ## Modules
 
