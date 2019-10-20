@@ -4,24 +4,22 @@ The work is style in progress so some changes can be made, however the principle
 
 ## Brainstorming and Conception
 
-We need to set up prtocols that will allow the interactions between differents entities.
+We need to set up protocols that will allow interactions between different entities.
 There is three entities:
 
 	* users,
 	* the server,
 	* and conversations (groups of users).
 
-Conversations are considered as an entity because the message from a user is broadcast to a group of users.
-A conversation is much like a multicast group in a network.
+Conversations are considered as an entity because the message from a user is broadcast to a group of users. A conversation is much like a multicast group in a network.
 
 ### Message basic structure
 
-We thought of the easier way to analyse a message. To parse a message, we need to know its type.
-It will give us two informations, the type of course but also the destination entity type.
-As said before some message can only be send in a conversation (e.g. data : text, audio, video).
-Once, we know this two informations, we need to know precisely to which entity we have to send the message.
-So, we need an id (userId, conversationId or server : by default, 0). Then we will also need the sender id,
-e.g. for example, to know which user sent the data.
+- We thought of the easier way to analyse a message. To parse a message, we need to know its type.
+	- It will give us two informations, the type of course but also the destination entity type.
+	- As said before some message can only be send in a conversation (e.g. data : text, audio, video).
+- Once, we know those two informations, we need to know precisely to which entity we have to send the message.
+- So, we need an id (userId, conversationId or server : by default, 0). Then we will also need the sender id, e.g. to know which user sent the data.
 
 So far, each message will have the following structure:
 
@@ -46,23 +44,24 @@ In this section, we will describe different messages that will be needed for the
 
 	- SignedIn,
 	- SignedOut,
-	- SignedUp : it can pass and the user will get his user_id, but it can also failed, the user has to retry then,
+	- SignedUp : it can pass and the user will get his user_id, but it can also fail, the user has to retry then,
 	- SendInfo : this message is send after a signedIn or a SignedUp message. It will contain other users informations as well as conversations informations.
 
 #### Security Messages
 
-The client has to send his SSH public key, while the server will send a common encrypted key.
+The client has to send his SSH public key, while the server will send a common encrypted key for each conversation.
 (c.f. securite section)
 
 #### Conversation Management Messages
 
-- A client can be add to a conversation by another user in that conversation.
-- If a user is writing a text content, a "UserIsWriting" message will be send.
+- A client can be add to a conversation by another user.
+- If a user is writing a text content, a "UserIsWriting" message will be send to other members until the content is send by the user.
 - The conversation name, picture and topic can be changed as well. 
 	- Those messages will go through the server and be send to the users in the conversation.
+	- The data will also be stored in the server database.
 	- The server will maybe just have to check if the user has the right to do it.
-- A new entity channel will be create for the user streaming (audio,video).
-	- The user will have to register to a channel and chose the content they want.
+- A new entity channel will be created for the user streams (audio,video).
+	- The user will have to register to a channel and chose the desired content.
 	- The server will broadcast the content to users in that given channel.
 
 Messages Examples : 
@@ -100,7 +99,7 @@ Server -( Conv. Management)-> Client
 
 #### Profile Management Messages
 
-- Clients can manage their profile. Other options will be add if needed.
+- Clients can manage their profile. Other options will be added if needed.
 
 Messages Examples : 
 ```
@@ -133,10 +132,10 @@ Server -( Data )-> Database
 
 #### Request Messages
 
-- The request messages are used by the server to check if the user is active or not.
-- The user can request archives which will be the same message as the data one.
+- Request messages are used by the server to check if the user is active or not.
+- The user can request archives which will be send in the same message as the data one.
 - In case, the user changes his IP address (e.g. activate the mobile data and turn off the wifi), he can update his IP address.
-	- This means that the server will store multiple keys for the same user.
+	- This means that the server will have to store multiple keys for the same user.
 	- When the address is updated, the client send an info request.
 	- The server will then send a "SendInfo" message (see Init messages).
 
@@ -166,7 +165,7 @@ To manage the protocols, we will use protobuf. It allows to get a parsed object 
 		- the name of the attribut,
 		- the number of this field in the message.
 	- Then add the message type, in the Client or the Server Message, inside the *oneof*.
-		- You will just have the increment by one the highest number in the "oneof*.
+		- You will just have to increment by one the highest number in the *oneof*.
 
 
 ### Examples
