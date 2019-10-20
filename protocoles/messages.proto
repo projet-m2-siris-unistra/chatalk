@@ -43,6 +43,8 @@ message ConvInfo {
 message SignIn {
 	int64 destination_id = 1;
 	int64 sender_id = 2;
+	string username = 3;
+	string password = 4;
 }
 
 // Server -( Init )-> Client
@@ -67,9 +69,9 @@ message SignedOut {
 message SignUp {
 	int64 destination_id = 1;
 	int64 sender_id = 2;
-	string username = 1;
-	string password = 2;
-	string mail_adr = 3;
+	string username = 3;
+	string password = 4;
+	string mail_adr = 5;
 }
 
 // Client -( Init )-> Server
