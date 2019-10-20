@@ -1,111 +1,114 @@
-syntax = "proto2";
+syntax = "proto3";
 
-// Why not using proto3 ?
-// Is the enumMessageType usefull ? 
-// From my point of view the message itself is the type of the message
-// Even if in the end, we will have to create two new types of message
-// with only a oneof for server messages and one for the client ones  
+// add a message : 
+// first create the structure => message MessageType {attributes} 
+// then add the messagetype into the MessageServer or MessageClient "oneof" 
 
-message Message {
-	enum MessageType {
-		INIT = 0;
-		DATA = 1;
-		REGISTER = 2;
-		REQUEST = 3;
-		KEY_XNCHG = 4;
-		PROFILE_MNGMT = 5;
-		CONV_MNGMT = 6;
-		KEEP_ALIVE = 7;
-		INFO_RQST = 8;
+
+// Image structure for avatar and conversation picture
+message Image {
+	int32 width = 1;
+	int32 height = 2;
+	bytes image_data = 3;
+}
+
+// prepare structure for user info
+message UserInfo {
+	int64 user_id = 1;
+	Image avatar = 2;
+	string name = 3;
+}
+
+// prepare structure for conversation info
+
+message ConvContent {
+	int64 user_id = 1;
+	bytes text_content = 2;
+}
+
+message ConvMember {
+	int64 user_id = 1;
+	string member_name = 2;
+}
+
+message ConvInfo {
+	int64 conv_id = 1;
+	string conv_name = 2;
+	Image picture = 3;
+	repeated ConvMember members = 4;
+	repeated ConvContent content = 5;
+}
+
+// Client -( Init )-> Server
+message SignIn {
+	int64 destination_id = 1;
+	int64 sender_id = 2;
+}
+
+// Server -( Init )-> Client
+message SignedIn {
+	int64 destination_id = 1;
+	int64 sender_id = 2;
+}
+
+// Client -( Init )-> Server
+message SignOut {
+	int64 destination_id = 1;
+	int64 sender_id = 2;
+}
+
+// Server -( Init )-> Client
+message SignedOut {
+	int64 destination_id = 1;
+	int64 sender_id = 2;
+}
+
+// Client -( Init )-> Server
+message SignUp {
+	int64 destination_id = 1;
+	int64 sender_id = 2;
+	string username = 1;
+	string password = 2;
+	string mail_adr = 3;
+}
+
+// Client -( Init )-> Server
+message SignedUp {
+	int64 destination_id = 1;
+	int64 sender_id = 2;
+	enum SignUpStatus { 
+		PASSED = 0;
+		FAILED = 1;
 	}
-	required MessageType type = 1;
-	required int64 destination_id = 2;
-	required int64 sender_id = 3;
+	SignUpStatus status = 3;
+	string username = 4;
+	int64 user_id = 5;
+}	
 
-	// prepare structure for avatar
-	message Image {
-		required int32 width = 1;
-		required int32 height = 2;
-		required bytes image_data = 3;
+// Server -( Init )-> Client
+message SendInfo {
+	int64 destination_id = 1;
+	int64 sender_id = 2;
+	UserInfo user = 3;
+	repeated UserInfo others = 4;
+	repeated ConvInfo conversation = 5;
+}
+
+// Message send from the server to a client
+message MessageServer {
+	oneof payload {
+		SignedIn signed_in = 1;
+		SignedOut signed_out = 2;
+		SignedUp signed_up = 3;
+		SendInfo send_info = 4;
 	}
+}
 
-	// prepare structure for user info
-	message UserInfo {
-		required int64 user_id = 1;
-		required Image avatar = 2;
-		required string name = 3;
+// Message send from a client to the server
+message MessageClient {
+	oneof payload {
+		SignIn sign_in = 1;
+		SignOut sign_out = 2;
+		SignUp sign_up = 3;		
 	}
-
-	// prepare structure for conversation info
-
-	message ConvContent {
-		required int64 user_id = 1;
-		required bytes text_content = 2;
-	}
-
-	message ConvMember {
-		required int64 user_id = 1;
-		required string member_name = 2;
-	}
-	
-	message ConvInfo {
-		required int64 conv_id = 1;
-		required string conv_name = 2;
-		required Image picture = 3;
-		repeated ConvMember members = 4;
-		repeated ConvContent content = 5;
-	}
-
-	// Client -( Init )-> Server
-	message SignIn {
-		required string content = 1;
-	}
-	
-	// Server -( Init )-> Client
-	message SignedIn {
-		required string content = 1;
-	}
-
-	// Client -( Init )-> Server
-	message SignOut {
-		required string content = 1;
-	}
-
-	// Server -( Init )-> Client
-	message SignedOut {
-		required string content = 1;
-	}
-
-	// Client -( Init )-> Server
-	message SignUp {
-		required string username = 1;
-		required string password = 2;
-		required string mail_adr = 3;
-	}
-
-	// Client -( Init )-> Server
-	message SignedUp {
-		enum SignUpStatus { 
-			PASSED = 0;
-			FAILED = 1;
-		}
-		required SignUpStatus status = 1;
-		required string username = 2;
-		required int64 user_id = 3;
-	}	
-
-	// Server -( Init )-> Client
-	message SendInfo {
-		required UserInfo user = 1;
-		repeated UserInfo others = 2;
-		repeated ConvInfo conversation = 3;
-	}
-
-	oneof payloadServer {
-		SignedIn signedIn_message = 4;
-	}
-
-	oneof payloadClient {
-		SignIn signIn_message = 4;
-	};
 }
