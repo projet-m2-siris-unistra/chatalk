@@ -15,6 +15,10 @@ Notice the upper `C`, `T` and `K`.
 
 There are six mustaches representing the six members of the group for this project.
 
+For some occasions, we will use the following variant of our logo:
+
+![Variant of ChaTalK's logo](chatalk-square-512-primary.png)
+
 ## Colors
 
 The applications will propose, if we have time, two themes.
@@ -25,6 +29,7 @@ This will be our primary color.
 ![Primary color](0a6375.png)
 
 Here are the specifications of our main color:
+
 - HEX: `#0b6374`
 - RGB: `11, 99, 116`
 - CMYK: `91%, 15%, 0%, 55%`
@@ -43,12 +48,20 @@ Will be done only if we have time to do it.
 
 It will use dark colors, mostly black and dark grey variants.
 
+The goal of this theme is to save battery and to be used in the night.
+
 ## Typography
 
 The application aims to be user-friendly.
 To offer a nice user experience, we decided to use a simple sans-serif font.
 
 We choosed the [Roboto](https://fonts.google.com/specimen/Roboto) font.
+
+Here is a list of all characters defined in this font:
+
+![List of characters available in Roboto font](roboto-chars.png)
+
+Here is a preview of the font in different variants (font weight, italic, ...):
 
 ![Preview of the Roboto font](roboto-preview.png)
 
@@ -59,3 +72,13 @@ We will use the icons provided by the Material Design here: https://material.io/
 To give you an idea of what kind of icons they provide, here is a sample of some of their icons:
 
 ![Some icons of Material Design](material-icons.png)
+
+## Layout
+
+The layout of the application will be quite basic.
+
+Here an idea of what we want to implement:
+
+![Layout idea](layout.png)
+
+Conversations will be combined in a same view when using a large screen: the list of conversations will be in a left column and the conversation will be displayed to the right.
