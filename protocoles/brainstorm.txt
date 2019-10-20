@@ -72,7 +72,7 @@ Client -( Info Request ) -> Server
 Format des messages
 Message
 - Type
-- Destination // ConvID ou 0 pour serveur
+- Destination // UserID, ConvId ou 0 pour serveur
 - Sender
 - Payload
 
