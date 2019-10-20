@@ -1,14 +1,14 @@
 ---
-title: "Infrastructure: first look"
+title: 'Infrastructure: first look'
 date: '2019-10-20T19:23:03.000Z'
-description: 'In this blog post we describe our current ressources and deployement and what will happen later in our infrastructure.'
+description: 'In this blog post we describe our current resources and deployement and what will happen later in our infrastructure.'
 ---
 
-## Ressources
+## Resources
 
-We currently use university ressources for our project.
+We currently use university resources for our project.
 
-We have three virtual machines with following specifications:
+We have three virtual machines (`balzac`, `camus` and `zola`) with following specifications:
   - 4vCPU
   - 4Go RAM
   - 50Go disk space
@@ -22,9 +22,9 @@ Using [Ansible](https://www.ansible.com/) allows us to have a reproducible and u
 
 For the moment our SSH keys are deployed, `sudo` is configured without password, some useful packages are installed and `zsh` is configured correctly.
 
-A Kubernetes cluster is also deployed using [Kubespray](https://kubespray.io/), which is an [Ansible](https://www.ansible.com/) playbook to deploy a [Kubernetes](https://kubernetes.io) cluster quickly.
+A Kubernetes cluster is also deployed using [Kubespray](https://kubespray.io/), which is an [Ansible](https://www.ansible.com/) playbook to deploy a high-availability [Kubernetes](https://kubernetes.io) cluster quickly.
 
-Each our three virtual machines are one of the nodes of the cluster.
+Our three virtual machines are the three nodes of the cluster.
 
 The cluster is only available through the VPN of the university.
 
@@ -36,4 +36,4 @@ We will see later how to configure it using IPv6.
 We are waiting for a new IPv4 to setup [`metallb`](https://metallb.universe.tf/concepts/layer2/).
 
 We will use [Kustomize](https://kustomize.io/) to have clean deployments for our [Kubernetes](https://kubernetes.io) cluster.
-The goal is to atomate the deployment of all the services in our cluster.
+The goal is to automate the deployment of all the services in our cluster.
