@@ -3,11 +3,21 @@
 https://tools.ietf.org/html/rfc6189  <= zrtp
 https://philzimmermann.com/EN/zrtp/index.html <= truc qui a l'air cool
 https://www.voip-info.org/zrtp/
+
 https://korben.info/articles/bien-securiser-sa-base-de-donnees
 https://www.orange-business.com/fr/blogs/securite/bonnes-pratiques/10-conseils-pour-la-securite-de-votre-base-de-donnees
 
+Libsodium
 https://download.libsodium.org/doc/
 https://openclassrooms.com/fr/courses/1757741-securisez-vos-donnees-avec-la-cryptographie/6031881-utilisez-la-bibliotheque-libsodium-pour-vos-applications
 
-https://www.gnu.org/software/ccrtp/zrtp.html#content
+ZRTP
+https://www.gnu.org/software/ccrtp/zrtp.html#content <= implem recommandée (https://www.philzimmermann.com/zfone/ obsolète depuis 2011)
 https://github.com/wernerd/ZRTPCPP
+
+OTR
+https://otr.cypherpunks.ca/index.php#docs
+https://otr.cypherpunks.ca/software.php
+https://otr.cypherpunks.ca/Protocol-v3-4.1.1.html
+https://otr.cypherpunks.ca/otr-codecon.pdf
+https://otr.cypherpunks.ca/README-libotr-4.1.1.txt
