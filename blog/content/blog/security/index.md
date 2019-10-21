@@ -1,7 +1,7 @@
 ---
 title: 'Security: First Approach'
 date: '2019-10-21T13:17:03.000Z'
-description: 'In this blog post we describe our current plan for security measures of the project, both physical and virtual.'
+description: 'In this blog post we describe our current plan for the security measures of the project, both physical and virtual.'
 ---
 
 # Preliminary Security Study
@@ -20,14 +20,14 @@ Ideas below can evolve depending on technical problems met (for example : stress
     * The session key is encrypted with the receiver's public key (RSA or ElGamal).
     * We send the encrypted message with the corresponding encrypted key.
     * The receiver decrypts the symetric key with his private key and via symetric decrypting, get back the message
-    * Problem : who is in charge to generate the symetric keys? A priori, the first one to arrive
+    * Problem : who is in charge to generate the symetric keys? A priori, the first participant to the conversation.
 
 - Second possibilty (TLS equivalent):
 
     * Key exchange (Diffie-Hellman)
     * We sign the message with asymetric keys
 
-- This two possibilities implie to do the implementation of the encryption algorithm by ourselves, at least partially. To do that, we can use Libsodium for the symetric encryption of message. Libsodium is already used, in particular by Discord. Libsodium is also available in a lot of programming languages
+- This two possibilities imply to do the implementation of the encryption algorithm by ourselves, at least partially. To do that, we can use Libsodium for the symetric encryption of message. Libsodium is already used, in particular by Discord. Libsodium is also available in a lot of programming languages
 - Because of the difficulty and the problems caused by an implementation written by ourselves, we decided to go for another idea, which will be our third possibility : OTR.
 - OTR (Off-the-Record Messaging):
     * Protocole combining an AES symetric keys algorithm, the keys exchange protocole Diffie-Hellman and the hash fonction SHA-1
@@ -46,20 +46,20 @@ OTR is the proposition actually selected because it will avoid most of the probl
 
 ## Data Redundancy
 
-- We duplicate datas for the message and user's BDD parts.
+- We duplicate datas for the message and user's DB parts.
 
-## Data confindentiiality
+## Data confindentiality
 
 - Privilegiated HTTPS
 - Messages on the server can not be decrypted by someone who does not have the keys, which means only the users can do it.
-- BDD:
-    * Perimssions and access management
+- DB:
+    * Permissions and access management
     * Encrypted data (messages)
-    * Data base able to be separated (physically) from the messaging server => depending on the architecture
+    * The DB will be able to be separated physically from the server. This will depend on the architecture.
     * Externalized logs to control access
-- Encrypted exchange historic
+- Encrypted exchange history
 
 ## Add-ons
 
 - Official add-ons are guaranteed securised.
-- Unofficial add-ons without any guaranty or responsability from our end.
+- Unofficial add-ons without any guaranty or responsability from our end. However, we propose to evaluate custom-made add-ons to be validated and become official add-ons.
