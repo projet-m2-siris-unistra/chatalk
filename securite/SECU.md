@@ -1,56 +1,57 @@
-# Etude préliminaire de sécurité
+# Preliminary Security Study
 
-## Remarque
+## Disclaimer
 
-Les idées ci-dessous sont succeptibles d'évoluer en fonction des problèmes techniques rencontrés (test de charge)
+Ideas below can evolve depending on technical problems met (for example : stress test)
 
 ## Messages
 
-- Chiffement de bout en bout (pas de déchiffrement sur le serveur). On dégage alors 3 possiblités :
-- Première possiblité:
-    * Pour chaque nouvel arrivant dans une conversation, celui-ci envoie sa clé public aux autres participants
-    * Une clé aléatoire (clé de session) est générée pour l’algorithme symétrique (3DES, IDEA, AES, ...). L'algorithme de chiffrement symétrique est ensuite utilisé pour chiffrer le message.
-    * La clé de session est chiffrée grâce à la clé publique du destinataire (RSA ou ElGamal).
-    * On envoie le message chiffré avec l'algorithme symétrique et accompagné de la clé chiffrée correspondante.
-    * Le destinataire déchiffre la clé symétrique avec sa clé privée et via un déchiffrement symétrique, retrouve le message.
-    * Problème: qui est responsable de générer les clés symétriques? (si serveur, problème potentiel): plutôt le premier arrivé
-- Deuxième possibilité (équivalente à TLS):
-    * On s'échange des clés (Diffie-Hellman)
-    * On signe les messages avec des clés asymétriques
-- Implémentation: on peut utiliser Libsodium pour toute la partie chiffrement symétrique des messages. Libsodium est déjà utilisée, entre autre, par Discord. Libsodium est disponible dans énormement de langages
-- Les deux premères possibilités impliquent de devoir coder au moins en partie le chiffrement
-- De ces possiblités, l'implémentation qui corresepondrait le mieux à nos besoins serait OTR :
+- End to end encryption (no decryption on the server). We can then see 3 possibilities :
+- First possibility :
+
+    * For each newcomer in a conversation, his public key is sent to other participants
+    * A random key (session key) is generated for the symetric algorithm (3DES, IDEA, AES, ...). The symetric encryption algorithm is then used to secure the message.
+    * The session key is encrypted with the receiver's public key (RSA or ElGamal).
+    * We send the encrypted message with the corresponding encrypted key.
+    * The receiver decrypts the symetric key with his private key and via symetric decrypting, get back the message
+    * Problem : who is in charge to generate the symetric keys? A priori, the first one to arrive
+- Second possibilty (TLS equivalent):
+    * Key exchange (Diffie-Hellman)
+    * We sign the message with asymetric keys
+- Implementaiton: we can use Libsodium for the symetric encryption of message. Libsodium is already used, in particular by Discord. Libsodium is also available in a lot of programming languages
+- The two first possibilities imply to have to code a least partially the encryption
+- Of the possibilities, the best implementation for us would be OTR :
 - OTR (Off-the-Record Messaging):
-    * Protocole combinant un algorithme de clés symétriques AES, le protocole d'échange de clés Diffie-Hellman et la fonction de hachage SHA-1.
-    * OTR permet d'avoir des conversations privées sur de multiples protocoles de messagerie instantanée
-    * utilisé entre autre par Jitsi
-    * disponible en C, Python, Java, Javascript, Go, OCaml, Objective-C, Perl
+    * Protocole combining an AES symetric keys algorithm;, the keys exchange protocole Diffie-Hellman and the hash fonction SHA-1
+    * OTR allows to have private conversation on multiple protocole
+    * used in particular by Jitsi
+    * available in C, Python, Java, Javascript, Go, OCaml; Objective-C, Perl
 
-### Proposition retenue
+### Selected proposition
 
-Otr est la proposition qui est retenue actuellement car cela évitera la majorité des problèmes qui pourront être rencontré (notamment dans l'implémentation) tout en satisfaisant nos exigences en matière de sécurité.
-s
-## Video/Voix
+OTR is the proposition actually selected because it will avoid most of the problems (in particular, the one linked to implementation) while satisfying our exigence in security.
+
+## Voice/Video
 
 - ZRTP (Z Real-time Transport Protocol).
-- Il existe une implémentation de ZRTP pour C++ (GNU ZRTP C++), C (dérivée de la précédente) et Java (ZRTP4J). Cette implémentation est utilisée entre autre par Jitsi
+- There is an implementation of ZRTP for C++ (GNU ZRTP C++), C (derived from the previous one) and JAVA (ZRTP4J). This implementation is used, in particular, by Jitsi.
 
-## Redondance des données
+## Data Redundancy
 
-- Nous dupliquerons les données pour la partie message et BDD des utilisateurs.
+- We duplicate datas for the message and user's BDD parts.
 
-## Confidentialité des données
+## Data confindentiiality
 
-- HTTPS privilégié
-- Les messages sur le serveur ne peuvent pas être déchiffrés par qui ne possède pas les clés, c'est à dire seulement les clients.
+- Privilegiated HTTPS
+- Messages on the server can not be decrypted by someone who does not have the keys, which means only the users can do it.
 - BDD:
-    * gestion des permissions et des accès
-    * données chiffrées (les messages)
-    * (bases de données pouvant être séparés (physiquement) du serveur de messagerie) => dépend de l'architecture
-    * logs externalisés afin de pouvoir contrôler les accès
-- Historique des échanges chiffré
+    * Perimssions and access management
+    * Encrypted data (messages)
+    * Data base able to be separated (physically) from the messaging server => depending on the architecture
+    * Externalized logs to control access
+- Encrypted exchange historic
 
-## Modules
+## Add-ons
 
-- Modules officiels garantis sécurisés
-- Modules non-officiels sans garanties ni responsabilités de notre part
+- Official add-ons are guaranteed securised.
+- Unofficial add-ons without any guaranty or responsability from our end.
