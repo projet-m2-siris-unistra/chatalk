@@ -21,3 +21,7 @@ https://otr.cypherpunks.ca/software.php
 https://otr.cypherpunks.ca/Protocol-v3-4.1.1.html
 https://otr.cypherpunks.ca/otr-codecon.pdf
 https://otr.cypherpunks.ca/README-libotr-4.1.1.txt
+
+Signal Protocol
+https://signal.org/docs/
+https://github.com/signalapp/libsignal-protocol-javascript
