@@ -25,7 +25,7 @@ Ideas below can evolve depending on technical problems met (for example : stress
     * Key exchange (Diffie-Hellman)
     * We sign the message with asymetric keys
 
-- This two possibilities imply to do the implementation of the encryption algorithm by ourselves, at least partially. 
+- This two possibilities imply to do the implementation of the encryption algorithm by ourselves, at least partially.
 - We can use Libsodium for the symetric encryption of message. Libsodium is already used, in particular by Discord. Libsodium is also available in a lot of programming languages
 
 - Because of the difficulty and the problems caused by an implementation written by ourselves, we might want to find existing implementation
@@ -37,7 +37,7 @@ Ideas below can evolve depending on technical problems met (for example : stress
     * used in particular by Jitsi
     * available in C, Python, Java, Javascript, Go, OCaml, Objective-C, Perl
     * Problem: there is no documentation for the last version (verson 4) exept a README. The version 3 didn't allow multi-user group chat
-    
+
 - Signal Protocol:
     * used by Signal
     * end-to-end encryption for voice calls, video calls and instant messaging conversations
@@ -54,7 +54,7 @@ Ideas below can evolve depending on technical problems met (for example : stress
 ## Choice for securing conversations
 
 As it is, we would recommend using hybrid encryption for securing messages and ZRTP for the VoIP communication, in order to be sure to have no problem with the protocols used for exchanging messages.
-If it appears to be possible, we believe it would be far more better to use Signal Protocol, in order to ensure the security level.
+If it appears to be possible, we believe it would be far better to use Signal Protocol, in order to ensure the security level.
 
 ## Data Redundancy
 
