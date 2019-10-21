@@ -20,7 +20,7 @@ Ideas below can evolve depending on technical problems met (for example : stress
     * We sign the message with asymetric keys
 - Implementaiton: we can use Libsodium for the symetric encryption of message. Libsodium is already used, in particular by Discord. Libsodium is also available in a lot of programming languages
 - The two first possibilities imply to have to code a least partially the encryption
-- Of the possibilities, the best implementation for us would be OTR :
+- Because of the reason above, the best implementation for us would be OTR :
 - OTR (Off-the-Record Messaging):
     * Protocole combining an AES symetric keys algorithm;, the keys exchange protocole Diffie-Hellman and the hash fonction SHA-1
     * OTR allows to have private conversation on multiple protocole
