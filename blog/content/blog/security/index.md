@@ -14,7 +14,6 @@ Ideas below can evolve depending on technical problems met (for example : stress
 
 - End to end encryption (no decryption on the server). We can then see 3 possibilities:
 - First possibility (hybrid encryption):
-
     * When a conversation is created, the creator generates the session key with a symetric algorithm (3DES, IDEA, AES, ...). This key will be used to secure messages.
     * Each time a new participant is added by an active member of the conversation, his public key (previously stored by the server) is sent to that member.
     * The session key is encrypted with the receiver's public key (RSA or ElGamal), and sent to him.
@@ -23,7 +22,6 @@ Ideas below can evolve depending on technical problems met (for example : stress
     * After a given time interval (defined by the protocol), the session key will reinitialized. The server will then have to store all the encrypted session keys.
 
 - Second possibilty (TLS equivalent):
-
     * Key exchange (Diffie-Hellman)
     * We sign the message with asymetric keys
 
@@ -34,7 +32,6 @@ Ideas below can evolve depending on technical problems met (for example : stress
 - A possibility to do that would be OTR or Signal Protocol
 
 - OTR (Off-the-Record Messaging):
-
     * Protocole combining an AES symetric keys algorithm, the keys exchange protocole Diffie-Hellman and the hash fonction SHA-1
     * OTR allows to have private conversation on multiple protocole
     * used in particular by Jitsi
@@ -42,7 +39,6 @@ Ideas below can evolve depending on technical problems met (for example : stress
     * Problem: there is no documentation for the last version (verson 4) exept a README. The version 3 didn't allow multi-user group chat
     
 - Signal Protocol:
-
     * used by Signal
     * end-to-end encryption for voice calls, video calls and instant messaging conversations
     * available in C, Java, Javascript
