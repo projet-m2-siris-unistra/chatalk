@@ -13,9 +13,9 @@ As the projects goes on some changes to these protocols might be required, howev
 We need to set up protocols that will allow interactions between different entities.
 There are three entities:
 
-    * users
-    * server
-    * conversations (groups of users).
+- users
+- server
+- conversations (groups of users).
 
 Conversations are considered as an entity because the message from a user is broadcast to a group of users. A conversation is much like a multicast group in a network.
 
@@ -61,8 +61,13 @@ The client has to send his SSH public key, while the server will send a common e
 
 - A user can be added to a conversation by another user.
 - If a user is writing a text message, a "UserIsWriting" message will be sent to other members until the content is sent by the user.
-- The conversation name, picture and topic can be changed as well. - Those messages will go through the server and be sent to the users in the conversation. - The data will also be stored in the server database. - The server might have to check if the user has the right to do it.
-- A new entity channel will be created for the users streams (audio, video). - The user will have to register to a channel and chose the desired content. - The server will broadcast the content to users in that given channel.
+- The conversation name, picture and topic can be changed as well.
+  - Those messages will go through the server and be sent to the users in the conversation.
+  - The data will also be stored in the server database.
+  - The server might have to check if the user has the right to do it.
+- A new entity channel will be created for the users streams (audio, video).
+  - The user will have to register to a channel and chose the desired content.
+  - The server will broadcast the content to users in that given channel.
 
 Messages Examples :
 
@@ -138,7 +143,10 @@ Server -( Data )-> Database
 
 - Request messages are used by the server to check if the user is active or not.
 - The user can request archives which will be sent in the same message as the data one.
-- In case the user changes his IP address (e.g. activate the mobile data and turn off the wifi), he can update his IP address. - This means that the server will have to store multiple keys for the same user. - When the address is updated, the client sends an info request. - The server will then send a "SendInfo" message (see Init messages).
+- In case the user changes his IP address (e.g. activate the mobile data and turn off the wifi), he can update his IP address.
+  - This means that the server will have to store multiple keys for the same user.
+  - When the address is updated, the client sends an info request.
+  - The server will then send a "SendInfo" message (see Init messages).
 
 Messages Examples :
 
@@ -159,13 +167,22 @@ To manage the protocols, we will use `protobuf`. It allows to get a parsed objec
 ### Add a message type
 
 - To add a message, one has to modify the _.proto_ file.
-- Those are the step to do it : - Create the message structure with `message MessageName {attributes}`. - MessageName become the type of the message. - Add fields that will be in the message, each field is add with this line : `type name = 1;`, - the type of the attribut (e.g. int, string, ...), - the name of the attribut, - the number of this field in the message. - Then add the message type, in the Client or the Server Message, inside the _oneof_. - You will just have to increment by one the highest number in the _oneof_.
+- Those are the step to do it :
+  - Create the message structure with `message MessageName {attributes}`.
+    - MessageName become the type of the message.
+  - Add fields that will be in the message, each field is add with this line : `type name = 1;`,
+    - the type of the attribut (e.g. int, string, ...),
+    - the name of the attribut,
+    - the number of this field in the message.
+  - Then add the message type, in the Client or the Server Message, inside the _oneof_.
+  - You will just have to increment by one the highest number in the _oneof_.
 
 ### Examples
 
 Here is an example:
 
-- I want to add a conversation delete message, this will not be possible for our application. - Indeed, a conversation is deleted only when all the members left it.
+- I want to add a conversation delete message, this will not be possible for our application.
+  - Indeed, a conversation is deleted only when all the members left it.
 - I create the structure.
 
 ```
