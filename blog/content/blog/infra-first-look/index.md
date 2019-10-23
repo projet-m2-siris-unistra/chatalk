@@ -27,7 +27,7 @@ A Kubernetes cluster is also deployed using [Kubespray](https://kubespray.io/), 
 
 Our three virtual machines are the three nodes of the cluster.
 
-The cluster is only available through the VPN of the university.
+The cluster is only available through the VPN or the network of the university.
 
 ## What’s next?
 
@@ -38,3 +38,9 @@ We are waiting for a new IPv4 to setup [`metallb`](https://metallb.universe.tf/c
 
 We will use [Kustomize](https://kustomize.io/) to have clean deployments for our [Kubernetes](https://kubernetes.io) cluster.
 The goal is to automate the deployment of all the services in our cluster.
+
+## Licenses
+
+Kubespray is licensed under [Apache License 2.0](https://github.com/kubernetes-sigs/kubespray/blob/master/LICENSE).
+
+Kubernetes is licensed under [Apache License 2.0](https://github.com/kubernetes/kubernetes/blob/master/LICENSE).
