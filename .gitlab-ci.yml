@@ -36,6 +36,17 @@ deploy-ui:
       - "ui/**/*"
 
 # Blog part
+test-blog:
+  stage: test
+  script:
+    - cd blog/
+    - npm ci
+    - npm run format-check
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "blog/**/*"
+
 deploy-blog:
   stage: deploy
   script:
