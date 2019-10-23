@@ -82,3 +82,19 @@ Here an idea of what we want to implement:
 ![Layout idea](layout.png)
 
 Conversations will be combined in a same view when using a large screen: the list of conversations will be in a left column and the conversation will be displayed to the right.
+
+## Controls
+
+The application will be optimised to be used from a computer, a tablet or a mobile phone having the latest version of a modern web browser.
+
+Our tests will only target the latest version of Google Chrome on our devices.
+
+We will not implement specific controls for vocal assistants for planning reasons.
+
+## Licenses
+
+The JavaScript library [ReactJS](https://reactjs.org/) is licensed under [MIT License](https://github.com/facebook/react/blob/master/LICENSE).
+
+The [Roboto font](https://fonts.google.com/specimen/Roboto) is licensed under [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0.html).
+
+[Material icons](https://material.io/resources/icons) are licensed under [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0.html).
