@@ -5,6 +5,7 @@ import Homepage from './component/Homepage';
 import Login from './component/Login';
 import SignUp from './component/SignUp';
 import ConversationsList from './component/ConversationsList';
+import Credits from './component/Credits';
 import NotFound from './component/NotFound';
 
 const App: React.FC = () => {
@@ -17,6 +18,7 @@ const App: React.FC = () => {
           <Route exact path="/login" component={ Login } />
           <Route exact path="/register" component={ SignUp } />
           <Route path="/conversation/:id?" component={ ConversationsList } />
+          <Route exact path="/credits" component={ Credits } />
           <Route component={ NotFound } />
         </Switch>
       </Router>
