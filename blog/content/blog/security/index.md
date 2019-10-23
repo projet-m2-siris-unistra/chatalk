@@ -14,16 +14,18 @@ Ideas below can evolve depending on technical problems met (for example : stress
 
 - End to end encryption (no decryption on the server). We can then see 3 possibilities:
 - First possibility (hybrid encryption):
-    * When a conversation is created, the creator generates the session key with a symetric algorithm (3DES, IDEA, AES, ...). This key will be used to secure messages.
-    * Each time a new participant is added by an active member of the conversation, his public key (previously stored by the server) is sent to that member.
-    * The session key is encrypted with the receiver's public key (RSA or ElGamal), and sent to him.
-    * The receiver decrypts the symetric key with his private key and via symetric decrypting, get messages.
-    * The server would save the symetric key encrypted with the public keys of each participant (one entry per participant), in order to allow reconnection and archiving.
-    * After a given time interval (defined by the protocol), the session key will reinitialized. The server will then have to store all the encrypted session keys.
+
+  - When a conversation is created, the creator generates the session key with a symetric algorithm (3DES, IDEA, AES, ...). This key will be used to secure messages.
+  - Each time a new participant is added by an active member of the conversation, his public key (previously stored by the server) is sent to that member.
+  - The session key is encrypted with the receiver's public key (RSA or ElGamal), and sent to him.
+  - The receiver decrypts the symetric key with his private key and via symetric decrypting, get messages.
+  - The server would save the symetric key encrypted with the public keys of each participant (one entry per participant), in order to allow reconnection and archiving.
+  - After a given time interval (defined by the protocol), the session key will reinitialized. The server will then have to store all the encrypted session keys.
 
 - Second possibilty (TLS equivalent):
-    * Key exchange (Diffie-Hellman)
-    * We sign the message with asymetric keys
+
+  - Key exchange (Diffie-Hellman)
+  - We sign the message with asymetric keys
 
 - This two possibilities imply to do the implementation of the encryption algorithm by ourselves, at least partially.
 - We can use Libsodium for the symetric encryption of message. Libsodium is already used, in particular by Discord. Libsodium is also available in a lot of programming languages
@@ -32,17 +34,18 @@ Ideas below can evolve depending on technical problems met (for example : stress
 - A possibility to do that would be OTR or Signal Protocol
 
 - OTR (Off-the-Record Messaging):
-    * Protocole combining an AES symetric keys algorithm, the keys exchange protocole Diffie-Hellman and the hash fonction SHA-1
-    * OTR allows to have private conversation on multiple protocole
-    * used in particular by Jitsi
-    * available in C, Python, Java, Javascript, Go, OCaml, Objective-C, Perl
-    * Problem: there is no documentation for the last version (verson 4) exept a README. The version 3 didn't allow multi-user group chat
+
+  - Protocole combining an AES symetric keys algorithm, the keys exchange protocole Diffie-Hellman and the hash fonction SHA-1
+  - OTR allows to have private conversation on multiple protocole
+  - used in particular by Jitsi
+  - available in C, Python, Java, Javascript, Go, OCaml, Objective-C, Perl
+  - Problem: there is no documentation for the last version (verson 4) exept a README. The version 3 didn't allow multi-user group chat
 
 - Signal Protocol:
-    * used by Signal
-    * end-to-end encryption for voice calls, video calls and instant messaging conversations
-    * available in C, Java, Javascript
-    * combines the Double Ratchet algorithm, prekeys, and a triple Elliptic-curve Diffie–Hellman (3-DH) handshake, and uses Curve25519, AES-256, and HMAC-SHA256 as primitives
+  - used by Signal
+  - end-to-end encryption for voice calls, video calls and instant messaging conversations
+  - available in C, Java, Javascript
+  - combines the Double Ratchet algorithm, prekeys, and a triple Elliptic-curve Diffie–Hellman (3-DH) handshake, and uses Curve25519, AES-256, and HMAC-SHA256 as primitives
 
 ## Voice/Video
 
@@ -65,10 +68,10 @@ If it appears to be possible, we believe it would be far better to use Signal Pr
 - Privilegiated HTTPS
 - Messages on the server can not be decrypted by someone who does not have the keys, which means only the users can do it.
 - DB:
-    * Permissions and access management
-    * Encrypted data (messages)
-    * The DB will be able to be separated physically from the server. This will depend on the architecture.
-    * Externalized logs to control access
+  - Permissions and access management
+  - Encrypted data (messages)
+  - The DB will be able to be separated physically from the server. This will depend on the architecture.
+  - Externalized logs to control access
 - Encrypted exchange history
 
 ## Add-ons
