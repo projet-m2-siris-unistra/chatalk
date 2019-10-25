@@ -156,7 +156,7 @@ dns_domain: "{{ cluster_name }}"
 
 ## Container runtime
 ## docker for docker, crio for cri-o and containerd for containerd.
-container_manager: docker
+container_manager: containerd
 
 ## Settings for containerized control plane (etcd/kubelet/secrets)
 etcd_deployment_type: docker
@@ -168,7 +168,7 @@ kubeadm_control_plane: false
 kubeadm_certificate_key: "{{ lookup('password', credentials_dir + '/kubeadm_certificate_key.creds length=64 chars=hexdigits') | lower }}"
 
 # K8s image pull policy (imagePullPolicy)
-k8s_image_pull_policy: IfNotPresent
+k8s_image_pull_policy: Always
 
 # audit log for kubernetes
 kubernetes_audit: false
@@ -185,7 +185,7 @@ dynamic_kubelet_configuration_dir: "{{ kubelet_config_dir | default(default_kube
 podsecuritypolicy_enabled: false
 
 # Make a copy of kubeconfig on the host that runs Ansible in {{ inventory_dir }}/artifacts
-# kubeconfig_localhost: false
+kubeconfig_localhost: true
 # Download kubectl onto the host that runs Ansible in {{ bin_dir }}
 # kubectl_localhost: false
 

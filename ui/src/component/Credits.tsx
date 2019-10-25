@@ -248,7 +248,7 @@ const Credits: React.FC = () => {
           `}</pre>
         </li>
         <li>
-          <a href="https://material.io/resources/icons" target="_blank" rel="noopener noreferrer">Material icons</a> is licensed under <strong>Apache License 2.0</strong>
+          <a href="https://material.io/resources/icons" target="_blank" rel="noopener noreferrer">Material icons</a> are licensed under <strong>Apache License 2.0</strong>
           <pre className={ classes.pre }>{`
                                  Apache License
                            Version 2.0, January 2004

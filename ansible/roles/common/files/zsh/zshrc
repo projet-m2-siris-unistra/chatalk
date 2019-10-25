@@ -3,6 +3,7 @@ export PAGER="less"
 export EDITOR="vim"
 export LESS="-I -M -R --shift 5"
 export LANG=fr_FR.UTF-8
+export KUBECONFIG=/etc/kubernetes/admin.conf
 
 # History settings
 HISTFILE=~/.histfile
