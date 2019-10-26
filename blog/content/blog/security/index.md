@@ -63,7 +63,7 @@ If it appears to be possible, we believe it would be far better to use Signal Pr
 
 - We duplicate datas for the message and user's DB parts.
 
-## Data confindentiality
+## Data confidentiality
 
 - Privilegiated HTTPS
 - Messages on the server can not be decrypted by someone who does not have the keys, which means only the users can do it.

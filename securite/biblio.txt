@@ -25,3 +25,6 @@ https://otr.cypherpunks.ca/README-libotr-4.1.1.txt
 Signal Protocol
 https://signal.org/docs/
 https://github.com/signalapp/libsignal-protocol-javascript
+https://conference.hitb.org/hitbsecconf2017ams/materials/D2T1%20-%20Markus%20Vervier%20-%20Hunting%20for%20Vulnerabilities%20in%20Signal.pdf
+https://en.wikipedia.org/wiki/Signal_Protocol
+https://eprint.iacr.org/2016/1013.pdf
