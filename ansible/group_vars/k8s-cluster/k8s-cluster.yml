@@ -29,7 +29,7 @@ kube_image_repo: "gcr.io/google-containers"
 # Note: ensure that you've enough disk space (about 1G)
 local_release_dir: "/tmp/releases"
 # Random shifts for retrying failed ops like pushing/downloading
-retry_stagger: 5
+retry_stagger: 10
 
 # This is the group that the cert creation scripts chgrp the
 # cert files to. Not really changeable...
@@ -103,7 +103,7 @@ kube_proxy_mode: ipvs
 
 # configure arp_ignore and arp_announce to avoid answering ARP queries from kube-ipvs0 interface
 # must be set to true for MetalLB to work
-kube_proxy_strict_arp: false
+kube_proxy_strict_arp: true
 
 # A string slice of values which specify the addresses to use for NodePorts.
 # Values may be valid IP blocks (e.g. 1.2.3.0/24, 1.2.3.4/32).
@@ -146,7 +146,7 @@ coredns_k8s_external_zone: k8s_external.local
 enable_coredns_k8s_endpoint_pod_names: false
 
 # Can be docker_dns, host_resolvconf or none
-resolvconf_mode: docker_dns
+resolvconf_mode: host_resolvconf
 # Deploy netchecker app to verify DNS resolve as an HTTP service
 deploy_netchecker: false
 # Ip address of the kubernetes skydns service
@@ -159,7 +159,7 @@ dns_domain: "{{ cluster_name }}"
 container_manager: containerd
 
 ## Settings for containerized control plane (etcd/kubelet/secrets)
-etcd_deployment_type: docker
+etcd_deployment_type: host
 kubelet_deployment_type: host
 helm_deployment_type: host
 
