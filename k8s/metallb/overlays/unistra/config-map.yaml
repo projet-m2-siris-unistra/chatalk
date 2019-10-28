@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config
+data:
+  config: |
+    address-pools:
+    - name: public
+      protocol: layer2
+      addresses:
+      - 130.79.207.34/32 # Public IP address range
