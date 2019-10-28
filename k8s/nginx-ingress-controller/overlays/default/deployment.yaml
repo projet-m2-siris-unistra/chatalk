@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-ingress-controller
+  namespace: ingress-nginx
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+        - name: nginx-ingress-controller
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 80m
+              memory: 90Mi
+            limits:
+              cpu: 125m
+              memory: 120Mi
