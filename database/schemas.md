@@ -1,17 +1,6 @@
-# Schémas de base de donnée envisagés
+# Database schemas
 
 ## Tables
-
-### table
-
-*Commentaire*
-
-```
-table (champ1: type, champ2: type)
-```
-
- * `champ1` : description
- * `champ2` : description
 
 ### users
 
@@ -72,24 +61,48 @@ messages (mid: SERIAL, time: TIMESTAMPTZ, user-id: INTEGER, conv-id: INTEGER, co
  * `content` : The actual content of the message. Should accept Markdown formatting.
  * `archived` : Informs whether or not the message has been archived.
 
-## Vues
+### seen
+
+*Stores the last message seen by a user on a conversation*
+
+```
+seen (message-id: INTEGER, user-id: INTEGER, conv-id: INTEGER)
+```
+
+ * `message-id` :
+ * `user-id` :
+ * `conv-id` :
+
+## Views
 
 Written in human comprehensible pseudo-code
 
 ### archived-messages
 
+*A view of the table `messages` which only show the messages that have been archived by setting the `archived` flag to true.*
+
+`SELECT FROM messages EVERY ROW WHERE archived == true;`
+
 ```
-SELECT FROM messages EVERY ROW WHERE archived == true;
+CREATE VIEW archived-messages AS SELECT * FROM messages WHERE archived == true;
 ```
 
 ### active-messages
 
+*A view of the table `messages` which only show the messages that have not been archived by letting the `archived` flag to false.*
+
+`SELECT FROM messages EVERY ROW WHERE archived == false;`
+
 ```
-SELECT FROM messages EVERY ROW WHERE archived == false;
+CREATE VIEW active-messages AS SELECT * FROM messages WHERE archived == false;
 ```
 
 ### active-keys
 
+*A view of the table `keys` which only show the keys that have not expired.*
+
+`SELECT FROM keys EVERY ROW WHERE timeto > current_date();`
+
 ```
-SELECT FROM keys EVERY ROW WHERE timeto > current_date();
+CREATE VIEW active-keys AS SELECT * FROM keys WHERE timeto > now;
 ```
