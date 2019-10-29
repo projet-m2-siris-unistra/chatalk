@@ -19,6 +19,10 @@ Informations about the database.
 
 All manifests for Kubernetes (k8s) to deploy all applications that we need in our clusters.
 
+### mock-up
+
+Mock-ups of our application designed using Affinity Designer.
+
 ### protocoles
 
 Specifications about our protocols.
