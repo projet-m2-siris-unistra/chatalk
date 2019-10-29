@@ -25,9 +25,8 @@ We are implementing hybrid encryption
 
 For voice and video, we will use ZRTP, and more specifically the GNU implementation
 
-- ZRTP has been "invented" by Phil Zimmermann, also known for PGP. ZRTP is defined in rfc6189 (<https://tools.ietf.org/html/rfc6189>
-)
-- GNU ZRTP is published under general GNU public licence <https://www.gnu.org/licenses/lgpl-3.0.fr.html>
+- ZRTP has been "invented" by Phil Zimmermann, also known for PGP. ZRTP is defined in [RFC6189](https://tools.ietf.org/html/rfc6189)
+- GNU ZRTP is published under general [GNU public licence](https://www.gnu.org/licenses/lgpl-3.0.fr.html)
 - It's a C++ implentation, but it exists a C wrapper and a linked Java implementation : <https://www.gnu.org/software/ccrtp/zrtp.html>, <https://github.com/wernerd/ZRTPCPP>
 - GNU ZRTP is a mix between ZRTP, which does authentification, key exchange and SRTP for encryption.
 - ZRTP usage:
