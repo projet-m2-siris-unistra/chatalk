@@ -36,7 +36,7 @@ Le fonctionnement du protocole signal est le suivant:
 - pair malicieux, qui pourrait commetre des attaques de type Unknown key-share attack
 - failles dans le code tier
 
-Ces risquent seront toujours présents quoi que l'on fasse, ces problèmes relèvent de la sécurisation de l'infrastructure et de nos choix quant aux librairies utilisées.
+Ces risques seront toujours présents quoi que l'on fasse, ces problèmes relèvent de la sécurisation de l'infrastructure et de nos choix quant aux librairies utilisées.
 
 #### Licence
 
