@@ -36,7 +36,7 @@ Client -( Key )-> Server
   Send public
 Server -( Key )-> Client
   Send encrypted common key
-  
+
 Client -( Profile Management )-> Server
   Change avatar
   Change username
@@ -80,6 +80,6 @@ Message
 
 
 Mécanisme de keep alive, serveur -> au client toutes les X secondes et le client peut request si changement d'ip
-      Ceci implique  que ces données (userID, convID, etc soient chiffrées avec la/les clé(s) plublique(s) du user 
-      
+      Ceci implique  que ces données (userID, convID, etc soient chiffrées avec la/les clé(s) plublique(s) du user
+
 ------------------------------------------------------------------------------------------------------
