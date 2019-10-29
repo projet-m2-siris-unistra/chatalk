@@ -42,14 +42,29 @@ This page layout will be used for these pages:
 
 ## Conversations
 
-The desktop version always display the list of conversations and a conversation, which is two distincts things on the mobile version.
-By default, it will open the most recent conversation.
+### Mobile views
 
 ![Mobile view for conversations list](mobile_conversations.png)
 
 ![Mobile view for one conversation](mobile_conversation.png)
 
+### Desktop view
+
 ![Desktop view for conversations](desktop_conversations.png)
+
+### Details
+
+The desktop version always display the list of conversations and a conversation, which is two distincts things on the mobile version.
+By default, it will open the most recent conversation.
+
+The search bar lets the user find a conversation or person.
+
+Friends will be listed firts in the persons list.
+
+The "info" icon on a conversation has for the moment an unspecified behavior.
+It will probably allow the user to rename a conversation, update the avatar and/or just display some informations about the conversation depending the time we have.
+
+If we have time, we can implement an emoji-picker, a file uploader and so kind of features.
 
 ## Settings
 
