@@ -7,44 +7,45 @@
 *Contains the informations for every user of the ChaTalK service, except the conversations to which they participate which are stored in the `keys` table.*
 
 ```
-users (user-id: SERIAL, username: VARCHAR(255), pw-hash: VARCHAR(255), pubkey: VARCHAR(1024), email: VARCHAR(255), disp-name: VARCHAR(255), pic-url: VARCHAR(64))
+users (user-id: SERIAL, username: VARCHAR(255), pw-hash: VARCHAR(255), pubkey: VARCHAR(1024), email: VARCHAR(255), disp-name: VARCHAR(255), status-msg: VARCHAR(512), pic-url: VARCHAR(64))
 ```
 
- * `user-id` ( *SERIAL is an auto-incrementing non-null INTEGER* ) :
- * `username` :
- * `pw-hash` :
- * `pubkey` :
- * `email` :
- * `disp-name` :
- * `pic-url` :
+ * `user-id` ( *SERIAL is an auto-incrementing non-null INTEGER* ) : The User ID is a unique number set at the user creation, which allows to identify it amongst others and link it to other tables.
+ * `username` : The username is the login name and the unique name of the user.
+ * `pw-hash` : The hashed sum of the password of the user.
+ * `pubkey` : The public RSA key set up by the user.
+ * `email` : The recovery e-mail address of the user.
+ * `disp-name` : The displayed name of the user.
+ * `status-msg` : The customized status message of the user.
+ * `pic-url` : The URL of the profile picture of the user.
 
 ### conversations
 
 *Table containing every chat room in the ChaTalK server and relevant informations, except participating users and corresponding keys which are both stored in the `keys` table.*
 
 ```
-conversations (conv-id: SERIAL, convname: VARCHAR(255), pic-url: VARCHAR(64), archived: BOOLEAN)
+conversations (conv-id: SERIAL, convname: VARCHAR(255), topic: VARCHAR(512), pic-url: VARCHAR(64), archived: BOOLEAN)
 ```
 
- * `conv-id` ( *SERIAL is an auto-incrementing non-null INTEGER* ) :
- * `convname` :
- * `pic-url` :
- * `archived` :
+ * `conv-id` ( *SERIAL is an auto-incrementing non-null INTEGER* ) : The Conversation ID is a unique number set at the conversation creation, which allows to identify it amongst others and link it to other tables.
+ * `convname` : The name of the conversation.
+ * `topic` : The customized topic of the conversation.
+ * `pic-url` : The URL of the conversation picture.
+ * `archived` : The status of the conversation : `false` is active, `true` is archived.
 
 ### keys
 
 *Stores the conversations to which a user participates and the corresponding shared keys used.*
 
 ```
-keys (kid: SERIAL, user-id: INTEGER, conv-id: INTEGER, timefrom: TIMESTAMP, timeto: TIMESTAMP, shared-key: VARCHAR(1024))
+keys (user-id: INTEGER, conv-id: INTEGER, timefrom: TIMESTAMP, timeto: TIMESTAMP, shared-key: VARCHAR(1024))
 ```
 
- * `kid` :
- * `user-id` :
- * `conv-id` :
- * `timefrom` :
- * `timeto` :
- * `shared-key` :
+ * `user-id` : The User ID to identify which user the key corresponds to and which conversations the user belongs to.
+ * `conv-id` : The Conversation ID to know which conversation the users and the key belongs to.
+ * `timefrom` : The time stamp when the key started being in use.
+ * `timeto` : The time stamp when the key stopped or will stop being in use.
+ * `shared-key` : The shared conversation key for that time period, encrypted with the public key of the user identified by `user-id`.
 
 ### messages
 
@@ -59,19 +60,18 @@ messages (mid: SERIAL, time: TIMESTAMPTZ, user-id: INTEGER, conv-id: INTEGER, co
  * `user-id` : User ID tells us which user sent the message.
  * `conv-id` : Conversation ID tells us in which conversation the message was sent.
  * `content` : The actual content of the message. Should accept Markdown formatting.
- * `archived` : Informs whether or not the message has been archived.
+ * `archived` : The status of the message : `false` is active, `true` is archived.
 
 ### seen
 
-*Stores the last message seen by a user on a conversation*
+*Stores the last messages seen by a user. There will be several messages per user, one for each conversation.*
 
 ```
-seen (message-id: INTEGER, user-id: INTEGER, conv-id: INTEGER)
+seen (message-id: INTEGER, user-id: INTEGER)
 ```
 
- * `message-id` :
- * `user-id` :
- * `conv-id` :
+ * `message-id` : The Message ID of the last message seen by the user identified by `user-id`.
+ * `user-id` : The User ID of the user that has seen the message.
 
 ## Views
 
@@ -79,7 +79,7 @@ Written in human comprehensible pseudo-code
 
 ### archived-messages
 
-*A view of the table `messages` which only show the messages that have been archived by setting the `archived` flag to true.*
+*A view of the table `messages` which only shows the messages that have been archived by setting the `archived` flag to true.*
 
 `SELECT FROM messages EVERY ROW WHERE archived == true;`
 
@@ -89,7 +89,7 @@ CREATE VIEW archived-messages AS SELECT * FROM messages WHERE archived == true;
 
 ### active-messages
 
-*A view of the table `messages` which only show the messages that have not been archived by letting the `archived` flag to false.*
+*A view of the table `messages` which only shows the messages that have not been archived by letting the `archived` flag to false.*
 
 `SELECT FROM messages EVERY ROW WHERE archived == false;`
 
@@ -99,10 +99,18 @@ CREATE VIEW active-messages AS SELECT * FROM messages WHERE archived == false;
 
 ### active-keys
 
-*A view of the table `keys` which only show the keys that have not expired.*
+*A view of the table `keys` which only shows the keys that have not expired.*
 
 `SELECT FROM keys EVERY ROW WHERE timeto > current_date();`
 
 ```
 CREATE VIEW active-keys AS SELECT * FROM keys WHERE timeto > now;
+```
+
+### recent-messages
+
+*A view of the table `messages` which only shows the messages sent today or yesterday in a conversation.*
+
+```
+CREATE VIEW recent-messages AS SELECT * FROM messages WHERE time > yesterday;
 ```
