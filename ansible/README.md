@@ -65,6 +65,12 @@ Run the whole playbook using the following command:
 ansible-playbook -i hosts.ini site.yaml --become
 ```
 
+To run the Kubespray playbook:
+
+```sh
+ansible-playbook -i hosts.ini site.yaml --become --tags k8s
+```
+
 
 # Get the Kubernetes configuration file
 

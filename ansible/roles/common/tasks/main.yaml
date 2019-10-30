@@ -22,26 +22,45 @@
 - name: update apt cache
   apt:
     update_cache: yes
-    cache_valid_time: 300 # 5 minutes
+    cache_valid_time: 1500 # 15 minutes
+  tags:
+    - first-run
 
 - name: upgrade packages
   apt:
     upgrade: yes
+  tags:
+    - first-run
 
 - name: install required packages
   apt:
     pkg:
       - aptitude
+      - apt-transport-https
+      - ca-certificates
       - curl
       - git
+      - gnupg-agent
       - htop
+      - software-properties-common
       - vim
       - zsh
+  tags:
+    - first-run
 
 - name: set zsh as default shell for user {{ ansible_user }}
   user:
     name: '{{ ansible_user }}'
     shell: /usr/bin/zsh
+  tags:
+    - first-run
+
+- name: set zsh as default shell for user root
+  user:
+    name: root
+    shell: /usr/bin/zsh
+  tags:
+    - first-run
 
 - name: copy zsh config files
   copy:
@@ -49,3 +68,16 @@
     dest: '/etc/zsh/{{ item.path }}'
   with_filetree: zsh/
   when: item.state == 'file'
+  tags:
+    - first-run
+
+- name: set default value for Kubespray import
+  set_fact:
+    import_kubespray: "false"
+  tags:
+    - first-run
+
+- name: enable Kubespray import
+  set_fact:
+    import_kubespray: "yes"
+  tags: [ never, k8s ]

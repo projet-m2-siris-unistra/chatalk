@@ -1,0 +1,19 @@
+- name: add Docker GPG apt Key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: add Docker Repository
+  apt_repository:
+    repo: deb https://download.docker.com/linux/ubuntu bionic stable
+    state: present
+
+- name: update apt cache
+  apt:
+    update_cache: yes
+
+- name: install docker and docker-compose
+  apt:
+    pkg:
+      - docker-ce
+      - docker-compose

@@ -1,6 +1,34 @@
 ---
+# run all common tasks
 - hosts: all
   become: yes
   roles:
     - common
+
+# decide if it should run the Kubespray playbook by setting a fact
+- hosts: all,localhost
+  gather_facts: no
+  run_once: True
+  tasks:
+    - set_fact:
+        run_kubespray: "false"
+      delegate_to: localhost
+      delegate_facts: yes
+      tags:
+        - first-run
+
+    - set_fact:
+        run_kubespray: "true"
+      delegate_to: localhost
+      delegate_facts: yes
+      tags: [ never, k8s ]
+
+# import Kubespray playbook
 - import_playbook: kubespray/cluster.yml
+  when: hostvars.localhost.run_kubespray
+
+# run tasks for dumas
+- hosts: dumas
+  become: yes
+  roles:
+    - dumas
