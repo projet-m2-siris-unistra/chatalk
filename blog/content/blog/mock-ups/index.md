@@ -126,7 +126,7 @@ If we have time, we can implement an emoji-picker, a file uploader and so kind o
 
 ## Settings
 
-In this page members can to modify info member and device :
+In this page members can to modify info member and device, it contains :
 
 - Fields to change your display name,username,email and password.
 - Two Buttons dropdowns that allows you to choose your input device and output device for communications.
