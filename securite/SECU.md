@@ -30,6 +30,11 @@ Le fonctionnement du protocole signal est le suivant:
 - lorsque plus de deux appareils sont impliqués, on utilise l'algorithme Sesame (en plus des deux précédents)
 - pour les appels vocaux/videos, le chiffrement repose sur SRTP et l'authentification sur un équivalent maison à ZRTP
 
+Exemples d'utilisation:
+
+- <https://github.com/akash4393/libsignal-javascript-example>
+- <https://github.com/shaljam/libsignal-protocol-javascript-example>
+
 #### Surface d'attaque
 
 - serveur compromis, cela pourrait permettre de saboter les PreKeys (voir plus bas)
