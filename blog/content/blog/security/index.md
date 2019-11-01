@@ -40,7 +40,7 @@ For voice and video, we will use ZRTP, and more specifically the GNU implementat
   - how to generate keys
 - GNU ZRTP documentation is precise and well furnished
 
-#### Pro-Contra
+### Pro-Contra
 
 - no problems with :
   - documentation

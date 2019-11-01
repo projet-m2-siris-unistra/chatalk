@@ -76,7 +76,7 @@ On fait du chiffrement hybride:
 Pour la voix et la video, on utiliserait ZRTP et plus particulièrement l'implémentation GNU
 
 - ZRTP a été "inventé" par Phil Zimmermann, aussi connu pour PGP, ZRTP est défini dans <https://tools.ietf.org/html/rfc6189>
-- GNU ZRTP est publié sous Licence publique générale GNU amoindrie <https://www.gnu.org/licenses/lgpl-3.0.fr.html>
+- GNU ZRTP est une implémentation de ZRTP publiée sous Licence publique générale GNU amoindrie <https://www.gnu.org/licenses/lgpl-3.0.fr.html>
 - c'est une implémentation en C++, mais il existe un wrapper en C et une implémentation en Java liées: <https://www.gnu.org/software/ccrtp/zrtp.html>, <https://github.com/wernerd/ZRTPCPP>
 - GNU ZRTP est un mélange entre ZRTP (Zimmermann Real-time Transport Protocol), qui assure l'authentification et l'échange des clés, et SRTP (Secure Real-time Transport Protocol) pour le chiffrement
 - ZRTP:
@@ -89,6 +89,7 @@ Pour la voix et la video, on utiliserait ZRTP et plus particulièrement l'implé
   - quel algorithme de chiffrement utiliser
   - comment générer les clés
 - La doc de GNU ZRTP est précise et bien fournie
+- Il existe aussi une implémentation en Python: <https://github.com/Orange-OpenSource/pyzrtp>, publiée sous licence BSD 3-Clause "New" or "Revised"
 
 #### Pro-Contra
 
@@ -102,5 +103,11 @@ Mais:
 
 - nécessité d'implémenter le chiffrement des messages nous même (on doit pouvoir s'aider de librairies déjà existantes)
 - problème du langage (pas d'implémentation en Javascript)
+- ZRTP pas supporté par les navigateurs
 
-Avi personnel: partir sur le choix 2, on en sera quitte pour programmer un wrapper, et l'implémentation du chiffrement des messages devrait être facilité par l'utilisation de librairies (Bouncy Castle est très complète, mais il y en a d'autres: <https://en.wikipedia.org/wiki/Comparison_of_cryptography_libraries>)
+### Piste envisagée
+
+- Partir sur le choix 2, on en sera quitte pour programmer un wrapper, et l'implémentation du chiffrement des messages devrait être facilité par l'utilisation de librairies (Bouncy Castle me semble très complète, mais il y en a d'autres: <https://en.wikipedia.org/wiki/Comparison_of_cryptography_libraries>)
+- En revanche, en ce qui concerne le chiffrement de la voix/video, il y a un problème: ZRTP n'est pas implémenté dans les navigateurs: <https://tools.ietf.org/html/draft-ietf-rtcweb-security-12>
+- Des solutions ont été cherchée, mais sans résultat pour le moment: <https://tools.ietf.org/html/draft-johnston-rtcweb-zrtp-02>, <https://webrtchacks.com/webrtc-and-man-in-the-middle-attacks/>
+- Du coup, client web avec seulement DTLS-SRTP, vulnérable aux attaques (Man-in-the-Middle) et éventuellement client lourd sécurisé?
