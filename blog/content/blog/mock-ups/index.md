@@ -10,8 +10,6 @@ They use all aspects we defined in the [Graphic Charter](/graphic-charter/) last
 
 In this section we will describe each pages, what it contains and the link between pages.
 
-
-
 ## Sign In (Home page when logged off)
 
 This page contains :
@@ -27,8 +25,11 @@ This page contains :
   - "Credits" will bring us to Terms page.
 
 ### Mobile view of Sign In page
+
 ![Mobile view for the login page](mobile_login.png)
+
 ### Desktop view of Sign In page
+
 ![Desktop view for the login page](desktop_login.png)
 
 ## Sign Up
@@ -39,14 +40,16 @@ This page will be use to create an account, it contains :
 - One checkbox "I accept the Terms of Use".
 - One button Sign Up to validate the registration.
 - Six hypertext links
-  - "Terms of Use","Privacy Policy" and "Credits" bring us to Terms page.
+  - "Terms of Use", "Privacy Policy" and "Credits" bring us to Terms page.
   - "Status" and "Blog" are the same as the Sign In page.
   - "Already have an account..." goes back to Sign In page.
 
 ### Mobile view of Sign Up page
+
 ![Mobile view for the registration page](mobile_register.png)
 
 ### Desktop view of Sign Up page
+
 ![Desktop view for the registration page](desktop_register.png)
 
 ## Password lost
@@ -60,9 +63,11 @@ This page is here for members who lost their password, it contains :
   - "Status", "Blog" and "Credits" are the same as Sign In page.
 
 ### Mobile view of Password lost page
+
 ![Mobile view for the password lost page](mobile_password_lost.png)
 
 ### Desktop view of Password lost page
+
 ![Desktop view for the password lost page](desktop_password_lost.png)
 
 ## Terms
@@ -89,15 +94,16 @@ This page will be used to disccuss with other members,it contains :
 - A fields to write some text and a send button to send the message.
 - A few buttons represented by icons.
   - Those buttons can start and stop a video conversation :
-![videocam](videocam.png)
+    ![videocam](videocam.png)
   - Those ones can start and stop an audio conversation :
-![call](call.png)
+    ![call](call.png)
   - This one allows the member to add another member as friend.
-![addFriends](AddFriend.png)
+    ![addFriends](AddFriend.png)
   - And this one allows you to access to the setting page.
-![setting](setting.png)
+    ![setting](setting.png)
 
 ### Mobile views of Conversations page
+
 ![Mobile view for conversations list](mobile_conversations.png)
 
 ![Mobile view for one conversation](mobile_conversation.png)
@@ -136,7 +142,9 @@ In this page members can to modify info member and device, it contains :
   - "Status", "Blog" and "Credits" are the same as Sign In page.
 
 ### Mobile views of Settings page
+
 ![Mobile view for the settings page](mobile_settings.png)
 
 ### Desktop view of Settings page
+
 ![Desktop view for the settings page](desktop_settings.png)
