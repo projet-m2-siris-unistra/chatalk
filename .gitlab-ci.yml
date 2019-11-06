@@ -14,6 +14,9 @@ cache:
 # UI part
 test-ui:
   stage: test
+  tags:
+    - docker
+    - socket
   script:
     - cd ui/
     - npm ci
@@ -25,6 +28,9 @@ test-ui:
 
 deploy-ui:
   stage: deploy
+  tags:
+    - docker
+    - socket
   script:
     - cd ui/
     - npm ci
@@ -44,6 +50,9 @@ deploy-ui:
 # Blog part
 test-blog:
   stage: test
+  tags:
+    - docker
+    - socket
   script:
     - cd blog/
     - npm ci
@@ -55,6 +64,9 @@ test-blog:
 
 deploy-blog:
   stage: deploy
+  tags:
+    - docker
+    - socket
   script:
     - cd blog/
     - npm ci
