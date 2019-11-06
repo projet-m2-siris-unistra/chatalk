@@ -12,8 +12,38 @@
   apt:
     update_cache: yes
 
-- name: install docker and docker-compose
+- name: install docker and gitlab-runner
   apt:
     pkg:
       - docker-ce
-      - docker-compose
+      - gitlab-runner
+
+- name: unregister all previously used GitLab runners
+  shell: gitlab-runner unregister --all-runners
+
+- name: add gitlab-runner user to docker group
+  user:
+    name: gitlab-runner
+    groups: docker
+    append: yes
+  become: true
+
+- name: register GitLab runners using Docker executor for Docker socket binding
+  shell: "gitlab-runner register --non-interactive --url '{{ gitlab_url }}' --registration-token '{{ gitlab_runner_registration_token }}' --description 'docker-socket-runner-{{ item }}' --executor docker --docker-image 'docker:stable' --docker-volumes /var/run/docker.sock:/var/run/docker.sock --tag-list docker,socket"
+  loop: "{{ range(1,gitlab_runner_count + 1)|list }}"
+
+- name: set concurrent number of runners in gitlab-runner config
+  ini_file:
+    path: /etc/gitlab-runner/config.toml
+    section:
+    option: concurrent
+    value: "{{ gitlab_runner_count }}"
+
+- name: Retrieve all registered GitLab runners
+  shell: gitlab-runner list
+  register: runner_result
+
+- name: show all registered GitLab runners
+  debug:
+    msg:
+      - "{{runner_result.stderr_lines}}"
