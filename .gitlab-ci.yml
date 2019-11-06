@@ -5,6 +5,12 @@ stages:
   - build
   - deploy
 
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+  - blog/node_modules/
+  - ui/node_modules/
+
 # UI part
 test-ui:
   stage: test
