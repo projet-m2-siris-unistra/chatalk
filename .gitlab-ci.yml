@@ -64,6 +64,7 @@ test-blog:
 
 deploy-blog:
   stage: deploy
+  image: ludovicm67/node-libglu1
   tags:
     - docker
     - socket
