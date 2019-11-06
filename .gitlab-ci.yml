@@ -1,4 +1,4 @@
-image: node:latest
+image: node:lts-alpine
 
 stages:
   - test
@@ -9,7 +9,6 @@ cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
   - blog/node_modules/
-  - ui/node_modules/
 
 # UI part
 test-ui:
@@ -50,12 +49,13 @@ deploy-ui:
 # Blog part
 test-blog:
   stage: test
+  image: ludovicm67/node-libglu1
   tags:
     - docker
     - socket
   script:
     - cd blog/
-    - npm ci
+    - npm install
     - npm run format-check
   only:
     changes:
