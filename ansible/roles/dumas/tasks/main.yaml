@@ -8,6 +8,9 @@
     repo: deb https://download.docker.com/linux/ubuntu bionic stable
     state: present
 
+- name: add the GitLab runner package repository
+  shell: "curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh | sudo bash"
+
 - name: update apt cache
   apt:
     update_cache: yes
