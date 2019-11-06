@@ -16,14 +16,14 @@ On fait du chiffrement hybride:
 - Le serveur sauvegarderait les clés de sessions chiffrées avec les clés publiques des participants (il y aurait donc une entrée par participant), ceci afin de permettre les dé/reconnection et l'archivage
 - Après un interval de temps donné (défini dans le protocol), la clé de session sera réinitialisée. Ceci implique que le serveur devra sauvegarder toutes ces clé (chiffrées)
 - La légitimité est garantie par la fait que les clés publiques sont enregistrées sur le serveur de
--  La librairie Bouncy Castle me semble très complète, mais il y en a d'autres: <https://en.wikipedia.org/wiki/Comparison_of_cryptography_libraries>
+-  La librairie Bouncy Castle me semble très complète (licence MIT), mais il y en a d'autres (entre autre sous licence GNU): <https://en.wikipedia.org/wiki/Comparison_of_cryptography_libraries> (En JS ?!)
 - Longueur des clés par défaut: AES -> 128 bits, RSA -> 1024 bits
 
 ## Voix/Video
 
-- SRTP est un profile de sécurié qui ajoute de la confidentialité, l'authentification des messages, et une protection contre les replay à RTP:
-  - quelle partie du paquet doit être encodée
-  - quelle partie du paquet doit être authentifiée afin de se prémunir des manipulations
-  - quel algorithme de chiffrement utiliser
-  - comment générer les clés
+- SRTP est un profil de sécurié qui ajoute de la confidentialité, l'authentification des messages, et une protection contre les replay à RTP (Real-Time Protocol):
+  - la RFC : <https://tools.ietf.org/html/rfc3711>
+  - utilise AES par défaut (128 bits)
+  - toutes les features sont optionnelles dans SRTP (de base, SRTP = RTP), elles doivent donc être activée (c'est à ça que sert ZRTP...)
+  - Note: WebRTC utilise SRTP par défaut
 - Couplage avec SIP-TLS? (à l'air recommandé, à creuser)
