@@ -93,7 +93,7 @@ Pour la voix et la video, on utiliserait ZRTP et plus particulièrement l'implé
   - Phase 1: découverte (les pairs supportent-ils ZRTP?)
   - Phase 2: échange des clés (basé sur Diffie-Hellman, plus éventuellement d'autres secrets afin de se prémunir contre les attaques de l'homme au milieu) pour générer une clé de session
   - Phase 3: passage à SRTP
-- SRTP (pas à proprement parler un protocole, plutôt une specification) défini;
+- SRTP est un profile de sécurié qui ajoute de la confidentialité, l'authentification des messages, et une protection contre les replay à RTP:
   - quelle partie du paquet doit être encodée
   - quelle partie du paquet doit être authentifiée afin de se prémunir des manipulations
   - quel algorithme de chiffrement utiliser
