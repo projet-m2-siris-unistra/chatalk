@@ -1,6 +1,6 @@
 # La sécurité dans ChaTalK
 
-## Authentification:
+## Authentification
 
 - On stocke les clés publiques des utilisateurs sur le serveur
 - Pour s'inscrire/s'authentifier (la première fois, lors de la création de compte, afin d'être sûr que la clé public est légitime), on peut utiliser quelque chose comme TLS, l'important étant de se garantir contre une attaque de l'homme au milieu
@@ -15,8 +15,8 @@ On fait du chiffrement hybride:
 - Le nouvel arrivant déchiffre la clé de session grâce à sa clé privée, puis il peut participer à la conversation
 - Le serveur sauvegarderait les clés de sessions chiffrées avec les clés publiques des participants (il y aurait donc une entrée par participant), ceci afin de permettre les dé/reconnection et l'archivage
 - Après un interval de temps donné (défini dans le protocol), la clé de session sera réinitialisée. Ceci implique que le serveur devra sauvegarder toutes ces clé (chiffrées)
-- La légitimité est garantie par la fait que les clés publiques sont enregistrées sur le serveur de
--  La librairie Bouncy Castle me semble très complète (licence MIT), mais il y en a d'autres (entre autre sous licence GNU): <https://en.wikipedia.org/wiki/Comparison_of_cryptography_libraries> (En JS ?!)
+- La légitimité est garantie par la fait que les clés publiques sont enregistrées sur le serveur
+- La librairie Bouncy Castle me semble très complète (licence MIT), mais il y en a d'autres (entre autre sous licence GNU): <https://en.wikipedia.org/wiki/Comparison_of_cryptography_libraries> (En JS ?!)
 - Longueur des clés par défaut: AES -> 256 bits, RSA -> 3072 bits
 
 ## Voix/Video
