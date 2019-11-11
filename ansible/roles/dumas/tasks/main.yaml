@@ -11,6 +11,14 @@
 - name: add the GitLab runner package repository
   shell: "curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh | sudo bash"
 
+- name: add apt repositories
+  apt_repository:
+    repo: '{{ item }}'
+  with_items:
+    - ppa:certbot/certbot
+    - ppa:nginx/stable
+    - deb http://archive.ubuntu.com/ubuntu/ bionic universe
+
 - name: update apt cache
   apt:
     update_cache: yes
@@ -18,8 +26,12 @@
 - name: install docker and gitlab-runner
   apt:
     pkg:
+      - certbot
       - docker-ce
       - gitlab-runner
+      - nginx
+      - python3-certbot-dns-cloudflare
+      - software-properties-common
 
 - name: unregister all previously used GitLab runners
   shell: gitlab-runner unregister --all-runners
