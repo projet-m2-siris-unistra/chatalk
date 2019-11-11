@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:12-alpine
+    environment:
+      - POSTGRES_USER=chatalk
+      - POSTGRES_PASSWORD=chatalk
+
+  db-migrations:
+    build: db-migrations/
+    command:
+      - -database=postgres://chatalk:chatalk@db/chatalk?sslmode=disable
+      - up
+    depends_on:
+      - db
+
+  bus:
+    image: nats-streaming
+    command:
+      - --cluster_id=chatalk
+      - --http_port=8222
+    ports:
+      - 8222:8222
+
+  register:
+    build: register/
+    depends_on:
+      - bus
+      - db-migrations
+    environment:
+      - NATS_URL=nats://bus:4222
+      - NATS_CLUSTER_ID=chatalk
