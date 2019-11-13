@@ -42,3 +42,8 @@ services:
     environment:
       - NATS_URL=nats://bus:4222
       - NATS_CLUSTER_ID=chatalk
+      - DB_HOST=db
+      - DB_DB=chatalk
+      - DB_USER=chatalk
+      - DB_PASS=chatalk
+      - DB_MODE=disable

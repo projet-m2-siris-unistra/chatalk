@@ -13,10 +13,8 @@ import (
 	stan "github.com/nats-io/stan.go"
 )
 
-var natsURL = getEnv("NATS_URL", "nats://localhost:4222")
-var clusterID = getEnv("NATS_CLUSTER_ID", "nats-cluster")
-var clientID = uuid.New().String()
-var stanConnection stan.Conn
+var nc *nats.Conn
+var sc stan.Conn
 
 // get environment variable, if not found will be set to `fallback` value
 func getEnv(key, fallback string) string {
@@ -51,15 +49,19 @@ func handleWS(w http.ResponseWriter, r *http.Request) {
 		log.Print("upgrade: ", wsID, " -- ", err)
 	}
 
-	sub, _ := stanConnection.Subscribe(wsID, func(m *stan.Msg) {
-		log.Printf("Received a message: %s\n", string(m.Data))
+	// send data back to the websocket
+	subWsSend, _ := nc.Subscribe("ws."+wsID+".send", func(m *nats.Msg) {
+		err = c.WriteMessage(websocket.TextMessage, m.Data)
+		if err != nil {
+			log.Print("subWsSend/write: ", wsID, " -- ", err)
+		}
 	})
 
+	defer subWsSend.Unsubscribe()
 	defer c.Close()
-	defer sub.Unsubscribe()
 
 	for {
-		mt, message, err := c.ReadMessage()
+		_, message, err := c.ReadMessage()
 		if err != nil {
 			log.Print("read: ", wsID, " -- ", err)
 			break
@@ -68,42 +70,66 @@ func handleWS(w http.ResponseWriter, r *http.Request) {
 
 		// parse JSON receved message
 		var j map[string]interface{}
-		json.Unmarshal([]byte(message), &j)
+		err = json.Unmarshal([]byte(message), &j)
+		if err != nil {
+			log.Print("error while decoding JSON: ", err)
+			break
+		}
+
 		if action, ok := j["action"].(string); ok {
 			if isValidServiceName(action) {
-				channelName := fmt.Sprintf("service-%s", action)
-				stanConnection.Publish(channelName, []byte(message)) // does not return until an ack has been received from NATS Streaming
+				j["ws-id"] = wsID
+				msg, err := json.Marshal(j)
+				if err != nil {
+					log.Print("error while encoding JSON: ", err)
+					break
+				}
+				channelName := fmt.Sprintf("service.%s", action)
+				// does not return until an ack has been received from NATS Streaming
+				sc.Publish(channelName, []byte(msg))
 			} else {
 				log.Printf("Service '%s' is not valid (#%s)", action, wsID)
 			}
 		} else {
 			log.Printf("unable to get action (#%s)", wsID)
 		}
-
-		err = c.WriteMessage(mt, message)
-		if err != nil {
-			log.Print("write: ", wsID, " -- ", err)
-			break
-		}
 	}
 
 	log.Printf("Websocket connection closed (#%s)", wsID)
 }
 
+func initBus(natsURL, clusterID, clientID string) error {
+	var err error
+	nc, err = nats.Connect(natsURL)
+	if err != nil {
+		return err
+	}
+	sc, err = stan.Connect(clusterID, clientID, stan.NatsConn(nc))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func closeBus() {
+	sc.Close()
+	nc.Close()
+}
+
 func main() {
 	log.Println("Entrypoint service started…")
-	nc, err := nats.Connect(natsURL)
-	if err != nil {
-		log.Fatal(err)
-	}
-	sc, err := stan.Connect(clusterID, clientID, stan.NatsConn(nc))
-	if err != nil {
-		log.Fatal(err)
-	}
-	stanConnection = sc
 
-	defer stanConnection.Close()
-	defer nc.Close()
+	// fetch env
+	natsURL := getEnv("NATS_URL", "nats://localhost:4222")
+	clusterID := getEnv("NATS_CLUSTER_ID", "nats-cluster")
+	clientID := uuid.New().String()
+
+	err := initBus(natsURL, clusterID, clientID)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer closeBus()
 
 	http.HandleFunc("/", handleWS)
 	log.Fatal(http.ListenAndServe(":42042", nil))

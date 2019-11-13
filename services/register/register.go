@@ -2,16 +2,35 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
-	"time"
+	"os/signal"
+	"syscall"
 
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
 	nats "github.com/nats-io/nats.go"
 	stan "github.com/nats-io/stan.go"
+	"golang.org/x/crypto/bcrypt"
 )
+
+type registerRequest struct {
+	Action  string `json:"action"`
+	WsID    string `json:"ws-id"`
+	Payload struct {
+		Username             string `json:"username"`
+		Email                string `json:"email"`
+		Password             string `json:"password"`
+		PasswordConfirmation string `json:"password-confirmation"`
+	} `json:"payload"`
+}
+
+type registerResponse struct {
+	Message string `json:"message,omitempty"`
+	Error   error  `json:"error,omitempty"`
+}
 
 // get environment variable, if not found will be set to `fallback` value
 func getEnv(key, fallback string) string {
@@ -40,8 +59,8 @@ func dbConnect() *sql.DB {
 
 func main() {
 	log.Println("Register service started…")
-	channelName := "service-register"
-	// db := dbConnect()
+	channelName := "service.register"
+	db := dbConnect()
 
 	natsURL := getEnv("NATS_URL", "nats://localhost:4222")
 	clusterID := getEnv("NATS_CLUSTER_ID", "nats-cluster")
@@ -56,19 +75,52 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Simple Async Subscriber
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
+
 	sub, _ := sc.Subscribe(channelName, func(m *stan.Msg) {
-		fmt.Printf("Received a message: %s\n", string(m.Data))
+		log.Println("register service is handling a new request")
+		var msg registerRequest
+		err := json.Unmarshal(m.Data, &msg)
+		if err != nil {
+			log.Print("failed to parse JSON", err)
+			return
+		}
+
+		var response registerResponse
+
+		if msg.Payload.Password != msg.Payload.PasswordConfirmation {
+			response = registerResponse{
+				Message: "Both password fields do not match",
+			}
+		} else {
+			var userID int
+			hash, err := bcrypt.GenerateFromPassword([]byte(msg.Payload.Password), 14)
+			if err != nil {
+				log.Print("failed to hash password", err)
+				return
+			}
+
+			err = db.QueryRow(`
+				INSERT INTO users(username, email, password)
+				VALUES($1, $2, $3)
+				RETURNING user_id;
+			`, msg.Payload.Username, msg.Payload.Email, hash).Scan(&userID)
+
+			message := fmt.Sprintf("User ID is: %s", userID)
+
+			response = registerResponse{
+				Message: message,
+				Error:   err,
+			}
+		}
+
+		j, err := json.Marshal(response)
+		nc.Publish("ws."+msg.WsID+".send", j)
 	})
 
-	// Simple Synchronous Publisher
-	sc.Publish(channelName, []byte("Hello World")) // does not return until an ack has been received from NATS Streaming
+	<-c
 
-	time.Sleep(15 * time.Second)
-
-	// Unsubscribe
 	sub.Unsubscribe()
-
-	// Close connection
 	sc.Close()
 }

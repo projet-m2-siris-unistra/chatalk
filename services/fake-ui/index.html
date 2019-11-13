@@ -42,6 +42,9 @@
         max-width: 1000px;
         margin: auto;
       }
+      code {
+        display: block;
+      }
     </style>
   </head>
   <body>
@@ -82,6 +85,10 @@
           <input id="password_confirmation" name="password_confirmation" type="password" required>
         </label>
         <button type="button" id="exec_register">Execute</button>
+        <h2>Logs</h2>
+        <p>Here are answers got from the websocket.</p>
+        <p>Open the web console (F12) to get more detailled informations.</p>
+        <div id="answers"></div>
       </section>
     </div>
     <script>
@@ -99,6 +106,9 @@
       const connectBtn = document.getElementById('connect');
       const execRegisterBtn = document.getElementById('exec_register');
 
+      // output
+      const answers = document.getElementById('answers');
+
       // open websocket connection
       connectBtn.addEventListener('click', (e) => {
         // close connection if already opened
@@ -113,6 +123,13 @@
         window.connection.onopen = () => {
           console.info('connection opened!');
           isWsOpen = true;
+        };
+        window.connection.onmessage = (msg) => {
+          const data = JSON.parse(msg.data);
+          console.log('got message:', data);
+          let answer = document.createElement('code');
+          answer.innerText = JSON.stringify(data);
+          answers.appendChild(answer);
         };
         window.connection.onerror = (error) => {
           console.error('error:', error);
@@ -130,7 +147,7 @@
           username: usernameInput.value,
           email: emailInput.value,
           password: passwordInput.value,
-          passwordConfirmation: passwordConfirmationInput.value,
+          'password-confirmation': passwordConfirmationInput.value,
         };
 
         console.info('register service: sending following payload:', payload);
