@@ -23,10 +23,10 @@ users ([user_id: SERIAL], username: VARCHAR(255), pw_hash: VARCHAR(255), email: 
 *Table containing the multiple public keys of a user, and the device to which they belong.*
 
 ```
-pubkeys ({uid: INTEGER}, [pubkey: VARCHAR(1024)], device_id: INTEGER, last_used: TIMESTAMPTZ, desc_string: VARCHAR(256))
+pubkeys ({user_id: INTEGER}, [pubkey: VARCHAR(1024)], device_id: INTEGER, last_used: TIMESTAMPTZ, desc_string: VARCHAR(256))
 ```
 
- * `uid` - **FOREIGN KEY** references `users(user_id)` : The user who uses this public key.
+ * `user_id` - **FOREIGN KEY** references `users(user_id)` : The user who uses this public key.
  * `pubkey` - **PRIMARY KEY** : A public key for a user on a device.
  * `device_id` - **NOT NULL** : The identifier of the device.
  * `last_used` - **NOT NULL** : The time when this key was last used.
