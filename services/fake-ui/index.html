@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>ChaTalK: fake UI</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      p {
+        margin-bottom: 4px;
+      }
+      body {
+        font-family: sans-serif;
+        font-size: 16px;
+      }
+      header {
+        color: #fff;
+        background-color: #0b6374;
+        padding: 20px 8px;
+      }
+      section {
+        padding: 8px;
+      }
+      h2 {
+        margin-top: 26px;
+        margin-bottom: 8px;
+      }
+      label {
+        display: block;
+        margin: 4px;
+      }
+      label > span {
+        display: inline-block;
+        width: 200px;
+      }
+      input, button {
+        padding: 4px;
+      }
+      .content {
+        max-width: 1000px;
+        margin: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="content">
+        <h1>ChaTalK: fake UI</h1>
+      </div>
+    </header>
+    <div class="content">
+      <section>
+        <h2>Endpoint</h2>
+        <p>First connect to the endpoint by clicking on the <code>Connect</code> button.</p>
+        <p>It will open a conenction using a websocket.</p>
+        <p>The backend endpoint will be used to make queries to the backend.</p>
+        <label for="backend">
+          <span>Backend URL:</span>
+          <input id="backend" name="backend" type="url" value="ws://localhost:42042" required>
+        </label>
+        <button type="button" id="connect">Connect</button>
+      </section>
+      <section>
+        <h2>Call to <strong>Register</strong> service</h2>
+        <p>This service is used to create a new user account.</p>
+        <label for="username">
+          <span>Username:</span>
+          <input id="username" name="username" type="text" required>
+        </label>
+        <label for="email">
+          <span>Email:</span>
+          <input id="email" name="email" type="email" required>
+        </label>
+        <label for="password">
+          <span>Password:</span>
+          <input id="password" name="password" type="password" required>
+        </label>
+        <label for="password_confirmation">
+          <span>Confirm Password:</span>
+          <input id="password_confirmation" name="password_confirmation" type="password" required>
+        </label>
+        <button type="button" id="exec_register">Execute</button>
+      </section>
+    </div>
+    <script>
+      // state
+      let isWsOpen = false;
+
+      // inputs
+      const backendInput = document.getElementById('backend');
+      const usernameInput = document.getElementById('username');
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
+      const passwordConfirmationInput = document.getElementById('password_confirmation');
+
+      // buttons
+      const connectBtn = document.getElementById('connect');
+      const execRegisterBtn = document.getElementById('exec_register');
+
+      // open websocket connection
+      connectBtn.addEventListener('click', (e) => {
+        // close connection if already opened
+        if (isWsOpen && window.connection !== "undefined") {
+          window.connection.close();
+        }
+
+        // websocket init
+        window.WebSocket = window.WebSocket || window.MozWebSocket;
+        window.connection = new WebSocket(backendInput.value);
+        window.connection.binaryType = 'blob';
+        window.connection.onopen = () => {
+          console.info('connection opened!');
+          isWsOpen = true;
+        };
+        window.connection.onerror = (error) => {
+          console.error('error:', error);
+          isWsOpen = false;
+        }
+      });
+
+      execRegisterBtn.addEventListener('click', (e) => {
+        if (!isWsOpen) {
+          console.error('Websocket is not open.');
+          return;
+        }
+
+        const payload = {
+          username: usernameInput.value,
+          email: emailInput.value,
+          password: passwordInput.value,
+          passwordConfirmation: passwordConfirmationInput.value,
+        };
+
+        console.info('register service: sending following payload:', payload);
+        window.connection.send(JSON.stringify({
+          action: 'register',
+          payload,
+        }));
+      });
+    </script>
+  </body>
+</html>

@@ -40,6 +40,7 @@ func dbConnect() *sql.DB {
 
 func main() {
 	log.Println("Register service started…")
+	channelName := "service-register"
 	// db := dbConnect()
 
 	natsURL := getEnv("NATS_URL", "nats://localhost:4222")
@@ -56,14 +57,14 @@ func main() {
 	}
 
 	// Simple Async Subscriber
-	sub, _ := sc.Subscribe("foo", func(m *stan.Msg) {
+	sub, _ := sc.Subscribe(channelName, func(m *stan.Msg) {
 		fmt.Printf("Received a message: %s\n", string(m.Data))
 	})
 
 	// Simple Synchronous Publisher
-	sc.Publish("foo", []byte("Hello World")) // does not return until an ack has been received from NATS Streaming
+	sc.Publish(channelName, []byte("Hello World")) // does not return until an ack has been received from NATS Streaming
 
-	time.Sleep(5 * time.Second)
+	time.Sleep(15 * time.Second)
 
 	// Unsubscribe
 	sub.Unsubscribe()

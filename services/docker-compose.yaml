@@ -23,6 +23,17 @@ services:
     ports:
       - 8222:8222
 
+  entrypoint:
+    build: entrypoint/
+    depends_on:
+      - bus
+      - db-migrations
+    environment:
+      - NATS_URL=nats://bus:4222
+      - NATS_CLUSTER_ID=chatalk
+    ports:
+      - 42042:42042
+
   register:
     build: register/
     depends_on:
