@@ -92,34 +92,34 @@ seen ([sid: SERIAL], {message_id: INTEGER}, {user_id: INTEGER})
 
 ## Views
 
-### archived-messages
+### archived_messages
 
 *A view of the table `messages` which only shows the messages that have been archived by setting the `archived` flag to true.*
 
 ```SQL
-CREATE VIEW archived-messages AS SELECT * FROM messages WHERE archived == true;
+CREATE VIEW archived_messages AS SELECT * FROM messages WHERE archived == true;
 ```
 
-### active-messages
+### active_messages
 
 *A view of the table `messages` which only shows the messages that have not been archived by setting the `archived` flag to false.*
 
 ```SQL
-CREATE VIEW active-messages AS SELECT * FROM messages WHERE archived == false;
+CREATE VIEW active_messages AS SELECT * FROM messages WHERE archived == false;
 ```
 
-### active-keys
+### active_keys
 
 *A view of the table `keys` which only shows the keys that have not expired.*
 
 ```SQL
-CREATE VIEW active-keys AS SELECT * FROM keys WHERE timeto > now;
+CREATE VIEW active_keys AS SELECT * FROM keys WHERE timeto > now;
 ```
 
-### recent-messages
+### recent_messages
 
 *A view of the table `messages` which only shows the messages sent today or yesterday in a conversation.*
 
 ```SQL
-CREATE VIEW recent-messages AS SELECT * FROM messages WHERE time > yesterday;
+CREATE VIEW recent_messages AS SELECT * FROM messages WHERE time > yesterday;
 ```
