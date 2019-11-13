@@ -27,3 +27,15 @@ On fait du chiffrement hybride:
   - toutes les features sont optionnelles dans SRTP (de base, SRTP = RTP), elles doivent donc être activée (c'est à ça que sert ZRTP...)
   - Note: WebRTC utilise SRTP par défaut
 - Couplage avec SIP-TLS? (à l'air recommandé, à creuser)
+
+## Librairies
+
+Les librairies les plus complètes sont:
+
+1. Bouncy Castle (<http://bouncycastle.org/>), sous license MIT (<https://en.wikipedia.org/wiki/MIT_License>), pour Java et C#
+
+2. Libgcrypt (<https://en.wikipedia.org/wiki/Libgcrypt>), sous licence GNU LGPL v2.1+ (<https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License>), pour C
+
+3. Botan (<https://en.wikipedia.org/wiki/Botan_(programming_library)>), sous licence BSD simplifiée (<https://en.wikipedia.org/wiki/BSD_licenses>), pour C++
+
+4. Concernant le JS, j'ai trouvé ça (à l'air moins bien): <https://gist.github.com/jo/8619441>

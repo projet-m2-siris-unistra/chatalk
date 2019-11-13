@@ -1,4 +1,4 @@
-# Scenarii
+# Scenari
 
 ## Inscription
 
