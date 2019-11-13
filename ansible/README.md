@@ -92,3 +92,40 @@ To reboot all VM at the same time you can use the following command:
 ```sh
 ansible all -i hosts.ini -m reboot --become
 ```
+
+
+# Generate certificates on `dumas`
+
+The `dumas` Ansible role install all required stuff.
+
+This part can only be done by the owner of the `chatalk.fr` domain.
+
+SSH on the `dumas` VM and follow those instructions.
+
+You will need to create a file named `cloudflare.ini` with following content:
+
+```
+# Cloudflare API credentials used by Certbot
+dns_cloudflare_email = CLOUDFLARE_EMAIL
+dns_cloudflare_api_key = CLOUDFLARE_API_KEY
+```
+
+and replace all `CLOUDFLARE_*` with your Cloudflare informations.
+
+After that, you will need to run the following command to get the certificates:
+
+```sh
+certbot certonly \
+  -m LE_EMAIL \
+  --agree-tos \
+  --dns-cloudflare \
+  --dns-cloudflare-credentials cloudflare.ini \
+  -d '*.chatalk.fr' \
+  -d chatalk.fr
+```
+
+and replace `LE_EMAIL` with your email address for Let's Encrypt.
+
+Keys will be stored here:
+  - /etc/letsencrypt/live/chatalk.fr/fullchain.pem
+  - /etc/letsencrypt/live/chatalk.fr/privkey.pem

@@ -11,15 +11,29 @@
 - name: add the GitLab runner package repository
   shell: "curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh | sudo bash"
 
+- name: add apt repositories
+  apt_repository:
+    repo: '{{ item }}'
+  with_items:
+    - ppa:certbot/certbot
+    - ppa:nginx/stable
+    - deb http://archive.ubuntu.com/ubuntu/ bionic universe
+
 - name: update apt cache
   apt:
     update_cache: yes
 
-- name: install docker and gitlab-runner
+- name: install docker, gitlab-runner, …
   apt:
     pkg:
+      - certbot
       - docker-ce
       - gitlab-runner
+      - nginx
+      - python3-bcrypt
+      - python3-certbot-dns-cloudflare
+      - python3-passlib
+      - software-properties-common
 
 - name: unregister all previously used GitLab runners
   shell: gitlab-runner unregister --all-runners
@@ -50,3 +64,48 @@
   debug:
     msg:
       - "{{runner_result.stderr_lines}}"
+
+- name: generate htpasswd for registry
+  notify: restart registry
+  htpasswd:
+    path: /etc/docker/registry/auth
+    name: registry
+    password: wPf3kzeUcNfwnwCs
+    crypt_scheme: bcrypt
+
+- name: configure registry
+  notify: restart registry
+  copy:
+    src: registry-config.yml
+    dest: /etc/docker/registry/config.yml
+
+- name: create registry service
+  notify:
+    - reload systemd
+    - restart registry
+  copy:
+    src: registry.service
+    dest: /etc/systemd/system/registry.service
+
+- name: flush handlers
+  meta: flush_handlers
+
+- name: enable registry
+  systemd:
+    name: registry
+    enabled: yes
+
+- name: remove default site configuration for nginx
+  file:
+    dest: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: configure nginx
+  copy:
+    src: chatalk.fr.conf
+    dest: /etc/nginx/sites-enabled/chatalk.fr.conf
+
+- name: restart nginx
+  service:
+    name: nginx
+    state: restarted
