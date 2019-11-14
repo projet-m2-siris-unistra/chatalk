@@ -9,6 +9,7 @@ services:
 
   db-migrations:
     build: db-migrations/
+    restart: "no"
     command:
       - -database=postgres://chatalk:chatalk@db/chatalk?sslmode=disable
       - up
@@ -47,3 +48,8 @@ services:
       - DB_USER=chatalk
       - DB_PASS=chatalk
       - DB_MODE=disable
+
+  ui:
+    build: fake-ui/
+    ports:
+      - 1234:80
