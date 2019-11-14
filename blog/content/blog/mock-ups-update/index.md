@@ -27,7 +27,6 @@ If users do a mistake while typing in "confirm password" field and don't match w
 
 Once again error messages are explicit for easier understanding.
 
-
 ![Register page with some errors](mobile_register_errored.png)
 
 ## Search results
@@ -55,6 +54,7 @@ When a conversation is in favorite the star is filled and user will see it at th
 Some example of what will look like the favorite system.
 
 ### In conversation
+
 Here conversation is not in favorite.
 
 ![Non-favorited conversation](mobile_conversation.png)
