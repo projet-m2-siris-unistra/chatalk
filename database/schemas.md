@@ -46,7 +46,7 @@ conversations ([conv_id: SERIAL], convname: VARCHAR(255), topic: VARCHAR(512), p
  * `pic_url` : The URL of the conversation picture.
  * `archived` - **NOT NULL** : The status of the conversation : `false` is active, `true` is archived.
 
-### keys
+### conv_keys
 
 *Stores the conversations to which a user participates and the corresponding shared keys used.*
 
@@ -68,10 +68,10 @@ conv_keys ([key_id: SERIAL], {user_id: INTEGER}, {conv_id: INTEGER}, timefrom: T
 *Stores every message ever, with the associated conversation, user and timestamp.*
 
 ```
-messages ([mid: SERIAL], time: TIMESTAMPTZ, {user_id: INTEGER}, {conv_id: INTEGER}, content: VARCHAR(4096), archived: BOOLEAN)
+messages ([msg_id: SERIAL], time: TIMESTAMPTZ, {user_id: INTEGER}, {conv_id: INTEGER}, content: VARCHAR(4096), archived: BOOLEAN)
 ```
 
- * `mid` - **PRIMARY KEY** ( *SERIAL is an auto-incrementing non-null INTEGER* ) : Message ID is a field used to identify each message individually.
+ * `msg_id` - **PRIMARY KEY** ( *SERIAL is an auto-incrementing non-null INTEGER* ) : Message ID is a field used to identify each message individually.
  * `time` - **NOT NULL** ( *TIMESTAMPTZ is an abbreviation for TIMESTAMP WITH TIMEZONE* ) : Time is the field identifying the exact moment the message was sent by the user.
  * `user_id` - **FOREIGN KEY** references `users(user_id)` : User ID tells us which user sent the message.
  * `conv_id` - **FOREIGN KEY** references `conversations(conv_id)` : Conversation ID tells us in which conversation the message was sent.
@@ -83,11 +83,11 @@ messages ([mid: SERIAL], time: TIMESTAMPTZ, {user_id: INTEGER}, {conv_id: INTEGE
 *Stores the last messages seen by a user. There will be several messages per user, one for each conversation.*
 
 ```
-seen ([sid: SERIAL], {message_id: INTEGER}, {user_id: INTEGER})
+seen ([sid: SERIAL], {msg_id: INTEGER}, {user_id: INTEGER})
 ```
 
  * `sid` - **PRIMARY KEY** : Seen ID used to identify rows in the seen table.
- * `message_id` - **FOREIGN KEY** references `messages(mid)` : The Message ID of the last message seen by the user identified by `user-id`.
+ * `msg_id` - **FOREIGN KEY** references `messages(mid)` : The Message ID of the last message seen by the user identified by `user-id`.
  * `user_id` - **FOREIGN KEY** references `users(user_id)` : The User ID of the user that has seen the message.
 
 ## Views
