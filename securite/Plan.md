@@ -32,7 +32,7 @@ On fait du chiffrement hybride:
 
 Les librairies les plus complètes sont:
 
-0. Pour le react: <https://www.npmjs.com/package/react-native-crypto>
+0. Pour le react: <https://www.npmjs.com/package/react-native-crypto>, sous licence MIT
 
 1. Bouncy Castle (<http://bouncycastle.org/>), sous license MIT (<https://en.wikipedia.org/wiki/MIT_License>), pour Java et C#
 
