@@ -12,11 +12,18 @@
 ### Scénario 2: Auto-inscription
 
 - Chaque journaliste est responsable de créer son compte
-- **Après son inscription, valider sa légitimité:**
-  - **par un admin?**
-  - **par un code courriel/SMS?**
+- Chaque inscription nécessite une adresse électronique en @jsp.org
+- A la fin de l'inscription, un courriel de vérification est envoyé au nouvel inscrit
+- La légitimité est garantie par le fait que l'adresse électronique authentifie un journaliste et que la connection est sécurisée (HTTPS)
 
 ## Envoi de message
+
+- L'émetteur chiffre le message avec la clé de session et l'envoi au serveur
+- Le message chiffré est stocké dans la BDD (table `messages`)
+- Le serveur envoie le messages aux participants actifs
+- Les destinataires le déchiffre avec la clé de session
+
+## Les clés de session/inscription à une conversation
 
 - Lors de la création d'une conversation, la personne à son origine génère une clé de session grâce à un algorithme symétrique (3DES, IDEA, AEs, ...). C'est cette clé qui sera utilisée pour chiffrer les messages
 - Chaque fois qu'un nouveau participant est ajouté par un membre actif à la conversation, sa clé public (enregistrée auparavant sur le serveur (champ `pubkey` de la table `users`), RSA ou ElGamal) est envoyé au membre l'ayant ajouté
@@ -29,17 +36,19 @@
 ## Génération de clés
 
 - Lors de la création d'une conversation, la personne à son origine génère une clé de session grâce à un algorithme symétrique (3DES, IDEA, AEs, ...). C'est cette clé qui sera utilisée pour chiffrer les messages. Elle est stockée dans la BDD (champ `shared-key` de la table `keys`), chiffrée avec la clé publique du participant.
-- Lors de la création d'un compte, le bénéficiaire doit générer son couple de clés publique/privée. Sa clé publique est stockée dans la BDD (champ `pubkey` de la table `users`)
+- Lors de la création d'un compte, le bénéficiaire doit générer son couple de clés publique/privée grâce à l'UI (ces clés sont sa responsabilité). Sa clé publique est stockée dans la BDD (champ `pubkey` de la table `users`)
 
 ## Éjection d'utilisateur
 
-- Lorsqu'un utilisateur quitte une conversation (pour une raison x ou y), l'entrée lui correspondant n'est retirée de la table `keys`. Il fait toujours partie de la conversation
-- Si ce départ n'était pas souhaité, il n'a qu'à récupérer la clé de session chiffrée avec sa clé publique (champ `shared-key` de la table `keys`)
+- Lorsqu'un utilisateur quitte une conversation (pour une raison x ou y), l'entrée lui correspondant est retirée de la table `keys`. Il ne fait plus partie de la conversation
+- La clé de session est regénérée
+- Si il veut revenir, il doit être de nouveau invité
+- Ejection != Déconnection
 
 ## Régénération de clés
 
 - Après un interval de temps donné (défini dans le protocol), la clé de session sera réinitialisée. Ceci implique que le serveur devra sauvegarder toutes ces clé (chiffrées) (duplication des entrées de la table `keys`, le champ `shared-key` sera différent)
-- **Qui regénère la clé? le créateur, si indisponible élection?**
+- Le serveur choisit un participant actif au hasard pour regénérer la clé de session
 
 ## Voix/Video
 
