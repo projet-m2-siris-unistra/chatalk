@@ -32,6 +32,8 @@ On fait du chiffrement hybride:
 
 Les librairies les plus complètes sont:
 
+0. Pour le react: <https://www.npmjs.com/package/react-native-crypto>
+
 1. Bouncy Castle (<http://bouncycastle.org/>), sous license MIT (<https://en.wikipedia.org/wiki/MIT_License>), pour Java et C#
 
 2. Libgcrypt (<https://en.wikipedia.org/wiki/Libgcrypt>), sous licence GNU LGPL v2.1+ (<https://en.wikipedia.org/wiki/GNU_Lesser_General_Public_License>), pour C
