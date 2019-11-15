@@ -2,6 +2,8 @@
 
 As the projects goes on some changes to these protocols might be required, however their principle should hardly change.
 
+TODO: conversation creation
+
 ## Brainstorming and Conception
 
 We need to set up protocols that will allow interactions between different entities.
