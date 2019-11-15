@@ -13,16 +13,15 @@ import (
 	_ "github.com/lib/pq"
 	nats "github.com/nats-io/nats.go"
 	stan "github.com/nats-io/stan.go"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type registerRequest struct {
 	Action  string `json:"action"`
 	WsID    string `json:"ws-id"`
 	Payload struct {
-		Convname            string `json:"convname"`
-		Topic               string `json:"topic"`
-		Picture             string `json:"picture"`
+		Convname string `json:"convname"`
+		Topic    string `json:"topic"`
+		Picture  string `json:"picture"`
 	} `json:"payload"`
 }
 
@@ -94,7 +93,7 @@ func main() {
 			}
 		} else {
 			var convID int
-			
+
 			err = db.QueryRow(`
 				INSERT INTO conversations(convname, topic, pic_url, archived)
 				VALUES($1, $2, $3, false)
