@@ -1,5 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(theme => ({
   pre: {
@@ -10,13 +11,16 @@ const useStyles = makeStyles(theme => ({
 const Credits: React.FC = () => {
   const classes = useStyles();
   return (
-    <div>
-      <h1>Credits</h1>
+    <div style={{color:'#0b6374'}}>
+      <Typography align="center">
+     <h1 >Credits</h1>
+     </Typography>
+
       <p>Our application is composed of some external parts that we used.</p>
       <p>You can find in this page all components used and their licenses.</p>
       <ul>
         <li>
-          The JavaScript library <a href="https://reactjs.org/" target="_blank" rel="noopener noreferrer">ReactJS</a> is licensed under <strong>MIT License</strong>
+          The JavaScript library <a href="https://reactjs.org/" target="_blank" rel="noopener noreferrer" style={{color: '#0b6374'}}>ReactJS</a> is licensed under <strong>MIT License</strong>
           <pre className={ classes.pre }>{`
             MIT License
 
@@ -42,7 +46,7 @@ const Credits: React.FC = () => {
           `}</pre>
         </li>
         <li>
-          The <a href="https://fonts.google.com/specimen/Roboto" target="_blank" rel="noopener noreferrer">Roboto font</a> is licensed under <strong>Apache License 2.0</strong>
+          The <a href="https://fonts.google.com/specimen/Roboto" target="_blank" rel="noopener noreferrer" style={{color: '#0b6374'}}>Roboto font</a> is licensed under <strong>Apache License 2.0</strong>
           <pre className={ classes.pre }>{`
                                  Apache License
                            Version 2.0, January 2004
@@ -248,7 +252,7 @@ const Credits: React.FC = () => {
           `}</pre>
         </li>
         <li>
-          <a href="https://material.io/resources/icons" target="_blank" rel="noopener noreferrer">Material icons</a> are licensed under <strong>Apache License 2.0</strong>
+          <a href="https://material.io/resources/icons" target="_blank" rel="noopener noreferrer" style={{color: '#0b6374'}}>Material icons</a> are licensed under <strong>Apache License 2.0</strong>
           <pre className={ classes.pre }>{`
                                  Apache License
                            Version 2.0, January 2004

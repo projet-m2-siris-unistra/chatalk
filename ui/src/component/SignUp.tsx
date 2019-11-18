@@ -1,5 +1,4 @@
 import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -7,10 +6,12 @@ import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import Logo from "./logo.png";
+import { createMuiTheme, withStyles, ThemeProvider } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -24,10 +25,6 @@ const useStyles = makeStyles(theme => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
   form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(3),
@@ -35,25 +32,58 @@ const useStyles = makeStyles(theme => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  footer: {
+    paddingTop:theme.spacing(8),
+    marginTop:'auto',
+    display: 'flex',
+  },
 }));
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+     main: '#0b6374',
+    },
+  },
+});
+
+const CssTextField = withStyles({
+  root: {
+    
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: '#0b6374',
+      },
+      '&.Mui-focused fieldset': {
+        borderColor: '#0b6374',
+      },
+      
+  },
+  '& label.Mui-focused': {
+    color: '#0b6374',
+  },
+}
+})(TextField);
+
+
 
 const SignUp: React.FC = () => {
   const classes = useStyles();
 
   return (
-    <Container component="main" maxWidth="xs">
-    <CssBaseline />
+    
     <div className={classes.paper}>
-      <Avatar className={classes.avatar}>
-        <LockOutlinedIcon />
-      </Avatar>
-      <Typography component="h1" variant="h5">
+      <Container component="main" maxWidth="xs">
+      <CssBaseline />
+      <img src={Logo} />
+      <Typography component="h1" variant="h2" align='center' >
         Sign up
       </Typography>
       <form className={classes.form} noValidate>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <TextField
+            <ThemeProvider theme={theme}>
+            <CssTextField
               autoComplete="fname"
               name="Username"
               variant="outlined"
@@ -63,9 +93,10 @@ const SignUp: React.FC = () => {
               label="Username"
               autoFocus
             />
+            </ThemeProvider>
           </Grid>
           <Grid item xs={12}>
-            <TextField
+            <CssTextField
               variant="outlined"
               required
               fullWidth
@@ -76,7 +107,7 @@ const SignUp: React.FC = () => {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
+            <CssTextField
               variant="outlined"
               required
               fullWidth
@@ -89,24 +120,35 @@ const SignUp: React.FC = () => {
           </Grid>
 
           <Grid item xs={12}>
-            <TextField
+            <CssTextField
               variant="outlined"
               required
               fullWidth
-              name="passwordverif"
-              label="Password verification"
-              type="passwordverif"
-              id="passwordverif"
+              name="passwordconf"
+              label="Password confirmation"
+              type="password"
+              id="passwordconf"
               autoComplete="current-password"
             />
           </Grid>
           <Grid item xs={12}>
+          <ThemeProvider theme={theme}>
             <FormControlLabel
               control={<Checkbox value="allowExtraEmails" color="primary" />}
-              label="I'm not a robot =)"
+              label={
+                <div>
+                  <span>I accept the </span>
+                  <Link to="/terms" style={{color: '#0b6374'}}>Terms of use</Link>
+                  <span> and </span>
+                  <Link to="/Privacy" style={{color: '#0b6374'}} >Privacy policy</Link>
+                </div>
+              }
+              
             />
+          </ThemeProvider>
           </Grid>
         </Grid>
+        <ThemeProvider theme={theme}>
         <Button
           type="submit"
           fullWidth
@@ -116,16 +158,39 @@ const SignUp: React.FC = () => {
         >
           Sign Up
         </Button>
-        <Grid container justify="flex-end">
+        </ThemeProvider>
+        <Grid container direction="column" alignItems = "center">
           <Grid item>
-            <Link to="/login">
+            <Link to="/login" style={{color: '#0b6374'}}>
               Already have an account? Sign in
             </Link>
           </Grid>
         </Grid>
+       
       </form>
+      </Container>
+      <footer className={classes.footer}>
+             <Container component="main" maxWidth= "sm">
+             <Grid container spacing={1} justify="space-between" alignItems ="center">
+               <Grid item xs>
+                <Link to="/NotFound" style={{color: '#0b6374'}} >
+                Status
+              </Link>
+              </Grid>
+                <Grid item>
+                <a href="https://blog.chatalk.fr" style={{color: '#0b6374'}}>
+                  Blog
+                </a>
+                </Grid>
+                <Grid item>
+                <Link to="/credits" style={{color: '#0b6374'}} >
+                  Credits
+                </Link>
+                </Grid>
+              </Grid>
+            </Container>
+          </footer>
     </div>
-  </Container>
   );
 };
 

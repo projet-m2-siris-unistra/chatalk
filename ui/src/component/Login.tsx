@@ -1,16 +1,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Avatar from '@material-ui/core/Avatar';
+
 import Button from '@material-ui/core/Button';
+import Logo from "./logo.png";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { createMuiTheme, withStyles, ThemeProvider } from '@material-ui/core/styles';
+
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -35,23 +37,48 @@ const useStyles = makeStyles(theme => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
+  footer: {
+    paddingTop:theme.spacing(10),
+    marginTop:'auto',
+    display: 'flex',
+  },
+
 }));
+
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+     main: '#0b6374',
+    },
+  },
+});
+
+const CssTextField = withStyles({
+  root: {
+    '& .MuiOutlinedInput-root': {
+      '& fieldset': {
+        borderColor: '#0b6374',
+        },
+    },
+  }
+})(TextField);
 
 const Login: React.FC = () => {
 
   const classes = useStyles();
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
+    
       <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
+        
+        <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <img src={Logo} />
+        <Typography component="h1" variant="h2" align='center'>
           Sign in
         </Typography>
         <form className={classes.form} noValidate>
-          <TextField
+        <ThemeProvider theme={theme}>
+          <CssTextField
             variant="outlined"
             margin="normal"
             required
@@ -62,7 +89,7 @@ const Login: React.FC = () => {
             autoComplete="username"
             autoFocus
           />
-          <TextField
+          <CssTextField
             variant="outlined"
             margin="normal"
             required
@@ -73,10 +100,14 @@ const Login: React.FC = () => {
             id="password"
             autoComplete="current-password"
           />
+          </ThemeProvider>
+          <ThemeProvider theme={theme}>
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
             label="Remember me"
           />
+          </ThemeProvider>
+          <ThemeProvider theme={theme}>
           <Button
             type="submit"
             fullWidth
@@ -86,21 +117,51 @@ const Login: React.FC = () => {
           >
             Sign In
           </Button>
-          <Grid container>
+          </ThemeProvider>
+          
+          <Grid container spacing={2} direction="column" justify="space-between" alignItems ="center">
             <Grid item xs>
-              <Link to="#">
+              <Link to="#" style={{color: '#0b6374'}}>
                 Forgot password?
               </Link>
             </Grid>
             <Grid item>
-              <Link to="/register">
+              <Link to="/register" style={{color: '#0b6374'}} >
                 Don't have an account? Sign Up
               </Link>
             </Grid>
           </Grid>
+         
         </form>
-      </div>
+    
+     
     </Container>
+    <footer className={classes.footer}>
+     <Container component="main" maxWidth="sm">
+    <Grid container spacing={1} justify="space-between" alignItems ="center">
+      <Grid item xs>
+       <Link to="/NotFound" style={{color: '#0b6374'}} >
+       Status
+     </Link>
+     </Grid>
+       <Grid item>
+       <a href="https://blog.chatalk.fr" style={{color: '#0b6374'}}>
+         Blog
+       </a>
+       </Grid>
+       <Grid item>
+       <Link to="/credits" style={{color: '#0b6374'}} >
+         Credits
+       </Link>
+       </Grid>
+     </Grid>
+     </Container>
+    </footer>
+
+    </div>
+    
+ 
+    
   );
 };
 
