@@ -8,12 +8,16 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"unicode"
+	"string"
+	"regexp"
 
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
 	nats "github.com/nats-io/nats.go"
 	stan "github.com/nats-io/stan.go"
 	"golang.org/x/crypto/bcrypt"
+	dberror "github.com/Shyp/go-dberror"
 )
 
 type registerRequest struct {
@@ -27,9 +31,14 @@ type registerRequest struct {
 	} `json:"payload"`
 }
 
+/*type err struct {
+	Field   string `json:"field"`
+	Message string `json:"message"`
+}*/
+
 type registerResponse struct {
-	Message string `json:"message,omitempty"`
-	Error   error  `json:"error,omitempty"`
+	Success bool   `json:"success"`
+	Error   string `json:"errors,omitempty"` //Errors []err
 }
 
 // get environment variable, if not found will be set to `fallback` value
@@ -88,12 +97,34 @@ func main() {
 		}
 
 		var response registerResponse
+		
+		re := regexp.MustCompile("[a-zA-Z0-9_\-]+")
 
-		if msg.Payload.Password != msg.Payload.PasswordConfirmation {
+		if !re.MatchString(msg.Payload.Username) {
 			response = registerResponse{
-				Message: "Both password fields do not match",
+				Succes: false
+				Error: "Login contains excentric characters",
 			}
-		} else {
+		}
+		else if !strings.Contains(msg.Payload.Email, "@") {
+			response = registerResponse{
+				Succes: false
+				Error: "Not an email address",
+			}
+		}
+		else if msg.Payload.Password != msg.Payload.PasswordConfirmation {
+			response = registerResponse{
+				Succes: false
+				Error: "Both password fields do not match",
+			}
+		}
+		else if len(msg.Payload.Password) <= 5 {
+			response = registerResponse{
+				Succes: false
+				Error: "Password is too weak",
+			}
+		}
+		else {
 			var userID int
 			hash, err := bcrypt.GenerateFromPassword([]byte(msg.Payload.Password), 14)
 			if err != nil {
@@ -107,11 +138,21 @@ func main() {
 				RETURNING user_id;
 			`, msg.Payload.Username, msg.Payload.Email, hash).Scan(&userID)
 
-			message := fmt.Sprintf("User ID is: %s", userID)
-
-			response = registerResponse{
-				Message: message,
-				Error:   err,
+			if err == nil {
+				response = registerResponse{
+					Success: true
+				}
+			}
+			else {
+				dberr := dberror.GetError(err)
+				switch e := dberr.(type) {
+					case *dberror.Error:
+						errmsg := e.Error()
+				}
+				response = registerResponse{
+					Success: false
+					Error: errmsg
+				}
 			}
 		}
 
