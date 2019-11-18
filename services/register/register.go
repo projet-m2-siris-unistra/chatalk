@@ -8,8 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"unicode"
-	"string"
+	"strings"
 	"regexp"
 
 	"github.com/google/uuid"
@@ -97,34 +96,30 @@ func main() {
 		}
 
 		var response registerResponse
-		
-		re := regexp.MustCompile("[a-zA-Z0-9_\-]+")
+
+		re := regexp.MustCompile("[a-zA-Z0-9_]+")
 
 		if !re.MatchString(msg.Payload.Username) {
-			response = registerResponse{
-				Succes: false
+			response = registerResponse {
+				Success: false,
 				Error: "Login contains excentric characters",
 			}
-		}
-		else if !strings.Contains(msg.Payload.Email, "@") {
-			response = registerResponse{
-				Succes: false
+		} else if !strings.Contains(msg.Payload.Email, "@") {
+			response = registerResponse {
+				Success: false,
 				Error: "Not an email address",
 			}
-		}
-		else if msg.Payload.Password != msg.Payload.PasswordConfirmation {
-			response = registerResponse{
-				Succes: false
+		} else if msg.Payload.Password != msg.Payload.PasswordConfirmation {
+			response = registerResponse {
+				Success: false,
 				Error: "Both password fields do not match",
 			}
-		}
-		else if len(msg.Payload.Password) <= 5 {
-			response = registerResponse{
-				Succes: false
+		} else if len(msg.Payload.Password) <= 5 {
+			response = registerResponse {
+				Success: false,
 				Error: "Password is too weak",
 			}
-		}
-		else {
+		} else {
 			var userID int
 			hash, err := bcrypt.GenerateFromPassword([]byte(msg.Payload.Password), 14)
 			if err != nil {
@@ -133,26 +128,30 @@ func main() {
 			}
 
 			err = db.QueryRow(`
-				INSERT INTO users(username, email, password)
+				INSERT INTO users(username, email, pw_hash)
 				VALUES($1, $2, $3)
 				RETURNING user_id;
 			`, msg.Payload.Username, msg.Payload.Email, hash).Scan(&userID)
 
 			if err == nil {
-				response = registerResponse{
-					Success: true
+				response = registerResponse {
+					Success: true,
 				}
-			}
-			else {
+			} else {
 				dberr := dberror.GetError(err)
 				switch e := dberr.(type) {
 					case *dberror.Error:
 						errmsg := e.Error()
+						response = registerResponse {
+							Success: false,
+							Error: errmsg,
+						}
+					default :
+						response = registerResponse {
+							Success: false,
+						}
 				}
-				response = registerResponse{
-					Success: false
-					Error: errmsg
-				}
+
 			}
 		}
 

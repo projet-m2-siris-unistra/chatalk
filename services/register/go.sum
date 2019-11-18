@@ -1,3 +1,5 @@
+github.com/Shyp/go-dberror v0.0.0-20180123195207-36ecba57721e h1:IZUh3h8z+h/7feJrZvvE9wAsL6//9T/D1VYLHEejNtY=
+github.com/Shyp/go-dberror v0.0.0-20180123195207-36ecba57721e/go.mod h1:MhWOxc4KCt6KrmX1kPy9pI8Rx1ZA3IXjI2OHmMURdwA=
 github.com/gogo/protobuf v1.2.1 h1:/s5zKNz0uPFCZ5hddgPdo2TK2TVrUNMn0OOX8/aZMTE=
 github.com/gogo/protobuf v1.2.1/go.mod h1:hp+jE20tsWTFYpLwKvXlhS1hjn+gTNwPg2I6zVXpSg4=
 github.com/google/uuid v1.1.1 h1:Gkbcsh/GbpXz7lPftLA3P6TYMwjCLYm83jiFQZF/3gY=

@@ -94,7 +94,7 @@ func main() {
 		}
 
 		row := db.QueryRow(`
-			SELECT user_id, password
+			SELECT user_id, pw_hash
 			FROM users
 			WHERE username = $1;
 		`, msg.Payload.Username)
