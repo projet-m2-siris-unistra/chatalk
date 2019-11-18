@@ -101,6 +101,9 @@ func main() {
 
 			message := fmt.Sprintf("Message ID is: %s", msgID)
 
+			// Un truc genre comme ça
+			// nc.Publish("conv."+msg.Dst, msg.Payload)
+
 			response = messageResponse{
 				Message: message,
 				Error:   err,
