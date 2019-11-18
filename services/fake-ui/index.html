@@ -126,7 +126,7 @@
           <input id="topic" name="topic" type="text" required>
         </label>
         <label for="picture">
-          <span>topic:</span>
+          <span>picture:</span>
           <input id="picture" name="picture" type="text" required>
         </label>
         <button type="button" id="exec_create">Execute</button>
@@ -252,7 +252,7 @@
         }
 
         const payload = {
-          userid:  parseInt(userid1Input.value,10),
+          userid:  userid1Input.value,
           convname: convnameInput.value,
           topic: topicInput.value,
           picture:  pictureInput.value,

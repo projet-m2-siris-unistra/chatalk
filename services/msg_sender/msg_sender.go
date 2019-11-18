@@ -55,8 +55,8 @@ func dbConnect() *sql.DB {
 }
 
 func main() {
-	log.Println("Conversation creation service started…")
-	channelName := "service.conv_creation"
+	log.Println("Message broadcast service started…")
+	channelName := "service.msg_sender"
 	db := dbConnect()
 
 	natsURL := getEnv("NATS_URL", "nats://localhost:4222")
@@ -76,7 +76,7 @@ func main() {
 	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 
 	sub, _ := sc.Subscribe(channelName, func(m *stan.Msg) {
-		log.Println("conversation creation service is handling a new request")
+		log.Println("message broadcast service is handling a new request")
 		var msg messageIngress
 		err := json.Unmarshal(m.Data, &msg)
 		if err != nil {

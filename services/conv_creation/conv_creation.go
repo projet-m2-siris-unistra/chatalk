@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"strconv"
 
 	dberror "github.com/Shyp/go-dberror"
 	"github.com/google/uuid"
@@ -20,7 +21,7 @@ type registerRequest struct {
 	Action  string `json:"action"`
 	WsID    string `json:"ws-id"`
 	Payload struct {
-		UserID 	 int    `json:"userid"`
+		UserID 	 string    `json:"userid"`
 		Convname string `json:"convname"`
 		Topic    string `json:"topic"`
 		Picture  string `json:"picture"`
@@ -88,7 +89,19 @@ func main() {
 		}
 
 		var response registerResponse
+		var userID int
 		var convID int
+
+		userID, err = strconv.Atoi(msg.Payload.UserID)
+
+		if err != nil {
+			response = registerResponse{
+				Success: false,
+				Error: "UserID not valid",
+			}
+			goto send_msg
+		}
+
 
 		if msg.Payload.Convname == "" {
 			response = registerResponse{
@@ -105,7 +118,7 @@ func main() {
 
 				_, err = db.Query(
 					`INSERT INTO conv_keys(user_id, conv_id, shared_key, timefrom, timeto, favorite, audio)
-					VALUES($1, $2, 0, now, 0, false, false);`, msg.Payload.UserID, convID)
+					VALUES($1, $2, 0, current_timestamp, NULL, false, false);`, userID, convID)
 
 				if err == nil {
 					message := fmt.Sprintf("Creation OK.\n conv ID is: %s", convID)
@@ -129,7 +142,7 @@ func main() {
 					}
 
 					_, err = db.Query(
-						`DELETE FROM conversation WHERE conv_id = $1;`, convID)
+						`DELETE FROM conversations WHERE conv_id = $1;`, convID)
 				}
 			} else {
 				dberr := dberror.GetError(err)
@@ -147,9 +160,9 @@ func main() {
 				}
 			}
 		}
-
-		j, err := json.Marshal(response)
-		nc.Publish("ws."+msg.WsID+".send", j)
+		send_msg:
+			j, err := json.Marshal(response)
+			nc.Publish("ws."+msg.WsID+".send", j)
 	})
 
 	<-c
