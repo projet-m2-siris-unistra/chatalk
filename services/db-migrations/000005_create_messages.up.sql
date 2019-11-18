@@ -4,5 +4,5 @@ CREATE TABLE IF NOT EXISTS "messages" (
   "user_id" 	INTEGER REFERENCES "users"("user_id"),
   "conv_id" 	INTEGER REFERENCES "conversations"("conv_id"),
   "content" 	VARCHAR(4096) NOT NULL,
-  "archived"	BOOLEAN NOT NULL,
+  "archived"	BOOLEAN NOT NULL
 );

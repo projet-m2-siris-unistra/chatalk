@@ -6,5 +6,5 @@ CREATE TABLE IF NOT EXISTS "conv_keys" (
   "timefrom"  	TIMESTAMP NOT NULL,
   "timeto"    	TIMESTAMP,
   "favorite"  	BOOLEAN NOT NULL,
-  "audio"     	BOOLEAN NOT NULL,
+  "audio"     	BOOLEAN NOT NULL
 );

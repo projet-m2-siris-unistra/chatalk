@@ -3,5 +3,5 @@ CREATE TABLE IF NOT EXISTS "pubkeys" (
   "pubkey"     	VARCHAR(1024) NOT NULL PRIMARY KEY,
   "device_id"  	INTEGER NOT NULL,
   "last_used"  	TIMESTAMP WITH TIME ZONE NOT NULL,
-  "desc_string"	VARCHAR(256),
+  "desc_string"	VARCHAR(256)
 );
