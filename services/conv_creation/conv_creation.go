@@ -20,6 +20,7 @@ type registerRequest struct {
 	Action  string `json:"action"`
 	WsID    string `json:"ws-id"`
 	Payload struct {
+		UserID 	 int    `json:"userid"`
 		Convname string `json:"convname"`
 		Topic    string `json:"topic"`
 		Picture  string `json:"picture"`
@@ -28,7 +29,7 @@ type registerRequest struct {
 
 type registerResponse struct {
 	Success bool  `json:"success"`
-	Error   error `json:"error,omitempty"`
+	Error   string `json:"error,omitempty"`
 }
 
 // get environment variable, if not found will be set to `fallback` value
@@ -87,32 +88,62 @@ func main() {
 		}
 
 		var response registerResponse
+		var convID int
 
 		if msg.Payload.Convname == "" {
 			response = registerResponse{
 				Success: false,
-				Message: "Conversation name is not valid",
+				Error: "Conversation name is not valid",
 			}
 		} else {
-			err = db.QueryRow(`
-				INSERT INTO conversations(convname, topic, pic_url, archived)
+			err = db.QueryRow(
+				`INSERT INTO conversations(convname, topic, pic_url, archived)
 				VALUES($1, $2, $3, false)
-				RETURNING conv_id;
-			`, msg.Payload.Convname, msg.Payload.Topic, msg.Payload.Picture).Scan(&convID)
+				RETURNING conv_id;`, msg.Payload.Convname, msg.Payload.Topic, msg.Payload.Picture).Scan(&convID)
 
 			if err == nil {
-				response = registerResponse{
-					Success: true,
+
+				_, err = db.Query(
+					`INSERT INTO conv_keys(user_id, conv_id, shared_key, timefrom, timeto, favorite, audio)
+					VALUES($1, $2, 0, now, 0, false, false);`, msg.Payload.UserID, convID)
+
+				if err == nil {
+					message := fmt.Sprintf("Creation OK.\n conv ID is: %s", convID)
+					response = registerResponse{
+						Success: true,
+						Error:   message,
+					}
+				} else {
+					dberr := dberror.GetError(err)
+					switch e := dberr.(type) {
+					case *dberror.Error:
+						errmsg := e.Error()
+						response = registerResponse{
+							Success: false,
+							Error:   errmsg,
+						}
+					default :
+						response = registerResponse {
+							Success: false,
+						}
+					}
+
+					_, err = db.Query(
+						`DELETE FROM conversation WHERE conv_id = $1;`, convID)
 				}
 			} else {
 				dberr := dberror.GetError(err)
 				switch e := dberr.(type) {
 				case *dberror.Error:
 					errmsg := e.Error()
-				}
-				response = registerResponse{
-					Success: false,
-					Error:   errmsg,
+					response = registerResponse{
+						Success: false,
+						Error:   errmsg,
+					}
+				default :
+					response = registerResponse {
+						Success: false,
+					}
 				}
 			}
 		}

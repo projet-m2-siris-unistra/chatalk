@@ -63,6 +63,20 @@ services:
       - DB_PASS=chatalk
       - DB_MODE=disable
 
+  conv_manag:
+    build: conv_manag/
+    depends_on:
+      - bus
+      - db-migrations
+    environment:
+      - NATS_URL=nats://bus:4222
+      - NATS_CLUSTER_ID=chatalk
+      - DB_HOST=db
+      - DB_DB=chatalk
+      - DB_USER=chatalk
+      - DB_PASS=chatalk
+      - DB_MODE=disable
+
   login:
     build: login/
     depends_on:

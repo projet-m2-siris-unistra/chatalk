@@ -20,15 +20,15 @@ type registerRequest struct {
 	Action  string `json:"action"`
 	WsID    string `json:"ws-id"`
 	Payload struct {
-		Type   int    `json:"type"`
-		Userid string `json:"user_id"`
-		Convid string `json:"conv_id"`
+		Type   int `json:"type"`
+		Userid int `json:"user_id"`
+		Convid int `json:"conv_id"`
 	} `json:"payload"`
 }
 
 type registerResponse struct {
 	Success bool  `json:"success"`
-	Error   error `json:"error,omitempty"`
+	Error   string `json:"error,omitempty"`
 }
 
 // get environment variable, if not found will be set to `fallback` value
@@ -88,22 +88,21 @@ func main() {
 
 		var response registerResponse
 
-		if msg.Payload.Userid == nil {
+		if msg.Payload.Userid == -1 {
 			response = registerResponse{
 				Success: false,
-				Message: "User ID is not valid",
+				Error: "User ID is not valid",
 			}
-		} else if msg.Payload.Convid == nil {
+		} else if msg.Payload.Convid == -1 {
 			response = registerResponse{
 				Success: false,
-				Message: "Conversation ID is not valid",
+				Error: "Conversation ID is not valid",
 			}
 		} else if msg.Payload.Type == 1 { // add participant
-			err = db.QueryRow(`
+			_, err = db.Query(`
 				INSERT INTO conv_keys(user_id, conv_id, timefrom, shared_key, favorite, audio)
-				VALUES($1, $2, 0, 0, false, false)
-				RETURNING key_id;
-			`, msg.Payload.Userid, msg.Payload.Convid).Scan(&convID)
+				VALUES($1, $2, 0, 0, false, false);
+			`, msg.Payload.Userid, msg.Payload.Convid)
 
 			if err == nil {
 				response = registerResponse{
@@ -114,14 +113,14 @@ func main() {
 				switch e := dberr.(type) {
 				case *dberror.Error:
 					errmsg := e.Error()
-				}
-				response = registerResponse{
-					Success: false,
-					Error:   errmsg,
+					response = registerResponse{
+						Success: false,
+						Error:   errmsg,
+					}
 				}
 			}
 		} else if msg.Payload.Type == 2 { //delete participant
-			err = db.Query(`
+			_, err = db.Query(`
 				DELETE FROM conv_keys
 				WHERE user_id = $1 AND conv_id = $2
 			`, msg.Payload.Userid, msg.Payload.Convid)
@@ -135,10 +134,10 @@ func main() {
 				switch e := dberr.(type) {
 				case *dberror.Error:
 					errmsg := e.Error()
-				}
-				response = registerResponse{
-					Success: false,
-					Error:   errmsg,
+					response = registerResponse{
+						Success: false,
+						Error:   errmsg,
+					}
 				}
 			}
 		}

@@ -29,6 +29,9 @@ func isValidServiceName(name string) bool {
 	switch name {
 	case
 		"register",
+		"conv_creation",
+		"conv_manag",
+		"msg_sender",
 		"login":
 		return true
 	}

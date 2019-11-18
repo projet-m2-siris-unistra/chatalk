@@ -109,20 +109,37 @@
           <input id="password1" name="password" type="password" required>
         </label>
         <button type="button" id="exec_login">Execute</button>
-        <h2>Logs</h2>
-        <p>Here are answers got from the websocket.</p>
-        <p>Open the web console (F12) to get more detailled informations.</p>
-        <div id="answers"></div>
+      </section>
+      <section>
+        <h2>Call to <strong>Conv creation</strong> service</h2>
+        <p>This service is used to create a conversation.</p>
+        <label for="userid1">
+          <span>Userid:</span>
+          <input id="userid1" name="userid1" type="text" required>
+        </label>
+        <label for="convname">
+          <span>convname:</span>
+          <input id="convname" name="convname" type="text" required>
+        </label>
+        <label for="topic">
+          <span>topic:</span>
+          <input id="topic" name="topic" type="text" required>
+        </label>
+        <label for="picture">
+          <span>topic:</span>
+          <input id="picture" name="picture" type="text" required>
+        </label>
+        <button type="button" id="exec_create">Execute</button>
       </section>
       <section>
         <h2>Call to <strong>Management</strong> service</h2>
         <p>This service is used to manage conversation.</p>
         <label for="userid">
-          <span>Username:</span>
-          <input id="userid" name="username" type="text" required>
+          <span>Userid:</span>
+          <input id="userid" name="userid" type="text" required>
         </label>
         <label for="convid">
-          <span>Username:</span>
+          <span>convid:</span>
           <input id="convid" name="convid" type="text" required>
         </label>
         <label for="manag_type">
@@ -130,10 +147,6 @@
           <input id="manag_type" name="manag_type" type="text" required>
         </label>
         <button type="button" id="exec_manag">Execute</button>
-        <h2>Logs</h2>
-        <p>Here are answers got from the websocket.</p>
-        <p>Open the web console (F12) to get more detailled informations.</p>
-        <div id="answers"></div>
       </section>
     </div>
     <script>
@@ -148,15 +161,20 @@
       const passwordConfirmationInput = document.getElementById('password_confirmation');
       const username1Input = document.getElementById('username1');
       const password1Input = document.getElementById('password1');
-      const password1Input = document.getElementById('userid');
-      const password1Input = document.getElementById('convid');
-      const password1Input = document.getElementById('manag_type');
+      const useridInput = document.getElementById('userid');
+      const convidInput = document.getElementById('convid');
+      const manag_typeInput = document.getElementById('manag_type');
+      const userid1Input = document.getElementById('userid1');
+      const convnameInput = document.getElementById('convname');
+      const topicInput = document.getElementById('topic');
+      const pictureInput = document.getElementById('picture');
 
       // buttons
       const connectBtn = document.getElementById('connect');
       const execRegisterBtn = document.getElementById('exec_register');
       const execLoginBtn = document.getElementById('exec_login');
-      const execLoginBtn = document.getElementById('exec_manag');
+      const execCreateBtn = document.getElementById('exec_create');
+      const execManagBtn = document.getElementById('exec_manag');
 
       // output
       const answers = document.getElementById('answers');
@@ -223,6 +241,45 @@
         console.info('login service: sending following payload:', payload);
         window.connection.send(JSON.stringify({
           action: 'login',
+          payload,
+        }));
+      });
+
+      execCreateBtn.addEventListener('click', (e) => {
+        if (!isWsOpen) {
+          console.error('Websocket is not open.');
+          return;
+        }
+
+        const payload = {
+          userid:  parseInt(userid1Input.value,10),
+          convname: convnameInput.value,
+          topic: topicInput.value,
+          picture:  pictureInput.value,
+        };
+
+        console.info('conv_creation service: sending following payload:', payload);
+        window.connection.send(JSON.stringify({
+          action: 'conv_creation',
+          payload,
+        }));
+      });
+
+      execManagBtn.addEventListener('click', (e) => {
+        if (!isWsOpen) {
+          console.error('Websocket is not open.');
+          return;
+        }
+
+        const payload = {
+          userid: parseInt(useridInput.value,10),
+          convid: parseInt(convidInput.value,10),
+          type: parseInt(manag_typeInput.value,10),
+        };
+
+        console.info('conv_manag service: sending following payload:', payload);
+        window.connection.send(JSON.stringify({
+          action: 'conv_manag',
           payload,
         }));
       });

@@ -3,6 +3,7 @@ module chatalk.fr/conv_creation
 go 1.12
 
 require (
+	github.com/Shyp/go-dberror v0.0.0-20180123195207-36ecba57721e
 	github.com/google/uuid v1.1.1
 	github.com/lib/pq v1.2.0
 	github.com/nats-io/nats.go v1.9.1
