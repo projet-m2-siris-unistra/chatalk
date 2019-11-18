@@ -26,8 +26,8 @@ type loginRequest struct {
 }
 
 type loginResponse struct {
-	Message string `json:"message,omitempty"`
-	Error   error  `json:"error,omitempty"`
+	Success bool `json:"success"`
+	Error   string  `json:"error,omitempty"`
 }
 
 // get environment variable, if not found will be set to `fallback` value
@@ -85,6 +85,7 @@ func main() {
 			return
 		}
 
+
 		var response loginResponse
 		var userID int
 		var hash []byte
@@ -93,48 +94,65 @@ func main() {
 			return
 		}
 
-		row := db.QueryRow(`
+		if(msg.Payload.Password == "" ) {
+			message := fmt.Sprintf("No password given")
+
+			response = loginResponse{
+				Success: false,
+				Error:   message,
+			}
+		} else if (msg.Payload.Username == "") {
+			message := fmt.Sprintf("No username given")
+
+			response = loginResponse{
+				Success: false,
+				Error:   message,
+			}
+		} else {
+			row := db.QueryRow(`
 			SELECT user_id, pw_hash
 			FROM users
 			WHERE username = $1;
 		`, msg.Payload.Username)
 
-		errSql := row.Scan(&userID,&hash)
+			errSql := row.Scan(&userID,&hash)
 
-		switch errSql {
-		case sql.ErrNoRows:
-			fmt.Println("No rows were returned!")
-			message := fmt.Sprintf("No Username", userID)
-
-			response = loginResponse{
-				Message: message,
-				Error:   errSql,
-			}
-		case nil:
-			errHash := bcrypt.CompareHashAndPassword(hash, []byte(msg.Payload.Password))
-			if (errHash == nil) {
-				message := fmt.Sprintf("Connection OK.\n User ID is: %s", userID)
+			switch errSql {
+			case sql.ErrNoRows:
+				fmt.Println("No rows were returned!")
+				message := fmt.Sprintf("User not registered")
 
 				response = loginResponse{
-					Message: message,
-					Error:   errHash,
+					Success: false,
+					Error:   message,
 				}
-			} else {
-				message := fmt.Sprintf("Password not ok", userID)
+			case nil:
+				errHash := bcrypt.CompareHashAndPassword(hash, []byte(msg.Payload.Password))
+				if (errHash == nil) {
+					message := fmt.Sprintf("Connection OK.\n User ID is: %s", userID)
+
+					response = loginResponse{
+						Success: true,
+						Error:   message,
+					}
+				} else {
+					message := fmt.Sprintf("Password not ok")
+
+					response = loginResponse{
+						Success: false,
+						Error:   message,
+					}
+				}
+			default:
+				message := fmt.Sprintf("ERROR")
 
 				response = loginResponse{
-					Message: message,
-					Error:   errHash,
+					Success: false,
+					Error:   message,
 				}
-			}
-		default:
-			message := fmt.Sprintf("ERROR", userID)
-
-			response = loginResponse{
-				Message: message,
-				Error:   errSql,
 			}
 		}
+
 
 		j, err := json.Marshal(response)
 		nc.Publish("ws."+msg.WsID+".send", j)
