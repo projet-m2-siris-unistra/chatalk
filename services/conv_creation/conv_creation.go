@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	dberror "github.com/Shyp/go-dberror"
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
 	nats "github.com/nats-io/nats.go"
@@ -26,8 +27,8 @@ type registerRequest struct {
 }
 
 type registerResponse struct {
-	Message string `json:"message,omitempty"`
-	Error   error  `json:"error,omitempty"`
+	Success bool  `json:"success"`
+	Error   error `json:"error,omitempty"`
 }
 
 // get environment variable, if not found will be set to `fallback` value
@@ -89,22 +90,30 @@ func main() {
 
 		if msg.Payload.Convname == "" {
 			response = registerResponse{
+				Success: false,
 				Message: "Conversation name is not valid",
 			}
 		} else {
-			var convID int
-
 			err = db.QueryRow(`
 				INSERT INTO conversations(convname, topic, pic_url, archived)
 				VALUES($1, $2, $3, false)
 				RETURNING conv_id;
 			`, msg.Payload.Convname, msg.Payload.Topic, msg.Payload.Picture).Scan(&convID)
 
-			message := fmt.Sprintf("Conversation ID is: %s", convID)
-
-			response = registerResponse{
-				Message: message,
-				Error:   err,
+			if err == nil {
+				response = registerResponse{
+					Success: true,
+				}
+			} else {
+				dberr := dberror.GetError(err)
+				switch e := dberr.(type) {
+				case *dberror.Error:
+					errmsg := e.Error()
+				}
+				response = registerResponse{
+					Success: false,
+					Error:   errmsg,
+				}
 			}
 		}
 
