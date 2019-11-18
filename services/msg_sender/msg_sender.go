@@ -8,7 +8,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"strings"
 
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
@@ -17,10 +16,12 @@ import (
 )
 
 type messageIngress struct {
+	WsID string `json:"ws-id"`
 	Src int32 `json:"source"`
 	Dst int32 `json:"destination"`
 	Dev int32 `json:"device"`
 	Payload string `json:"payload"`
+
 }
 
 type messageResponse struct {
@@ -85,9 +86,9 @@ func main() {
 
 		var response messageResponse
 
-		if msg.Payload.Convname == "" {
+		if msg.Payload == "" {
 			response = messageResponse{
-				Message: "Conversation name is not valid",
+				Message: "Message is empty",
 			}
 		} else {
 			var msgID int
