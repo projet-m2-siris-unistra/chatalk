@@ -7,4 +7,5 @@ commonLabels:
 namespace: chatalk
 
 bases:
+- bus
 - entrypoint

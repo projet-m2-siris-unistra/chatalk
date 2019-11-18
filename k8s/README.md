@@ -42,7 +42,7 @@ kubectl create namespace chatalk
 First we will need to create a new secret with the credentials:
 
 ```sh
-kubectl create secret docker-registry chatalk-registry-creds \
+kubectl -n chatalk create secret docker-registry chatalk-registry-creds \
   --docker-server=registry.chatalk.fr \
   --docker-username=registry \
   --docker-password=wPf3kzeUcNfwnwCs

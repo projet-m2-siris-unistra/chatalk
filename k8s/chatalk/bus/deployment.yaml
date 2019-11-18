@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bus
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: bus
+        image: nats-streaming
+        args:
+        - --cluster_id=chatalk
+        - --http_port=8222

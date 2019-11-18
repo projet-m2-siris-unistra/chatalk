@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: entrypoint
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: entrypoint
+        image: registry.chatalk.fr/entrypoint:master
+        env:
+        - name: NATS_URL
+          value: nats://bus:4222
+        - name: NATS_CLUSTER_ID
+          value: chatalk

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bus
+spec:
+  ports:
+    - name: nats-port
+      protocol: TCP
+      port: 4222
+      targetPort: 4222
+    - name: nats-fed-port
+      protocol: TCP
+      port: 6222
+      targetPort: 6222
+    - name: nats-web-port
+      protocol: TCP
+      port: 8222
+      targetPort: 8222
