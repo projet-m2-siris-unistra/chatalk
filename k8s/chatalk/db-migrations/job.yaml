@@ -1,0 +1,15 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-migrations
+spec:
+  template:
+    spec:
+      containers:
+      - name: db-migrations
+        image: registry.chatalk.fr/db-migrations:master
+        args:
+        - -database=postgres://chatalk:chatalk@db/chatalk?sslmode=disable
+        - up
+      restartPolicy: Never
+  backoffLimit: 5
