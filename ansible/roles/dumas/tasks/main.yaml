@@ -65,6 +65,17 @@
     msg:
       - "{{runner_result.stderr_lines}}"
 
+- name: download mc binary (Minio)
+  get_url:
+    url: https://dl.min.io/client/mc/release/linux-amd64/mc
+    dest: /usr/local/bin/mc
+
+- name: set exec permission for mc (Minio)
+  file:
+    path: /usr/local/bin/mc
+    state: file
+    mode: +x
+
 - name: generate htpasswd for registry
   notify: restart registry
   htpasswd:
