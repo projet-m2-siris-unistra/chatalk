@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"strconv"
 
 	dberror "github.com/Shyp/go-dberror"
 	"github.com/google/uuid"
@@ -20,9 +21,9 @@ type registerRequest struct {
 	Action  string `json:"action"`
 	WsID    string `json:"ws-id"`
 	Payload struct {
-		Type   int `json:"type"`
-		Userid int `json:"user_id"`
-		Convid int `json:"conv_id"`
+		TypeManag   string `json:"type"`
+		UserID      string `json:"userid"`
+		ConvID      string `json:"convid"`
 	} `json:"payload"`
 }
 
@@ -87,22 +88,48 @@ func main() {
 		}
 
 		var response registerResponse
+		var userID int
+		var convID int
+		var typeManag int
 
-		if msg.Payload.Userid == -1 {
+		userID, err = strconv.Atoi(msg.Payload.UserID)
+
+		if err != nil {
+			if userID != 0 {
+				log.Println("WTF conv management: userid = %d", userID)
+			}
 			response = registerResponse{
 				Success: false,
 				Error: "User ID is not valid",
 			}
-		} else if msg.Payload.Convid == -1 {
+			goto send_msg
+		}
+
+		convID, err = strconv.Atoi(msg.Payload.ConvID)
+
+		if  err != nil {
 			response = registerResponse{
 				Success: false,
 				Error: "Conversation ID is not valid",
 			}
-		} else if msg.Payload.Type == 1 { // add participant
+			goto send_msg
+		}
+
+		typeManag, err = strconv.Atoi(msg.Payload.TypeManag)
+		if  err != nil {
+			response = registerResponse{
+				Success: false,
+				Error: "Management Type is not valid",
+			}
+			goto send_msg
+		}
+
+
+		if typeManag == 1 { // add participant
 			_, err = db.Query(`
-				INSERT INTO conv_keys(user_id, conv_id, timefrom, shared_key, favorite, audio)
-				VALUES($1, $2, 0, 0, false, false);
-			`, msg.Payload.Userid, msg.Payload.Convid)
+				INSERT INTO conv_keys(user_id, conv_id, shared_key, timefrom, timeto, favorite, audio)
+				VALUES($1, $2, 0, current_timestamp, NULL, false, false);
+			`, userID, convID)
 
 			if err == nil {
 				response = registerResponse{
@@ -119,11 +146,14 @@ func main() {
 					}
 				}
 			}
-		} else if msg.Payload.Type == 2 { //delete participant
+			goto send_msg
+		}
+
+		if typeManag == 2 { //delete participant
 			_, err = db.Query(`
 				DELETE FROM conv_keys
 				WHERE user_id = $1 AND conv_id = $2
-			`, msg.Payload.Userid, msg.Payload.Convid)
+			`, userID, convID)
 
 			if err == nil {
 				response = registerResponse{
@@ -141,9 +171,9 @@ func main() {
 				}
 			}
 		}
-
-		j, err := json.Marshal(response)
-		nc.Publish("ws."+msg.WsID+".send", j)
+		send_msg:
+			j, err := json.Marshal(response)
+			nc.Publish("ws."+msg.WsID+".send", j)
 	})
 
 	<-c

@@ -21,7 +21,7 @@ type registerRequest struct {
 	Action  string `json:"action"`
 	WsID    string `json:"ws-id"`
 	Payload struct {
-		UserID 	 string    `json:"userid"`
+		UserID 	 string `json:"userid"`
 		Convname string `json:"convname"`
 		Topic    string `json:"topic"`
 		Picture  string `json:"picture"`

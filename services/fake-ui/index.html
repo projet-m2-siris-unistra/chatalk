@@ -272,9 +272,9 @@
         }
 
         const payload = {
-          userid: parseInt(useridInput.value,10),
-          convid: parseInt(convidInput.value,10),
-          type: parseInt(manag_typeInput.value,10),
+          userid: useridInput.value,
+          convid: convidInput.value,
+          type: manag_typeInput.value,
         };
 
         console.info('conv_manag service: sending following payload:', payload);
