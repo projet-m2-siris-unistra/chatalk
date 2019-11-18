@@ -11,3 +11,4 @@ bases:
 - db-migrations
 - bus
 - entrypoint
+- fake-ui
