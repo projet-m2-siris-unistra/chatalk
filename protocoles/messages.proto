@@ -4,6 +4,7 @@ syntax = "proto3";
 // first create the structure => message MessageType {attributes}
 // then add the messagetype into the MessageServer or MessageClient "oneof"
 
+/*TODO enum for conversation management (1 = add participant, 2 = remove paticipant)*/
 
 /*****************************************************************************
  *                           Usefull Structures                              *

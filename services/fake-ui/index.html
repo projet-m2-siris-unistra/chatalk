@@ -114,6 +114,27 @@
         <p>Open the web console (F12) to get more detailled informations.</p>
         <div id="answers"></div>
       </section>
+      <section>
+        <h2>Call to <strong>Management</strong> service</h2>
+        <p>This service is used to manage conversation.</p>
+        <label for="userid">
+          <span>Username:</span>
+          <input id="userid" name="username" type="text" required>
+        </label>
+        <label for="convid">
+          <span>Username:</span>
+          <input id="convid" name="convid" type="text" required>
+        </label>
+        <label for="manag_type">
+          <span>Type (1 or 2):</span>
+          <input id="manag_type" name="manag_type" type="text" required>
+        </label>
+        <button type="button" id="exec_manag">Execute</button>
+        <h2>Logs</h2>
+        <p>Here are answers got from the websocket.</p>
+        <p>Open the web console (F12) to get more detailled informations.</p>
+        <div id="answers"></div>
+      </section>
     </div>
     <script>
       // state
@@ -127,11 +148,15 @@
       const passwordConfirmationInput = document.getElementById('password_confirmation');
       const username1Input = document.getElementById('username1');
       const password1Input = document.getElementById('password1');
+      const password1Input = document.getElementById('userid');
+      const password1Input = document.getElementById('convid');
+      const password1Input = document.getElementById('manag_type');
 
       // buttons
       const connectBtn = document.getElementById('connect');
       const execRegisterBtn = document.getElementById('exec_register');
       const execLoginBtn = document.getElementById('exec_login');
+      const execLoginBtn = document.getElementById('exec_manag');
 
       // output
       const answers = document.getElementById('answers');
