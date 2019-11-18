@@ -9,6 +9,7 @@ spec:
       containers:
       - name: bus
         image: nats-streaming
+        imagePullPolicy: Always
         args:
         - --cluster_id=chatalk
         - --http_port=8222
