@@ -9,3 +9,4 @@ spec:
       containers:
       - name: fake-ui
         image: registry.chatalk.fr/fake-ui:master
+        imagePullPolicy: Always

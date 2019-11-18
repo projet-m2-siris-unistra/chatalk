@@ -1,12 +1,12 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  name: fake-ui
+  name: entrypoint
 spec:
   rules:
-  - host: fake-ui.chatalk.fr
+  - host: ws.chatalk.fr
     http:
       paths:
       - backend:
-          serviceName: fake-ui
-          servicePort: 80
+          serviceName: entrypoint
+          servicePort: 42042

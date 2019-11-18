@@ -9,6 +9,7 @@ spec:
       containers:
       - name: db
         image: postgres:12-alpine
+        imagePullPolicy: Always
         env:
         - name: POSTGRES_USER
           value: chatalk

@@ -9,6 +9,7 @@ spec:
       containers:
       - name: entrypoint
         image: registry.chatalk.fr/entrypoint:master
+        imagePullPolicy: Always
         env:
         - name: NATS_URL
           value: nats://bus:4222
