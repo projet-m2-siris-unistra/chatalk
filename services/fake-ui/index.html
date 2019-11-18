@@ -97,6 +97,23 @@
         <p>Open the web console (F12) to get more detailled informations.</p>
         <div id="answers"></div>
       </section>
+      <section>
+        <h2>Call to <strong>Login</strong> service</h2>
+        <p>This service is used to login.</p>
+        <label for="username">
+          <span>Username:</span>
+          <input id="username1" name="username" type="text" required>
+        </label>
+        <label for="password">
+          <span>Password:</span>
+          <input id="password1" name="password" type="password" required>
+        </label>
+        <button type="button" id="exec_login">Execute</button>
+        <h2>Logs</h2>
+        <p>Here are answers got from the websocket.</p>
+        <p>Open the web console (F12) to get more detailled informations.</p>
+        <div id="answers"></div>
+      </section>
     </div>
     <script>
       // state
@@ -108,10 +125,13 @@
       const emailInput = document.getElementById('email');
       const passwordInput = document.getElementById('password');
       const passwordConfirmationInput = document.getElementById('password_confirmation');
+      const username1Input = document.getElementById('username1');
+      const password1Input = document.getElementById('password1');
 
       // buttons
       const connectBtn = document.getElementById('connect');
       const execRegisterBtn = document.getElementById('exec_register');
+      const execLoginBtn = document.getElementById('exec_login');
 
       // output
       const answers = document.getElementById('answers');
@@ -163,6 +183,25 @@
           payload,
         }));
       });
+
+      execLoginBtn.addEventListener('click', (e) => {
+        if (!isWsOpen) {
+          console.error('Websocket is not open.');
+          return;
+        }
+
+        const payload = {
+          username: username1Input.value,
+          password: password1Input.value,
+        };
+
+        console.info('login service: sending following payload:', payload);
+        window.connection.send(JSON.stringify({
+          action: 'login',
+          payload,
+        }));
+      });
+
     </script>
   </body>
 </html>
