@@ -1,0 +1,12 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ui
+spec:
+  rules:
+  - host: beta.chatalk.fr
+    http:
+      paths:
+      - backend:
+          serviceName: ui
+          servicePort: 80
