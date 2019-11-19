@@ -19,9 +19,12 @@ Once started all these services will be run:
 - `bus`: the NATS streaming bus
 - `entrypoint`: handle all websockets, dispatch requests to the right service through the `bus`
 - `register`: register a user in the `db`
-- `ui`: a fake UI to do some tests
+- `fake-ui`: a fake UI to do some tests
+- `ui`: the real UI
 
-The UI will be available on http://localhost:1234.
+The UI will be available on http://localhost:4321.
+
+The fake UI will be available on http://localhost:1234.
 
 The websocket will be exposed on ws://localhost:42042.
 

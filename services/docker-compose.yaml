@@ -114,7 +114,12 @@ services:
       - DB_PASS=chatalk
       - DB_MODE=disable
 
-  ui:
+  fake-ui:
     build: fake-ui/
     ports:
       - 1234:80
+
+  ui:
+    build: ../ui/
+    ports:
+      - 4321:80

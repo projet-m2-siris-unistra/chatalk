@@ -25,6 +25,34 @@ test-ui:
       - ".gitlab-ci.yml"
       - "ui/**/*"
 
+build-ui:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  tags:
+    - docker
+    - socket
+  script:
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - |
+      if [ "$CI_COMMIT_REF_SLUG" == master ]; then
+        ARGS="--destination $CI_REGISTRY/$IMAGE"
+      fi
+      /kaniko/executor $ARGS \
+        --destination $CI_REGISTRY/$IMAGE:$CI_COMMIT_REF_SLUG \
+        --context $CI_PROJECT_DIR/$IMAGE \
+        --dockerfile $CI_PROJECT_DIR/$IMAGE/Dockerfile \
+        --build-arg "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+        --build-arg "COMMIT=$CI_COMMIT_SHA" \
+        --build-arg "VERSION=$CI_COMMIT_REF_SLUG"
+  variables:
+    IMAGE: ui
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "ui/**/*"
+
 deploy-ui:
   stage: deploy
   tags:
