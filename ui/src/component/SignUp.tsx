@@ -14,6 +14,8 @@ import Logo from "./logo.png";
 import { createMuiTheme, withStyles, ThemeProvider } from '@material-ui/core/styles';
 
 import { useWebsocket } from './WebsocketProvider';
+import { State } from '../store/state';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -70,6 +72,7 @@ const CssTextField = withStyles({
 const SignUp: React.FC = () => {
   const classes = useStyles();
   const { connection, isOpen } = useWebsocket();
+  const auth = useSelector((state: State) => state.auth);
 
   const signUp = () => {
     if (!isOpen || connection === null) {
@@ -90,6 +93,7 @@ const SignUp: React.FC = () => {
       <Typography component="h1" variant="h2" align='center' >
         Sign up
       </Typography>
+      <pre>{JSON.stringify(auth)}</pre>
       <form className={classes.form} noValidate>
         <Grid container spacing={2}>
           <Grid item xs={12}>

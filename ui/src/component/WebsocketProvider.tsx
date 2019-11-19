@@ -1,4 +1,6 @@
 import React, {ReactNode, Context, useState, useEffect, useRef, MutableRefObject, useContext} from 'react';
+import store from '../store';
+import { setAuth } from '../store/actions';
 
 interface WebsocketContextValue {
   isOpen: boolean;
@@ -39,9 +41,24 @@ const WebsocketProvider: React.FC<Props> = ({ children, wsUrl }: Props) => {
       setIsOpen(false);
     };
     connectionRef.current.onmessage = (msg) => {
+      setIsOpen(true);
       const data = JSON.parse(msg.data);
       console.log('ws messaged:', data);
-      setIsOpen(true);
+      if (!data || !data.action) return;
+      switch (data.action) {
+        case 'register':
+          console.log('got register response');
+          break;
+        case 'ping':
+          console.log('got ping response');
+          store.dispatch(setAuth({
+            userId: 42,
+            username: 'toto',
+            displayName: `Toto@${data['ws-id']}`,
+            avatar: 'toto.jpg',
+          }));
+          break;
+      }
     };
 
     // can return disconnect function
