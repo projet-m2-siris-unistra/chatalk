@@ -29,6 +29,7 @@ func isValidServiceName(name string) bool {
 	switch name {
 	case
 		"register",
+		"ping",
 		"conv_creation",
 		"conv_manag",
 		"msg_sender",

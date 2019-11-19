@@ -49,6 +49,15 @@ services:
       - DB_PASS=chatalk
       - DB_MODE=disable
 
+  ping:
+    build: ping/
+    depends_on:
+      - bus
+      - db-migrations
+    environment:
+      - NATS_URL=nats://bus:4222
+      - NATS_CLUSTER_ID=chatalk
+
   conv_creation:
     build: conv_creation/
     depends_on:
