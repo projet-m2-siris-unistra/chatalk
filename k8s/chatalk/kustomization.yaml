@@ -14,3 +14,4 @@ bases:
 - fake-ui
 - ping
 - register
+- login

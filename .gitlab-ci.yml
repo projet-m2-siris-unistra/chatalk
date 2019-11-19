@@ -150,3 +150,12 @@ build-service-ping:
     changes:
       - ".gitlab-ci.yml"
       - "services/ping/**/*"
+
+build-service-login:
+  <<: *build-service-image
+  variables:
+    IMAGE: login
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/login/**/*"
