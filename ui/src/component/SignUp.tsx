@@ -13,6 +13,8 @@ import Container from '@material-ui/core/Container';
 import Logo from "./logo.png";
 import { createMuiTheme, withStyles, ThemeProvider } from '@material-ui/core/styles';
 
+import { useWebsocket } from './WebsocketProvider';
+
 const useStyles = makeStyles(theme => ({
   '@global': {
     body: {
@@ -67,6 +69,19 @@ const CssTextField = withStyles({
 
 const SignUp: React.FC = () => {
   const classes = useStyles();
+  const { connection, isOpen } = useWebsocket();
+
+  const signUp = () => {
+    if (!isOpen || connection === null) {
+      console.error('ws is not open');
+      return;
+    }
+
+    connection.send(JSON.stringify({
+      action: "register",
+      payload: {},
+    }));
+  };
 
   return (
     <div className={classes.paper}>
@@ -147,11 +162,12 @@ const SignUp: React.FC = () => {
         </Grid>
         <ThemeProvider theme={theme}>
         <Button
-          type="submit"
+          type="button"
           fullWidth
           variant="contained"
           color="primary"
           className={classes.submit}
+          onClick={signUp}
         >
           Sign Up
         </Button>

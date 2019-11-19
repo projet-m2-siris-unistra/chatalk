@@ -27,6 +27,20 @@ const WebsocketProvider: React.FC<Props> = ({ children, wsUrl }: Props) => {
     connectionRef.current = new WebSocket(wsUrl);
     connectionRef.current.binaryType = 'blob';
     connectionRef.current.onopen = () => {
+      console.log('ws opened');
+      setIsOpen(true);
+    };
+    connectionRef.current.onclose = () => {
+      console.log('ws closed');
+      setIsOpen(false);
+    };
+    connectionRef.current.onerror = (error) => {
+      console.log('ws errored:', error);
+      setIsOpen(false);
+    };
+    connectionRef.current.onmessage = (msg) => {
+      const data = JSON.parse(msg.data);
+      console.log('ws messaged:', data);
       setIsOpen(true);
     };
 
