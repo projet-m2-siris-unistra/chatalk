@@ -9,10 +9,12 @@ import Credits from './component/Credits';
 import NotFound from './component/NotFound';
 import Privacy from './component/Privacy';
 import Terms from './component/Terms';
+import WebsocketProvider from './component/WebsocketProvider';
+
 
 const App: React.FC = () => {
   return (
-    <>
+    <WebsocketProvider wsUrl="ws://ws.chatalk.fr">
       <CssBaseline/>
       <Router>
         <Switch>
@@ -22,11 +24,11 @@ const App: React.FC = () => {
           <Route path="/conversation/:id?" component={ ConversationsList } />
           <Route exact path="/credits" component={ Credits } />
           <Route exact path="/privacy" component= { Privacy } />
-	  <Route exact path="/terms" component= { Terms } />
+          <Route exact path="/terms" component= { Terms } />
           <Route component={ NotFound } />
         </Switch>
       </Router>
-    </>
+    </WebsocketProvider>
   );
 };
 
