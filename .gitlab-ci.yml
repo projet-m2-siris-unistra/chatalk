@@ -99,7 +99,6 @@ deploy-blog:
       fi
       /kaniko/executor $ARGS \
         --destination $CI_REGISTRY/$IMAGE:$CI_COMMIT_REF_SLUG \
-        --destination $CI_REGISTRY/$IMAGE:$CI_COMMIT_SHA \
         --context $CI_PROJECT_DIR/services/$IMAGE \
         --dockerfile $CI_PROJECT_DIR/services/$IMAGE/Dockerfile \
         --build-arg "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
@@ -125,3 +124,8 @@ build-service-register:
   <<: *build-service-image
   variables:
     IMAGE: register
+
+build-service-ping:
+  <<: *build-service-image
+  variables:
+    IMAGE: ping
