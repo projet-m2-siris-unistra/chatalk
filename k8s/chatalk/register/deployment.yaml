@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: register
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: register
+        image: registry.chatalk.fr/register:master
+        imagePullPolicy: Always
+        env:
+        - name: NATS_URL
+          value: nats://bus:4222
+        - name: NATS_CLUSTER_ID
+          value: chatalk
+        - name: DB_HOST
+          value: db
+        - name: DB_DB
+          value: chatalk
+        - name: DB_USER
+          value: chatalk
+        - name: DB_PASS
+          value: chatalk
+        - name: DB_MODE
+          value: disable

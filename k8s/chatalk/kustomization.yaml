@@ -13,3 +13,4 @@ bases:
 - entrypoint
 - fake-ui
 - ping
+- register
