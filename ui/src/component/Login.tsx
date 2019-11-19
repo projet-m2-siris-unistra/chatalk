@@ -67,12 +67,12 @@ const Login: React.FC = () => {
 
   const classes = useStyles();
   return (
-    
+
       <div className={classes.paper}>
-        
+
         <Container component="main" maxWidth="xs">
         <CssBaseline />
-        <img src={Logo} />
+        <img src={Logo} alt="ChaTalK" />
         <Typography component="h1" variant="h2" align='center'>
           Sign in
         </Typography>
@@ -118,7 +118,7 @@ const Login: React.FC = () => {
             Sign In
           </Button>
           </ThemeProvider>
-          
+
           <Grid container spacing={2} direction="column" justify="space-between" alignItems ="center">
             <Grid item xs>
               <Link to="#" style={{color: '#0b6374'}}>
@@ -131,10 +131,10 @@ const Login: React.FC = () => {
               </Link>
             </Grid>
           </Grid>
-         
+
         </form>
-    
-     
+
+
     </Container>
     <footer className={classes.footer}>
      <Container component="main" maxWidth="sm">
@@ -159,9 +159,9 @@ const Login: React.FC = () => {
     </footer>
 
     </div>
-    
- 
-    
+
+
+
   );
 };
 

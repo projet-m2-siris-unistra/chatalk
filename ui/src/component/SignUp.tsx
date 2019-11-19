@@ -49,7 +49,7 @@ const theme = createMuiTheme({
 
 const CssTextField = withStyles({
   root: {
-    
+
     '& .MuiOutlinedInput-root': {
       '& fieldset': {
         borderColor: '#0b6374',
@@ -57,7 +57,7 @@ const CssTextField = withStyles({
       '&.Mui-focused fieldset': {
         borderColor: '#0b6374',
       },
-      
+
   },
   '& label.Mui-focused': {
     color: '#0b6374',
@@ -65,17 +65,14 @@ const CssTextField = withStyles({
 }
 })(TextField);
 
-
-
 const SignUp: React.FC = () => {
   const classes = useStyles();
 
   return (
-    
     <div className={classes.paper}>
       <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <img src={Logo} />
+      <img src={Logo} alt="ChaTalK" />
       <Typography component="h1" variant="h2" align='center' >
         Sign up
       </Typography>
@@ -143,7 +140,7 @@ const SignUp: React.FC = () => {
                   <Link to="/Privacy" style={{color: '#0b6374'}} >Privacy policy</Link>
                 </div>
               }
-              
+
             />
           </ThemeProvider>
           </Grid>
@@ -166,7 +163,7 @@ const SignUp: React.FC = () => {
             </Link>
           </Grid>
         </Grid>
-       
+
       </form>
       </Container>
       <footer className={classes.footer}>
