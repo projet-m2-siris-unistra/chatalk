@@ -12,3 +12,4 @@ bases:
 - bus
 - entrypoint
 - fake-ui
+- ping

@@ -83,6 +83,7 @@ deploy-blog:
       - ".gitlab-ci.yml"
       - "blog/**/*"
 
+# Services part
 .build-service-image: &build-service-image
   stage: build
   image:
@@ -109,23 +110,43 @@ build-service-entrypoint:
   <<: *build-service-image
   variables:
     IMAGE: entrypoint
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/entrypoint/**/*"
 
 build-service-db-migrations:
   <<: *build-service-image
   variables:
     IMAGE: db-migrations
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/db-migrations/**/*"
 
 build-service-fake-ui:
   <<: *build-service-image
   variables:
     IMAGE: fake-ui
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/fake-ui/**/*"
 
 build-service-register:
   <<: *build-service-image
   variables:
     IMAGE: register
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/register/**/*"
 
 build-service-ping:
   <<: *build-service-image
   variables:
     IMAGE: ping
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/ping/**/*"

@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ping
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: ping
+        image: registry.chatalk.fr/ping:master
+        imagePullPolicy: Always
+        env:
+        - name: NATS_URL
+          value: nats://bus:4222
+        - name: NATS_CLUSTER_ID
+          value: chatalk

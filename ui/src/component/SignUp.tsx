@@ -78,8 +78,7 @@ const SignUp: React.FC = () => {
     }
 
     connection.send(JSON.stringify({
-      action: "register",
-      payload: {},
+      action: "ping",
     }));
   };
 
