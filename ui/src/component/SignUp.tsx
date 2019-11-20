@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -73,6 +73,11 @@ const SignUp: React.FC = () => {
   const classes = useStyles();
   const { connection, isOpen } = useWebsocket();
   const auth = useSelector((state: State) => state.auth);
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordconf, setPasswordconf] = useState('');
+
 
   const signUp = () => {
     if (!isOpen || connection === null) {
@@ -81,7 +86,13 @@ const SignUp: React.FC = () => {
     }
 
     connection.send(JSON.stringify({
-      action: "ping",
+      action: "register",
+      payload:{
+        username,
+        email,
+        password,
+        "password-confirmation": passwordconf,
+      }
     }));
   };
 
@@ -105,6 +116,8 @@ const SignUp: React.FC = () => {
               required
               fullWidth
               id="Username"
+              value={username}
+              onChange={e => setUsername(e.target.value)}
               label="Username"
               autoFocus
             />
@@ -116,6 +129,8 @@ const SignUp: React.FC = () => {
               required
               fullWidth
               id="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
               label="Email Address"
               name="email"
               autoComplete="email"
@@ -130,6 +145,8 @@ const SignUp: React.FC = () => {
               label="Password"
               type="password"
               id="password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
               autoComplete="current-password"
             />
           </Grid>
@@ -143,6 +160,8 @@ const SignUp: React.FC = () => {
               label="Password confirmation"
               type="password"
               id="passwordconf"
+              value={passwordconf}
+              onChange={e => setPasswordconf(e.target.value)}
               autoComplete="current-password"
             />
           </Grid>
