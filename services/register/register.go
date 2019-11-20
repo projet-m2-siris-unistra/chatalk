@@ -40,6 +40,11 @@ type registerResponse struct {
 	Error   string `json:"errors,omitempty"` //Errors []err
 }
 
+type sendInfoRequest struct {
+	Action string `json:"action"`
+	WsID   string `json:"ws-id"`
+	UserID int    `json:"userid"`
+}
 // get environment variable, if not found will be set to `fallback` value
 func getEnv(key, fallback string) string {
 	if value, ok := os.LookupEnv(key); ok {
@@ -128,8 +133,8 @@ func main() {
 			}
 
 			err = db.QueryRow(`
-				INSERT INTO users(username, email, pw_hash)
-				VALUES($1, $2, $3)
+				INSERT INTO users(username, email, pw_hash, display_name, status, pic_url)
+				VALUES($1, $2, $3, NULL, NULL, NULL)
 				RETURNING user_id;
 			`, msg.Payload.Username, msg.Payload.Email, hash).Scan(&userID)
 
@@ -137,6 +142,15 @@ func main() {
 				response = registerResponse {
 					Success: true,
 				}
+				var req sendInfoRequest
+				req = sendInfoRequest {
+					Action : "all",
+					WsID : msg.WsID,
+					UserID: userID,
+				}
+				j, _ := json.Marshal(req)
+				sendInfo := fmt.Sprintf("service.%s", "sendInfo")
+				sc.Publish(sendInfo, []byte(j))
 			} else {
 				dberr := dberror.GetError(err)
 				switch e := dberr.(type) {

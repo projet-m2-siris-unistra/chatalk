@@ -30,6 +30,13 @@ type loginResponse struct {
 	Error   string  `json:"error,omitempty"`
 }
 
+type sendInfoRequest struct {
+	Action string `json:"action"`
+	WsID   string `json:"ws-id"`
+	UserID int    `json:"userid"`
+}
+
+
 // get environment variable, if not found will be set to `fallback` value
 func getEnv(key, fallback string) string {
 	if value, ok := os.LookupEnv(key); ok {
@@ -119,7 +126,7 @@ func main() {
 
 			switch errSql {
 			case sql.ErrNoRows:
-				fmt.Println("No rows were returned!")
+				log.Println("No rows were returned!")
 				message := fmt.Sprintf("User not registered")
 
 				response = loginResponse{
@@ -129,12 +136,21 @@ func main() {
 			case nil:
 				errHash := bcrypt.CompareHashAndPassword(hash, []byte(msg.Payload.Password))
 				if (errHash == nil) {
-					message := fmt.Sprintf("Connection OK.\n User ID is: %s", userID)
+					message := fmt.Sprintf("Connection OK.\n User ID is: %d", userID)
 
 					response = loginResponse{
 						Success: true,
 						Error:   message,
 					}
+					var req sendInfoRequest
+					req = sendInfoRequest {
+						Action : "all",
+						WsID : msg.WsID,
+						UserID: userID,
+					}
+					j, _ := json.Marshal(req)
+					sendInfo := fmt.Sprintf("service.%s", "send-info")
+					sc.Publish(sendInfo, []byte(j))
 				} else {
 					message := fmt.Sprintf("Password not ok")
 

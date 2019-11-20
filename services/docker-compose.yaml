@@ -100,6 +100,21 @@ services:
       - DB_PASS=chatalk
       - DB_MODE=disable
 
+  send-info:
+    build: send-info/
+    depends_on:
+      - bus
+      - db-migrations
+    environment:
+      - NATS_URL=nats://bus:4222
+      - NATS_CLUSTER_ID=chatalk
+      - DB_HOST=db
+      - DB_DB=chatalk
+      - DB_USER=chatalk
+      - DB_PASS=chatalk
+      - DB_MODE=disable
+
+
   msg_sender:
     build: msg_sender
     depends_on:
