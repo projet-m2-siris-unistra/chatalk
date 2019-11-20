@@ -16,12 +16,11 @@ import (
 )
 
 type messageIngress struct {
-	WsID string `json:"ws-id"`
-	Src int32 `json:"source"`
-	Dst int32 `json:"destination"`
-	Dev int32 `json:"device"`
+	WsID    string `json:"ws-id"`
+	Src     int32  `json:"source"`
+	Dst     int32  `json:"destination"`
+	Dev     int32  `json:"device"`
 	Payload string `json:"payload"`
-
 }
 
 type messageResponse struct {
@@ -101,8 +100,7 @@ func main() {
 
 			message := fmt.Sprintf("Message ID is: %s", msgID)
 
-			// Un truc genre comme ça
-			// nc.Publish("conv."+msg.Dst, msg.Payload)
+			nc.Publish("conv."+string(msg.Dst), []byte(msg.Payload))
 
 			response = messageResponse{
 				Message: message,

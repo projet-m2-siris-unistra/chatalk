@@ -39,7 +39,14 @@ func isValidServiceName(name string) bool {
 	return false
 }
 
+func unsubscribeNatsTopics(s map[string]*nats.Subscription) {
+	for _, sub := range s {
+		sub.Unsubscribe()
+	}
+}
+
 func handleWS(w http.ResponseWriter, r *http.Request) {
+	subscriptions := make(map[string]*nats.Subscription)
 	wsID := uuid.New().String()
 	log.Printf("New websocket connection (#%s)", wsID)
 
@@ -61,7 +68,24 @@ func handleWS(w http.ResponseWriter, r *http.Request) {
 		}
 	})
 
+	// subscribe to a topic
+	subWsSub, _ := nc.Subscribe("ws."+wsID+".sub", func(m *nats.Msg) {
+		sub, _ := nc.Subscribe(string(m.Data), func(msg *nats.Msg) {
+			nc.Publish("ws."+wsID+".send", msg.Data)
+		})
+		subscriptions[string(m.Data)] = sub
+	})
+
+	// unsubscribe to a topic
+	subWsUnsub, _ := nc.Subscribe("ws."+wsID+".unsub", func(m *nats.Msg) {
+		subscriptions[string(m.Data)].Unsubscribe()
+		delete(subscriptions, string(m.Data))
+	})
+
 	defer subWsSend.Unsubscribe()
+	defer subWsSub.Unsubscribe()
+	defer subWsUnsub.Unsubscribe()
+	defer unsubscribeNatsTopics(subscriptions)
 	defer c.Close()
 
 	for {

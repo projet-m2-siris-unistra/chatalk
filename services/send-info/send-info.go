@@ -7,9 +7,8 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"syscall"
 	"reflect"
-
+	"syscall"
 
 	dberror "github.com/Shyp/go-dberror"
 	"github.com/google/uuid"
@@ -18,7 +17,6 @@ import (
 	stan "github.com/nats-io/stan.go"
 )
 
-
 type sendInfoRequest struct {
 	Action string `json:"action"`
 	WsID   string `json:"ws-id"`
@@ -26,24 +24,24 @@ type sendInfoRequest struct {
 }
 
 type User struct {
-	UserID			int					`json:"userid"`
-	Username    string			`json:"username"`
-	DisplayName	NullString	`json:"display_name"`
-	PictureUrl	NullString	`json:"pic_url"`
+	UserID      int        `json:"userid"`
+	Username    string     `json:"username"`
+	DisplayName NullString `json:"display_name"`
+	PictureUrl  NullString `json:"pic_url"`
 }
 
 type Conv struct {
-	ConvID			int			`json:"convid"`
-	Convname    string	`json:"convname"`
-	SharedKey		string	`json:"shared_key"`
-	Members			string	`json:"members"`
+	ConvID    int    `json:"convid"`
+	Convname  string `json:"convname"`
+	SharedKey string `json:"shared_key"`
+	Members   string `json:"members"`
 }
 
 type sendInfoResponse struct {
-	Success			bool		`json:"success"`
-	Error 			string	`json:"error,omitempty"`
-	Users				[]User	`json:"users,omitempty"`
-	Convs				[]Conv	`json:"convs,omitempty"`
+	Success bool   `json:"success"`
+	Error   string `json:"error,omitempty"`
+	Users   []User `json:"users,omitempty"`
+	Convs   []Conv `json:"convs,omitempty"`
 }
 
 type NullString sql.NullString
@@ -65,7 +63,6 @@ func (ns *NullString) Scan(value interface{}) error {
 	return nil
 }
 
-
 // MarshalJSON for NullString
 func (ns *NullString) MarshalJSON() ([]byte, error) {
 	if !ns.Valid {
@@ -80,8 +77,6 @@ func (ns *NullString) UnmarshalJSON(b []byte) error {
 	ns.Valid = (err == nil)
 	return err
 }
-
-
 
 // get environment variable, if not found will be set to `fallback` value
 func getEnv(key, fallback string) string {
@@ -151,7 +146,7 @@ func main() {
 		SELECT user_id, username, display_name, pic_url
 		FROM users`)
 
-		if(err != nil) {
+		if err != nil {
 			response = sendInfoResponse{
 				Success: false,
 				Error:   "Issue on Database, reload later",
@@ -159,9 +154,8 @@ func main() {
 			goto send_msg
 		}
 
-
 		for rows.Next() {
-			err := rows.Scan(&uId,&usrname,&dispName,&picUrl)
+			err := rows.Scan(&uId, &usrname, &dispName, &picUrl)
 			if err == sql.ErrNoRows {
 				log.Println("No rows were returned!")
 				response = sendInfoResponse{
@@ -171,23 +165,23 @@ func main() {
 				goto send_msg
 			} else if err != nil {
 				dberr := dberror.GetError(err)
-					switch e := dberr.(type) {
-					case *dberror.Error:
-						errmsg := e.Error()
-						response = sendInfoResponse{
-							Success: false,
-							Error:   errmsg,
-						}
-					default :
-						log.Println("err:", err)
-						response = sendInfoResponse {
-							Success: false,
-						}
+				switch e := dberr.(type) {
+				case *dberror.Error:
+					errmsg := e.Error()
+					response = sendInfoResponse{
+						Success: false,
+						Error:   errmsg,
 					}
+				default:
+					log.Println("err:", err)
+					response = sendInfoResponse{
+						Success: false,
+					}
+				}
 				goto send_msg
 			}
 
-			usersArr = append(usersArr, User{UserID: uId, Username: usrname, DisplayName: dispName, PictureUrl: picUrl,})
+			usersArr = append(usersArr, User{UserID: uId, Username: usrname, DisplayName: dispName, PictureUrl: picUrl})
 		}
 		rows.Close()
 
@@ -200,9 +194,9 @@ func main() {
 		WHERE k.user_id = $1
 		AND k.conv_id = c.conv_id
 		AND k.conv_id = q.conv_id
-		GROUP BY c.conv_id, c.convname, k.shared_key`,userID)
+		GROUP BY c.conv_id, c.convname, k.shared_key`, userID)
 
-		if(err != nil) {
+		if err != nil {
 			response = sendInfoResponse{
 				Success: false,
 				Error:   "Issue on Database, reload later",
@@ -211,8 +205,8 @@ func main() {
 		}
 
 		for rows.Next() {
-			err := rows.Scan(&cnv.ConvID,&cnv.Convname,&cnv.SharedKey,&cnv.Members)
-			if(err != nil) {
+			err := rows.Scan(&cnv.ConvID, &cnv.Convname, &cnv.SharedKey, &cnv.Members)
+			if err != nil {
 				log.Println("err:", err)
 				response = sendInfoResponse{
 					Success: false,
@@ -222,18 +216,19 @@ func main() {
 			}
 
 			convsArr = append(convsArr, cnv)
+			nc.Publish("ws."+msg.WsID+".sub", []byte(string(cnv.ConvID)))
 		}
 		rows.Close()
 
-		response = sendInfoResponse {
+		response = sendInfoResponse{
 			Success: true,
-			Users: usersArr,
-			Convs: convsArr,
+			Users:   usersArr,
+			Convs:   convsArr,
 		}
 
-		send_msg:
-			j, err := json.Marshal(response)
-			nc.Publish("ws."+msg.WsID+".send", j)
+	send_msg:
+		j, err := json.Marshal(response)
+		nc.Publish("ws."+msg.WsID+".send", j)
 
 	})
 
