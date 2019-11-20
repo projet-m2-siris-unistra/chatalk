@@ -191,21 +191,6 @@ func main() {
 		}
 		rows.Close()
 
-		// rows, err = db.Query(`
-		// WITH conv_user_id AS
-		// (SELECT c.conv_id    AS conv_id,
-		// 				c.convname   AS convname,
-		// 				k.shared_key AS shared_key
-		// FROM conversations c, conv_keys k
-		// WHERE k.user_id = $1
-		// AND k.conv_id = c.conv_id)
-		// SELECT c.conv_id, c.convname, c.shared_key, ARRAY_AGG(k.user_id) users
-		// FROM conv_user_id c, conv_keys k
-		// WHERE c.conv_id = k.conv_id
-		// AND k.user_id != $1
-		// GROUP BY c.conv_id, c.convname, c.shared_key`,userID)
-
-
 		rows, err = db.Query(`
 		SELECT c.conv_id,
 						c.convname,
@@ -238,17 +223,13 @@ func main() {
 
 			convsArr = append(convsArr, cnv)
 		}
+		rows.Close()
 
 		response = sendInfoResponse {
 			Success: true,
 			Users: usersArr,
 			Convs: convsArr,
 		}
-		//send all users where user_id != userID
-		//get conv_id with convkeys where user_id = userID => []ConvId
-		//get convname & al from conversations + user_id (use ARRAY_AGG) list from conv_keys where conv_id =ConvId[x]
-
-
 
 		send_msg:
 			j, err := json.Marshal(response)
