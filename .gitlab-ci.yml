@@ -134,14 +134,23 @@ deploy-blog:
         --build-arg "COMMIT=$CI_COMMIT_SHA" \
         --build-arg "VERSION=$CI_COMMIT_REF_SLUG"
 
-build-service-entrypoint:
+build-service-conv_creation:
   <<: *build-service-image
   variables:
-    IMAGE: entrypoint
+    IMAGE: conv_creation
   only:
     changes:
       - ".gitlab-ci.yml"
-      - "services/entrypoint/**/*"
+      - "services/conv_creation/**/*"
+
+build-service-conv_manag:
+  <<: *build-service-image
+  variables:
+    IMAGE: conv_manag
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/conv_manag/**/*"
 
 build-service-db-migrations:
   <<: *build-service-image
@@ -152,6 +161,15 @@ build-service-db-migrations:
       - ".gitlab-ci.yml"
       - "services/db-migrations/**/*"
 
+build-service-entrypoint:
+  <<: *build-service-image
+  variables:
+    IMAGE: entrypoint
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/entrypoint/**/*"
+
 build-service-fake-ui:
   <<: *build-service-image
   variables:
@@ -161,14 +179,23 @@ build-service-fake-ui:
       - ".gitlab-ci.yml"
       - "services/fake-ui/**/*"
 
-build-service-register:
+build-service-login:
   <<: *build-service-image
   variables:
-    IMAGE: register
+    IMAGE: login
   only:
     changes:
       - ".gitlab-ci.yml"
-      - "services/register/**/*"
+      - "services/login/**/*"
+
+build-service-msg_sender:
+  <<: *build-service-image
+  variables:
+    IMAGE: msg_sender
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/msg_sender/**/*"
 
 build-service-ping:
   <<: *build-service-image
@@ -179,11 +206,20 @@ build-service-ping:
       - ".gitlab-ci.yml"
       - "services/ping/**/*"
 
-build-service-login:
+build-service-register:
   <<: *build-service-image
   variables:
-    IMAGE: login
+    IMAGE: register
   only:
     changes:
       - ".gitlab-ci.yml"
-      - "services/login/**/*"
+      - "services/register/**/*"
+
+build-service-send-info:
+  <<: *build-service-image
+  variables:
+    IMAGE: send-info
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/send-info/**/*"
