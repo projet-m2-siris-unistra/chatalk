@@ -7,12 +7,16 @@ commonLabels:
 namespace: chatalk
 
 bases:
-- db
-- db-migrations
 - bus
+- db
+- conv_creation
+- conv_manag
+- db-migrations
 - entrypoint
 - fake-ui
+- login
+- msg_sender
 - ping
 - register
-- login
+- send-info
 - ui
