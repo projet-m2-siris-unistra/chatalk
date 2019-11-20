@@ -216,7 +216,8 @@ func main() {
 			}
 
 			convsArr = append(convsArr, cnv)
-			nc.Publish("ws."+msg.WsID+".sub", []byte(string(cnv.ConvID)))
+			topicName := "conv." + string(cnv.ConvID)
+			nc.Publish("ws."+msg.WsID+".sub", []byte(topicName))
 		}
 		rows.Close()
 
