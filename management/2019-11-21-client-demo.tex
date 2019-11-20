@@ -1,25 +1,18 @@
-\documentclass{beamer}
+\documentclass[hyperref={pdfpagemode=FullScreen,
+colorlinks=true}]{beamer}
 %%\usetheme{Hannover}
-\usetheme{Luebeck}
-\useinnertheme{rectangles}
-%\useoutertheme{infolines}
-
-\definecolor{light-blue}{RGB}{234,234,255}
-\definecolor{chatalk-cyan}{RGB}{11,99,116}
-\definecolor{color3}{RGB}{22,22,22}
-\definecolor{color4}{RGB}{44,44,44}
-\setbeamercolor{structure}{bg=light-blue,fg=chatalk-cyan}
-\setbeamercolor{normal text}{bg=chatalk-cyan,fg=color3}
-\setbeamercolor{background canvas}{bg=light-blue}
-\setbeamercolor{alerted text}{bg=color4}
-
-\addtobeamertemplate{footline}{\insertframenumber/\inserttotalframenumber}
 
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
 \usepackage{graphicx}
 \usepackage[french]{babel}
+
+\definecolor{ChaTalK-cyan}{RGB}{11,99,116}
+\usetheme{Luebeck}
+\useinnertheme{rectangles}
+\usecolortheme[named=ChaTalK-cyan]{structure}
+\addtobeamertemplate{footline}{\insertframenumber/\inserttotalframenumber}
 
 \title[Présentation]{Interface utilisateur et échanges textuels}
 \subtitle[\ldots]{ChaTalK}
@@ -31,6 +24,7 @@
 	\maketitle
 
 	\begin{frame}
+    Du texte?
 	\end{frame}
 
 \end{document}
