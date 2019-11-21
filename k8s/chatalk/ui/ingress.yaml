@@ -3,6 +3,10 @@ kind: Ingress
 metadata:
   name: ui
 spec:
+  tls:
+  - hosts:
+    - beta.chatalk.fr
+    secretName: chatalk-cert
   rules:
   - host: beta.chatalk.fr
     http:

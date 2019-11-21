@@ -54,6 +54,52 @@ Then patch the default service account of the `chatalk` namespace that we create
 kubectl -n chatalk patch serviceaccount default -p '{"imagePullSecrets": [{"name": "chatalk-registry-creds"}]}'
 ```
 
+## Deploy HTTPS certificates
+
+### Create a new ServiceAccount
+
+We will need a new ServiceAccount to deploy our HTTPS certificates.
+
+To create a new ServiceAccount, use the following command:
+
+```sh
+kubectl -n default create sa certs
+```
+
+Then create a new role binding in our namespace like this:
+
+```sh
+kubectl -n chatalk create rolebinding --serviceaccount default:certs --clusterrole edit certs-edit
+```
+
+Get the token using following commands:
+
+```sh
+kubectl -n default get $(k -n default get secrets -o name | grep secret/certs-token) -o jsonpath={.data.token} | base64 -d
+```
+
+### Deploy certificates on the cluster
+
+Go to the `dumas` VM using SSH.
+
+You have normally created a widcard certificate.
+
+Use the following command by replacing `TOKEN_FROM_PREVIOUS_STEP` with the token you got before to create the cert secret on the cluster:
+
+```sh
+docker run --rm \
+  -v /etc/letsencrypt:/etc/letsencrypt:ro \
+  ludovicm67/k8s-tools \
+  kubectl \
+    --insecure-skip-tls-verify=true \
+    --server=https://chatalk-balzac.u-strasbg.fr:6443 \
+    --token=TOKEN_FROM_PREVIOUS_STEP \
+    -n chatalk \
+    create secret tls \
+      --cert=/etc/letsencrypt/live/chatalk.fr/fullchain.pem \
+      --key=/etc/letsencrypt/live/chatalk.fr/privkey.pem chatalk-cert
+```
+
 ## Deploy our application
 
 Use the following command:
