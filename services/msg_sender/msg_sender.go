@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"strconv"
 
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
@@ -17,9 +18,15 @@ import (
 
 type messageIngress struct {
 	WsID    string `json:"ws-id"`
-	Src     int32  `json:"source"`
-	Dst     int32  `json:"destination"`
-	Dev     int32  `json:"device"`
+	Src     string `json:"source"`
+	Dst     string `json:"destination"`
+	Dev     string `json:"device"`
+	Payload string `json:"payload"`
+}
+
+type messageBroad struct {
+	Src     string `json:"source"`
+	Dst     string `json:"destination"`
 	Payload string `json:"payload"`
 }
 
@@ -91,16 +98,21 @@ func main() {
 			}
 		} else {
 			var msgID int
+			var userID int
+			var convID int
+
+			userID, err = strconv.Atoi(msg.Src)
+			convID, err = strconv.Atoi(msg.Dst)
 
 			err = db.QueryRow(`
 				INSERT INTO messages(time, user_id, conv_id, content, archived)
 				VALUES (now(), $1, $2, $3, false)
 				RETURNING msg_id;
-			`, msg.Src, msg.Dst, msg.Payload).Scan(&msgID)
+			`, userID, convID, msg.Payload).Scan(&msgID)
 
 			message := fmt.Sprintf("Message ID is: %s", msgID)
-
-			nc.Publish("conv."+string(msg.Dst), []byte(msg.Payload))
+			jm, err := json.Marshal(messageBroad{Src: msg.Src,Dst: msg.Dst,Payload:msg.Payload,})
+			nc.Publish("conv."+msg.Dst, []byte(jm))
 
 			response = messageResponse{
 				Message: message,

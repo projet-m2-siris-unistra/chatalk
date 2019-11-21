@@ -148,6 +148,25 @@
         </label>
         <button type="button" id="exec_manag">Execute</button>
       </section>
+      <section>
+        <h2>Call to <strong>Message</strong> service</h2>
+        <p>This service is used to send message to a conversation.</p>
+        <label for="userid2">
+          <span>Userid:</span>
+          <input id="userid2" name="userid" type="text" required>
+        </label>
+        <label for="convid2">
+          <span>convid:</span>
+          <input id="convid2" name="convid" type="text" required>
+        </label>
+        <label for="payloadcontent">
+          <span>message:</span>
+          <textarea id = "payloadcontent"
+            rows = "3"
+            cols = "80">Message</textarea>
+        </label>
+        <button type="button" id="msg_sender">Execute</button>
+      </section>
     </div>
     <script>
       // state
@@ -168,6 +187,9 @@
       const convnameInput = document.getElementById('convname');
       const topicInput = document.getElementById('topic');
       const pictureInput = document.getElementById('picture');
+      const userid2Input = document.getElementById('userid2');
+      const convid2Input = document.getElementById('convid2');
+      const payContInput = document.getElementById('payloadcontent');
 
       // buttons
       const connectBtn = document.getElementById('connect');
@@ -175,6 +197,7 @@
       const execLoginBtn = document.getElementById('exec_login');
       const execCreateBtn = document.getElementById('exec_create');
       const execManagBtn = document.getElementById('exec_manag');
+      const execMsgSnd = document.getElementById('msg_sender');
 
       // output
       const answers = document.getElementById('answers');
@@ -284,6 +307,21 @@
         }));
       });
 
+      execMsgSnd.addEventListener('click', (e) => {
+        if (!isWsOpen) {
+          console.error('Websocket is not open.');
+          return;
+        }
+
+        console.info('msg_sender service: sending following payload:', payContInput.value);
+        window.connection.send(JSON.stringify({
+          action: 'msg_sender',
+          source: userid2Input.value,
+          destination: convid2Input.value,
+          device : "1",
+          payload : payContInput.value,
+        }));
+      });
     </script>
   </body>
 </html>

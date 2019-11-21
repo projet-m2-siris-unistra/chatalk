@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"reflect"
 	"syscall"
+	"strconv"
 
 	dberror "github.com/Shyp/go-dberror"
 	"github.com/google/uuid"
@@ -216,7 +217,7 @@ func main() {
 			}
 
 			convsArr = append(convsArr, cnv)
-			topicName := "conv." + string(cnv.ConvID)
+			topicName := "conv." + strconv.Itoa(cnv.ConvID)
 			nc.Publish("ws."+msg.WsID+".sub", []byte(topicName))
 		}
 		rows.Close()

@@ -91,12 +91,13 @@ func main() {
 		var userID int
 		var convID int
 		var typeManag int
+		var topicName string
 
 		userID, err = strconv.Atoi(msg.Payload.UserID)
 
 		if err != nil {
 			if userID != 0 {
-				log.Println("WTF conv management: userid = %d", userID)
+				log.Println("conv management: userid = %s", userID)
 			}
 			response = registerResponse{
 				Success: false,
@@ -126,6 +127,7 @@ func main() {
 
 
 		if typeManag == 1 { // add participant
+			topicName = "conv." + strconv.Itoa(convID)
 			_, err = db.Query(`
 				INSERT INTO conv_keys(user_id, conv_id, shared_key, timefrom, timeto, favorite, audio)
 				VALUES($1, $2, 0, current_timestamp, NULL, false, false);
@@ -135,6 +137,7 @@ func main() {
 				response = registerResponse{
 					Success: true,
 				}
+				nc.Publish("ws."+msg.WsID+".sub", []byte(topicName))
 			} else {
 				dberr := dberror.GetError(err)
 				switch e := dberr.(type) {

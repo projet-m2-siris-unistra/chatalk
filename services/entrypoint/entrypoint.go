@@ -46,6 +46,8 @@ func unsubscribeNatsTopics(s map[string]*nats.Subscription) {
 }
 
 func handleWS(w http.ResponseWriter, r *http.Request) {
+	//subscriptions := make(map[string][]*nats.Subscription) ?
+	//multiple sub for each subject
 	subscriptions := make(map[string]*nats.Subscription)
 	wsID := uuid.New().String()
 	log.Printf("New websocket connection (#%s)", wsID)
@@ -73,6 +75,9 @@ func handleWS(w http.ResponseWriter, r *http.Request) {
 		sub, _ := nc.Subscribe(string(m.Data), func(msg *nats.Msg) {
 			nc.Publish("ws."+wsID+".send", msg.Data)
 		})
+
+		//if multiple sub per sibject =>
+		//subscriptions[string(m.Data)] = append(subscriptions[string(m.Data)],sub)
 		subscriptions[string(m.Data)] = sub
 	})
 

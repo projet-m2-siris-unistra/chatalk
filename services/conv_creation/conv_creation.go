@@ -91,6 +91,7 @@ func main() {
 		var response registerResponse
 		var userID int
 		var convID int
+		var topicName string
 
 		userID, err = strconv.Atoi(msg.Payload.UserID)
 
@@ -126,6 +127,8 @@ func main() {
 						Success: true,
 						Error:   message,
 					}
+					topicName = "conv." + strconv.Itoa(convID)
+					nc.Publish("ws."+msg.WsID+".sub", []byte(topicName))
 				} else {
 					dberr := dberror.GetError(err)
 					switch e := dberr.(type) {
