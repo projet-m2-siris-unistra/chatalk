@@ -17,7 +17,7 @@ import WebsocketProvider from './component/WebsocketProvider';
 const App: React.FC = () => {
   return (
     <Provider store={store}>
-      <WebsocketProvider wsUrl="ws://ws.chatalk.fr">
+      <WebsocketProvider wsUrl="wss://ws.chatalk.fr">
         <CssBaseline/>
         <Router>
           <Switch>
