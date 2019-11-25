@@ -37,6 +37,16 @@ To create it, use the following command:
 kubectl create namespace chatalk
 ```
 
+## Deploy the bus
+
+For the data bus, we will use `nats-streaming-operator`.
+
+Run the following command to deploy it:
+
+```sh
+kubectl apply -k nats-streaming-operator/overlays/unistra
+```
+
 ## Configure the namespace to pull images from our private registry
 
 First we will need to create a new secret with the credentials:
