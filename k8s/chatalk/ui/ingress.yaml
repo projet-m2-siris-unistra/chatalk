@@ -2,13 +2,16 @@ apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: ui
+  annotations:
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
 spec:
   tls:
   - hosts:
-    - beta.chatalk.fr
+    - chatalk.fr
+    - www.chatalk.fr
     secretName: chatalk-cert
   rules:
-  - host: beta.chatalk.fr
+  - host: chatalk.fr
     http:
       paths:
       - backend:
