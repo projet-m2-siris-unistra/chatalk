@@ -53,27 +53,6 @@ build-ui:
       - ".gitlab-ci.yml"
       - "ui/**/*"
 
-deploy-ui:
-  stage: deploy
-  tags:
-    - docker
-    - socket
-  script:
-    - cd ui/
-    - npm ci
-    - npm run build
-    - cd build/
-    - cp index.html 200.html
-    - cp index.html 404.html
-    - echo "$DOMAIN_UI" > CNAME
-    - npx surge .
-  only:
-    refs:
-      - master
-    changes:
-      - ".gitlab-ci.yml"
-      - "ui/**/*"
-
 # Blog part
 test-blog:
   stage: test
