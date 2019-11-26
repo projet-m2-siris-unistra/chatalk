@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"reflect"
 	"syscall"
 
 	"github.com/google/uuid"
@@ -28,6 +27,7 @@ type loginRequest struct {
 
 type loginResponse struct {
 	Success     bool    `json:"success"`
+	Action      string  `json:"action"`
 	Error       string  `json:"error,omitempty"`
 	WsID        string  `json:"ws-id,omitempty"`
 	UserID      int     `json:"userid,omitempty"`
@@ -40,42 +40,6 @@ type sendInfoRequest struct {
 	Action string `json:"action"`
 	WsID   string `json:"ws-id"`
 	UserID int    `json:"userid"`
-}
-
-type NullString sql.NullString
-
-// Scan implements the Scanner interface for NullString
-func (ns *NullString) Scan(value interface{}) error {
-	var s sql.NullString
-	if err := s.Scan(value); err != nil {
-		return err
-	}
-
-	// if nil then make Valid false
-	if reflect.TypeOf(value) == nil {
-		*ns = NullString{s.String, false}
-	} else {
-		*ns = NullString{s.String, true}
-	}
-
-	return nil
-}
-
-// MarshalJSON for NullString
-func (ns *NullString) MarshalJSON() ([]byte, error) {
-	log.Println("ouais")
-	if !ns.Valid {
-		log.Println("ouais1")
-		return []byte("null"), nil
-	}
-	return json.Marshal(ns.String)
-}
-
-// UnmarshalJSON for NullString
-func (ns *NullString) UnmarshalJSON(b []byte) error {
-	err := json.Unmarshal(b, &ns.String)
-	ns.Valid = (err == nil)
-	return err
 }
 
 // get environment variable, if not found will be set to `fallback` value
@@ -173,6 +137,7 @@ func main() {
 
 				response = loginResponse{
 					Success: false,
+					Action:  "login",
 					Error:   message,
 				}
 			case nil:
@@ -181,6 +146,7 @@ func main() {
 
 					response = loginResponse{
 						Success:     true,
+						Action:      "login",
 						WsID:        msg.WsID,
 						UserID:      userID,
 						Username:    userUsername,
@@ -203,6 +169,7 @@ func main() {
 
 					response = loginResponse{
 						Success: false,
+						Action:  "login",
 						Error:   message,
 					}
 				}
@@ -211,6 +178,7 @@ func main() {
 
 				response = loginResponse{
 					Success: false,
+					Action:  "login",
 					Error:   message,
 				}
 			}
