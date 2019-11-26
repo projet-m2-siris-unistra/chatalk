@@ -1,0 +1,19 @@
+import React from 'react';
+import { Route, Redirect, RouteProps } from 'react-router-dom';
+import { State } from '../store/state';
+import { useSelector } from 'react-redux';
+
+const PublicRoute: React.FC<RouteProps> = ({
+  component,
+  ...options
+}: RouteProps) => {
+  const auth = useSelector((state: State) => state.auth);
+
+  return auth ? (
+    <Redirect to="/conversation"></Redirect>
+  ) : (
+    <Route {...options} component={component}></Route>
+  );
+};
+
+export default PublicRoute;
