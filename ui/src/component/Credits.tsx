@@ -1,10 +1,15 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles,createMuiTheme } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles(theme => ({
   pre: {
     whiteSpace: 'pre-line',
+  },
+  button: {
+    margin: theme.spacing(1),
   },
 }));
 
@@ -12,6 +17,15 @@ const Credits: React.FC = () => {
   const classes = useStyles();
   return (
     <div style={{color:'#0b6374'}}>
+      <Button
+        color="default"
+        type='button'
+        className={classes.button}
+        startIcon={<ArrowBackIosIcon />}
+        href="/"
+        >
+        Back
+      </Button>
       <Typography align="center">
      <h1 >Credits</h1>
      </Typography>

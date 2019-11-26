@@ -1,10 +1,30 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+import { makeStyles, createMuiTheme } from '@material-ui/core/styles';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 
+
+const useStyles = makeStyles(theme => ({
+  button: {
+    margin: theme.spacing(1),
+  },
+}));
 
 const Privacy: React.FC = () => {
+  const classes = useStyles();
   return (
     <div style={{color:'#0b6374'}} >
+
+        <Button
+        color="default"
+        type='button'
+        className={classes.button}
+        startIcon={<ArrowBackIosIcon />}
+        href="/"
+        >
+          Back
+        </Button>
       <Typography align="center">
      <h1 >Privacy Policy</h1>
      </Typography>
