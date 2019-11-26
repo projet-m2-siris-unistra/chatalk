@@ -64,8 +64,26 @@ const CssTextField = withStyles({
 })(TextField);
 
 const Login: React.FC = () => {
-
   const classes = useStyles();
+  const { connection, isOpen } = useWebsocket();
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const login = () => {
+    if (!isOpen || connection === null) {
+      console.error('ws is not open');
+      return;
+    }
+
+    connection.send(JSON.stringify({
+      action: "login",
+      payload:{
+        username,
+        password,
+      }
+    }));
+  };
+  
   return (
 
       <div className={classes.paper}>
@@ -86,6 +104,8 @@ const Login: React.FC = () => {
             id="username"
             label="Username or email"
             name="username"
+            value={username}
+            onChange={e => setUsername(e.target.value)}
             autoComplete="username"
             autoFocus
           />
@@ -98,6 +118,8 @@ const Login: React.FC = () => {
             label="Password"
             type="password"
             id="password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
             autoComplete="current-password"
           />
           </ThemeProvider>
@@ -114,6 +136,7 @@ const Login: React.FC = () => {
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={login}
           >
             Sign In
           </Button>

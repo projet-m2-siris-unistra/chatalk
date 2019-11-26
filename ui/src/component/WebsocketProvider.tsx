@@ -49,6 +49,9 @@ const WebsocketProvider: React.FC<Props> = ({ children, wsUrl }: Props) => {
         case 'register':
           console.log('got register response');
           break;
+        case 'login':
+            console.log('got login response');
+            break;
         case 'ping':
           console.log('got ping response');
           store.dispatch(setAuth({
