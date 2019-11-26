@@ -22,23 +22,23 @@ const App: React.FC = () => {
   return (
     <Provider store={store}>
       <WebsocketProvider wsUrl="ws://localhost:42042">
-        <CssBaseline/>
+        <CssBaseline />
         <Router>
           <Switch>
-            <Route exact path="/" component={ Homepage } />
+            <Route exact path="/" component={Homepage} />
             {/* { !auth && (
               <> */}
-                <Route exact path="/login" component={ Login } />
-                <Route exact path="/register" component={ SignUp } />
-              {/* </>
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/register" component={SignUp} />
+            {/* </>
             )}
             { auth && */}
-              <Route path="/conversation/:id?" component={ ConversationsList } />
-              {/* } */}
-            <Route exact path="/credits" component={ Credits } />
-            <Route exact path="/privacy" component= { Privacy } />
-            <Route exact path="/terms" component= { Terms } />
-            <Route component={ NotFound } />
+            <Route path="/conversation/:id?" component={ConversationsList} />
+            {/* } */}
+            <Route exact path="/credits" component={Credits} />
+            <Route exact path="/privacy" component={Privacy} />
+            <Route exact path="/terms" component={Terms} />
+            <Route component={NotFound} />
           </Switch>
         </Router>
       </WebsocketProvider>

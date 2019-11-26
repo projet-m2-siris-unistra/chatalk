@@ -1,8 +1,8 @@
-import {initialState, State} from './state';
+import { initialState, State } from './state';
 import * as actions from './actions';
 
 export default (state: State = initialState, action: actions.Action): State => {
-  switch(action.type) {
+  switch (action.type) {
     case actions.SET_AUTH:
       return {
         ...state,

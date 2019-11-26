@@ -1,29 +1,41 @@
-import React, {ReactNode, Context, useState, useEffect, useRef, MutableRefObject, useContext} from 'react';
+import React, {
+  ReactNode,
+  Context,
+  useState,
+  useEffect,
+  useRef,
+  MutableRefObject,
+  useContext,
+} from 'react';
 import store from '../store';
 import { setAuth } from '../store/actions';
 
 interface WebsocketContextValue {
   isOpen: boolean;
   connection: WebSocket | null;
-};
+}
 
 const defaultWebsocketContextValue: WebsocketContextValue = {
   isOpen: false,
   connection: null,
 };
 
-const WebsocketContext: Context<WebsocketContextValue> = React.createContext(defaultWebsocketContextValue);
+const WebsocketContext: Context<WebsocketContextValue> = React.createContext(
+  defaultWebsocketContextValue
+);
 
 const useWebsocket = () => useContext(WebsocketContext);
 
 interface Props {
   children?: ReactNode;
   wsUrl: string;
-};
+}
 
 const WebsocketProvider: React.FC<Props> = ({ children, wsUrl }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const connectionRef: MutableRefObject<WebSocket | null> = useRef<WebSocket>(null);
+  const connectionRef: MutableRefObject<WebSocket | null> = useRef<WebSocket>(
+    null
+  );
 
   useEffect(() => {
     connectionRef.current = new WebSocket(wsUrl);
@@ -36,11 +48,11 @@ const WebsocketProvider: React.FC<Props> = ({ children, wsUrl }: Props) => {
       console.log('ws closed');
       setIsOpen(false);
     };
-    connectionRef.current.onerror = (error) => {
+    connectionRef.current.onerror = error => {
       console.log('ws errored:', error);
       setIsOpen(false);
     };
-    connectionRef.current.onmessage = (msg) => {
+    connectionRef.current.onmessage = msg => {
       setIsOpen(true);
       const data = JSON.parse(msg.data);
       console.log('ws messaged:', data);
@@ -53,16 +65,18 @@ const WebsocketProvider: React.FC<Props> = ({ children, wsUrl }: Props) => {
           console.log('got register response');
           break;
         case 'login':
-            console.log('got login response');
-            break;
+          console.log('got login response');
+          break;
         case 'ping':
           console.log('got ping response');
-          store.dispatch(setAuth({
-            userId: 42,
-            username: 'toto',
-            displayName: `Toto@${data['ws-id']}`,
-            avatar: 'toto.jpg',
-          }));
+          store.dispatch(
+            setAuth({
+              userId: 42,
+              username: 'toto',
+              displayName: `Toto@${data['ws-id']}`,
+              avatar: 'toto.jpg',
+            })
+          );
           break;
       }
     };
@@ -71,16 +85,16 @@ const WebsocketProvider: React.FC<Props> = ({ children, wsUrl }: Props) => {
   }, [wsUrl]);
 
   return (
-    <WebsocketContext.Provider value={{
-      isOpen,
-      connection: connectionRef.current,
-    }}>
+    <WebsocketContext.Provider
+      value={{
+        isOpen,
+        connection: connectionRef.current,
+      }}
+    >
       {children}
     </WebsocketContext.Provider>
   );
 };
 
 export default WebsocketProvider;
-export {
-  useWebsocket,
-};
+export { useWebsocket };

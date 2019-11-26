@@ -1,5 +1,5 @@
 import React from 'react';
-import { makeStyles,createMuiTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import Button from '@material-ui/core/Button';
@@ -16,26 +16,35 @@ const useStyles = makeStyles(theme => ({
 const Credits: React.FC = () => {
   const classes = useStyles();
   return (
-    <div style={{color:'#0b6374'}}>
+    <div style={{ color: '#0b6374' }}>
       <Button
         color="default"
-        type='button'
+        type="button"
         className={classes.button}
         startIcon={<ArrowBackIosIcon />}
         href="/"
-        >
+      >
         Back
       </Button>
       <Typography align="center">
-     <h1 >Credits</h1>
-     </Typography>
+        <h1>Credits</h1>
+      </Typography>
 
       <p>Our application is composed of some external parts that we used.</p>
       <p>You can find in this page all components used and their licenses.</p>
       <ul>
         <li>
-          The JavaScript library <a href="https://reactjs.org/" target="_blank" rel="noopener noreferrer" style={{color: '#0b6374'}}>ReactJS</a> is licensed under <strong>MIT License</strong>
-          <pre className={ classes.pre }>{`
+          The JavaScript library{' '}
+          <a
+            href="https://reactjs.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: '#0b6374' }}
+          >
+            ReactJS
+          </a>{' '}
+          is licensed under <strong>MIT License</strong>
+          <pre className={classes.pre}>{`
             MIT License
 
             Copyright (c) Facebook, Inc. and its affiliates.
@@ -60,8 +69,17 @@ const Credits: React.FC = () => {
           `}</pre>
         </li>
         <li>
-          The <a href="https://fonts.google.com/specimen/Roboto" target="_blank" rel="noopener noreferrer" style={{color: '#0b6374'}}>Roboto font</a> is licensed under <strong>Apache License 2.0</strong>
-          <pre className={ classes.pre }>{`
+          The{' '}
+          <a
+            href="https://fonts.google.com/specimen/Roboto"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: '#0b6374' }}
+          >
+            Roboto font
+          </a>{' '}
+          is licensed under <strong>Apache License 2.0</strong>
+          <pre className={classes.pre}>{`
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
@@ -266,8 +284,16 @@ const Credits: React.FC = () => {
           `}</pre>
         </li>
         <li>
-          <a href="https://material.io/resources/icons" target="_blank" rel="noopener noreferrer" style={{color: '#0b6374'}}>Material icons</a> are licensed under <strong>Apache License 2.0</strong>
-          <pre className={ classes.pre }>{`
+          <a
+            href="https://material.io/resources/icons"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ color: '#0b6374' }}
+          >
+            Material icons
+          </a>{' '}
+          are licensed under <strong>Apache License 2.0</strong>
+          <pre className={classes.pre}>{`
                                  Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/

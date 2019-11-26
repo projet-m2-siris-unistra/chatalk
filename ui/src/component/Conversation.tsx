@@ -52,7 +52,7 @@ const Conversation: React.FC = () => {
   const isDesktop = useMediaQuery('(min-width:1000px)');
 
   const me = {
-    id: 'dbf302b3-3abf-4a48-9ab3-2cc1b99f3f9f'
+    id: 'dbf302b3-3abf-4a48-9ab3-2cc1b99f3f9f',
   };
 
   const messages = [
@@ -93,7 +93,7 @@ const Conversation: React.FC = () => {
 
   const msg = messages.map(m => {
     let classToUse = classes.msgOther;
-    const avatar = (<></>);
+    const avatar = <></>;
     if (m.from.id === me.id) {
       classToUse = classes.msgMe;
     }
@@ -115,13 +115,12 @@ const Conversation: React.FC = () => {
   return (
     <>
       <div className={classes.header}>
-        <Link to="/conversation" className={displayBackBtn}>«</Link>
-        Conversation name
-        - config
+        <Link to="/conversation" className={displayBackBtn}>
+          «
+        </Link>
+        Conversation name - config
       </div>
-      <div className={classes.content}>
-        {msg}
-      </div>
+      <div className={classes.content}>{msg}</div>
     </>
   );
 };

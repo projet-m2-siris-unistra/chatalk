@@ -11,7 +11,6 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
 
-
 const useStyles = makeStyles(theme => ({
   layout: {
     display: 'flex',
@@ -28,7 +27,7 @@ const useStyles = makeStyles(theme => ({
     overflow: 'auto',
     width: '100%',
     maxWidth: 360,
-    backgroundColor: theme.palette.background.paper
+    backgroundColor: theme.palette.background.paper,
   },
   leftMobile: {
     display: 'flex',
@@ -38,7 +37,7 @@ const useStyles = makeStyles(theme => ({
     maxHeight: '100vh',
     overflow: 'auto',
     width: '100%',
-    backgroundColor: theme.palette.background.paper
+    backgroundColor: theme.palette.background.paper,
   },
 
   hidden: {
@@ -53,7 +52,7 @@ const useStyles = makeStyles(theme => ({
     maxHeight: '100vh',
     width: '100%',
     overflow: 'auto',
-    backgroundColor: theme.palette.background.paper
+    backgroundColor: theme.palette.background.paper,
   },
   header: {
     padding: '10px',
@@ -89,7 +88,9 @@ const useStyles = makeStyles(theme => ({
 
 type TParams = { id?: string };
 
-const ConversationsList: React.FC<RouteComponentProps<TParams>> = ({ match }: RouteComponentProps<TParams>) => {
+const ConversationsList: React.FC<RouteComponentProps<TParams>> = ({
+  match,
+}: RouteComponentProps<TParams>) => {
   const classes = useStyles();
   const isDesktop = useMediaQuery('(min-width:1000px)');
 
@@ -140,7 +141,11 @@ const ConversationsList: React.FC<RouteComponentProps<TParams>> = ({ match }: Ro
   ];
 
   const listItems = conversations.map(c => (
-    <Link to={`/conversation/${c.id}`} key={c.id} className={classes.listLinkItem}>
+    <Link
+      to={`/conversation/${c.id}`}
+      key={c.id}
+      className={classes.listLinkItem}
+    >
       <ListItem alignItems="flex-start" className={classes.listItem}>
         <ListItemAvatar>
           <Avatar alt={c.name} src={c.avatar} />
@@ -150,11 +155,7 @@ const ConversationsList: React.FC<RouteComponentProps<TParams>> = ({ match }: Ro
           primary={c.name}
           secondary={
             <React.Fragment>
-              <Typography
-                component="span"
-                variant="body2"
-                color="textPrimary"
-              >
+              <Typography component="span" variant="body2" color="textPrimary">
                 {c.lastMessage.from.displayName}
               </Typography>
               <Typography component="span">{` - ${c.lastMessage.message}`}</Typography>
@@ -180,13 +181,9 @@ const ConversationsList: React.FC<RouteComponentProps<TParams>> = ({ match }: Ro
   return (
     <div className={classes.layout}>
       <div className={leftClass}>
-        <div className={classes.header}>
-          User avatar, +, config
-        </div>
+        <div className={classes.header}>User avatar, +, config</div>
         <div className={classes.content}>
-          <List>
-            {listItems}
-          </List>
+          <List>{listItems}</List>
         </div>
       </div>
       <div className={rightClass}>
