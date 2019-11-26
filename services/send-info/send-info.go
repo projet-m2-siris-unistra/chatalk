@@ -7,15 +7,15 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"reflect"
-	"syscall"
 	"strconv"
+	"syscall"
 
 	dberror "github.com/Shyp/go-dberror"
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
 	nats "github.com/nats-io/nats.go"
 	stan "github.com/nats-io/stan.go"
+	"gopkg.in/guregu/null.v3"
 )
 
 type sendInfoRequest struct {
@@ -24,13 +24,15 @@ type sendInfoRequest struct {
 	UserID int    `json:"userid"`
 }
 
+// User is the representation of a user
 type User struct {
-	UserID      int        `json:"userid"`
-	Username    string     `json:"username"`
-	DisplayName NullString `json:"displayname"`
-	PictureUrl  NullString `json:"picture"`
+	UserID      int         `json:"userid"`
+	Username    string      `json:"username"`
+	DisplayName null.String `json:"displayname"`
+	PictureURL  null.String `json:"picture"`
 }
 
+// Conv is the representation of a conversation
 type Conv struct {
 	ConvID    int    `json:"convid"`
 	Convname  string `json:"convname"`
@@ -43,42 +45,6 @@ type sendInfoResponse struct {
 	Error   string `json:"error,omitempty"`
 	Users   []User `json:"users,omitempty"`
 	Convs   []Conv `json:"convs,omitempty"`
-}
-
-type NullString sql.NullString
-
-// Scan implements the Scanner interface for NullString
-func (ns *NullString) Scan(value interface{}) error {
-	var s sql.NullString
-	if err := s.Scan(value); err != nil {
-		return err
-	}
-
-	// if nil then make Valid false
-	if reflect.TypeOf(value) == nil {
-		*ns = NullString{s.String, false}
-	} else {
-		*ns = NullString{s.String, true}
-	}
-
-	return nil
-}
-
-// MarshalJSON for NullString
-func (ns *NullString) MarshalJSON() ([]byte, error) {
-	log.Println("ouais")
-	if !ns.Valid {
-		log.Println("ouais1")
-		return []byte("null"), nil
-	}
-	return json.Marshal(ns.String)
-}
-
-// UnmarshalJSON for NullString
-func (ns *NullString) UnmarshalJSON(b []byte) error {
-	err := json.Unmarshal(b, &ns.String)
-	ns.Valid = (err == nil)
-	return err
 }
 
 // get environment variable, if not found will be set to `fallback` value
@@ -137,9 +103,9 @@ func main() {
 		}
 
 		var response sendInfoResponse
-		var uId int
+		var uID int
 		var usrname string
-		var dispName, picUrl NullString
+		var dispName, picUrl null.String
 		var usersArr []User
 		var cnv Conv
 		var convsArr []Conv
@@ -158,7 +124,7 @@ func main() {
 		}
 
 		for rows.Next() {
-			err := rows.Scan(&uId, &usrname, &dispName, &picUrl)
+			err := rows.Scan(&uID, &usrname, &dispName, &picUrl)
 			if err == sql.ErrNoRows {
 				log.Println("No rows were returned!")
 				response = sendInfoResponse{
@@ -184,7 +150,7 @@ func main() {
 				goto send_msg
 			}
 
-			usersArr = append(usersArr, User{UserID: uId, Username: usrname, DisplayName: dispName, PictureUrl: picUrl})
+			usersArr = append(usersArr, User{UserID: uID, Username: usrname, DisplayName: dispName, PictureURL: picUrl})
 		}
 		rows.Close()
 
