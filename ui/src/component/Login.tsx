@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import Button from '@material-ui/core/Button';
@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { createMuiTheme, withStyles, ThemeProvider } from '@material-ui/core/styles';
+import { useWebsocket } from './WebsocketProvider';
 
 
 const useStyles = makeStyles(theme => ({
@@ -83,7 +84,7 @@ const Login: React.FC = () => {
       }
     }));
   };
-  
+
   return (
 
       <div className={classes.paper}>
@@ -131,7 +132,7 @@ const Login: React.FC = () => {
           </ThemeProvider>
           <ThemeProvider theme={theme}>
           <Button
-            type="submit"
+            type="button"
             fullWidth
             variant="contained"
             color="primary"

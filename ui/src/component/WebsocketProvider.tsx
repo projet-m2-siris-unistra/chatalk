@@ -46,6 +46,9 @@ const WebsocketProvider: React.FC<Props> = ({ children, wsUrl }: Props) => {
       console.log('ws messaged:', data);
       if (!data || !data.action) return;
       switch (data.action) {
+        case 'send-info':
+          console.log('got send-info response');
+          break;
         case 'register':
           console.log('got register response');
           break;
