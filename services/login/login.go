@@ -14,6 +14,7 @@ import (
 	nats "github.com/nats-io/nats.go"
 	stan "github.com/nats-io/stan.go"
 	"golang.org/x/crypto/bcrypt"
+	"gopkg.in/guregu/null.v3"
 )
 
 type loginRequest struct {
@@ -26,14 +27,14 @@ type loginRequest struct {
 }
 
 type loginResponse struct {
-	Success     bool    `json:"success"`
-	Action      string  `json:"action"`
-	Error       string  `json:"error,omitempty"`
-	WsID        string  `json:"ws-id,omitempty"`
-	UserID      int     `json:"userid,omitempty"`
-	Username    *string `json:"username,omitempty"`
-	Displayname *string `json:"displayname,omitempty"`
-	Picture     *string `json:"picture,omitempty"`
+	Success     bool        `json:"success"`
+	Action      string      `json:"action"`
+	Error       string      `json:"error,omitempty"`
+	WsID        string      `json:"ws-id,omitempty"`
+	UserID      int         `json:"userid,omitempty"`
+	Username    string      `json:"username,omitempty"`
+	Displayname null.String `json:"displayname,omitempty"`
+	Picture     null.String `json:"picture,omitempty"`
 }
 
 type sendInfoRequest struct {
@@ -100,7 +101,8 @@ func main() {
 		var response loginResponse
 		var userID int
 		var hash []byte
-		var dispName, picURL, userUsername *string
+		var dispName, picURL null.String
+		var userUsername string
 
 		if err != nil {
 			log.Print("failed to hash password", err)
@@ -147,7 +149,6 @@ func main() {
 					response = loginResponse{
 						Success:     true,
 						Action:      "login",
-						WsID:        msg.WsID,
 						UserID:      userID,
 						Username:    userUsername,
 						Displayname: dispName,
