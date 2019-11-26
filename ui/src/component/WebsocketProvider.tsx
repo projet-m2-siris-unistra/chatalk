@@ -62,9 +62,20 @@ const WebsocketProvider: React.FC<Props> = ({ children, wsUrl }: Props) => {
           console.log('got send-info response');
           break;
         case 'register':
+          store.dispatch(setAuth({
+            userId: data['userid'],
+            username: data['username'],
+            displayName: `${data['username']}@${data['ws-id']}`,
+          }));
           console.log('got register response');
           break;
         case 'login':
+          store.dispatch(setAuth({
+            userId: data['userid'],
+            username: data['username'],
+            displayName: `${data['displayname']}@${data['ws-id']}`,
+            avatar: data['picture'],
+          }));
           console.log('got login response');
           break;
         case 'ping':

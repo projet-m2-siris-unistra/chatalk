@@ -36,8 +36,11 @@ type registerRequest struct {
 }*/
 
 type registerResponse struct {
-	Success bool   `json:"success"`
-	Error   string `json:"errors,omitempty"` //Errors []err
+	Success     bool   `json:"success"`
+	Error       string `json:"errors,omitempty"` //Errors []err
+	WsID        string `json:"ws-id,omitempty"`
+	UserID      int    `json:"userid,omitempty"`
+	Username    string `json:"username,omitempty"`
 }
 
 type sendInfoRequest struct {
@@ -141,6 +144,9 @@ func main() {
 			if err == nil {
 				response = registerResponse {
 					Success: true,
+					WsID: msg.WsID,
+					UserID: userID,
+					Username: msg.Payload.Username,
 				}
 				var req sendInfoRequest
 				req = sendInfoRequest {

@@ -27,8 +27,8 @@ type sendInfoRequest struct {
 type User struct {
 	UserID      int        `json:"userid"`
 	Username    string     `json:"username"`
-	DisplayName NullString `json:"display_name"`
-	PictureUrl  NullString `json:"pic_url"`
+	DisplayName NullString `json:"displayname"`
+	PictureUrl  NullString `json:"picture"`
 }
 
 type Conv struct {
@@ -66,7 +66,9 @@ func (ns *NullString) Scan(value interface{}) error {
 
 // MarshalJSON for NullString
 func (ns *NullString) MarshalJSON() ([]byte, error) {
+	log.Println("ouais")
 	if !ns.Valid {
+		log.Println("ouais1")
 		return []byte("null"), nil
 	}
 	return json.Marshal(ns.String)

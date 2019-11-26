@@ -8,6 +8,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"reflect"
 
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
@@ -26,8 +27,13 @@ type loginRequest struct {
 }
 
 type loginResponse struct {
-	Success bool `json:"success"`
-	Error   string  `json:"error,omitempty"`
+	Success     bool       `json:"success"`
+	Error       string     `json:"error,omitempty"`
+	WsID        string     `json:"ws-id,omitempty"`
+	UserID      int        `json:"userid,omitempty"`
+	Username    string     `json:"username,omitempty"`
+	Displayname NullString `json:"displayname,omitempty"`
+	Picture     NullString `json:"picture,omitempty"`
 }
 
 type sendInfoRequest struct {
@@ -36,6 +42,41 @@ type sendInfoRequest struct {
 	UserID int    `json:"userid"`
 }
 
+type NullString sql.NullString
+
+// Scan implements the Scanner interface for NullString
+func (ns *NullString) Scan(value interface{}) error {
+	var s sql.NullString
+	if err := s.Scan(value); err != nil {
+		return err
+	}
+
+	// if nil then make Valid false
+	if reflect.TypeOf(value) == nil {
+		*ns = NullString{s.String, false}
+	} else {
+		*ns = NullString{s.String, true}
+	}
+
+	return nil
+}
+
+// MarshalJSON for NullString
+func (ns *NullString) MarshalJSON() ([]byte, error) {
+	log.Println("ouais")
+	if !ns.Valid {
+		log.Println("ouais1")
+		return []byte("null"), nil
+	}
+	return json.Marshal(ns.String)
+}
+
+// UnmarshalJSON for NullString
+func (ns *NullString) UnmarshalJSON(b []byte) error {
+	err := json.Unmarshal(b, &ns.String)
+	ns.Valid = (err == nil)
+	return err
+}
 
 // get environment variable, if not found will be set to `fallback` value
 func getEnv(key, fallback string) string {
@@ -96,6 +137,8 @@ func main() {
 		var response loginResponse
 		var userID int
 		var hash []byte
+		var dispName, picUrl NullString
+
 		if err != nil {
 			log.Print("failed to hash password", err)
 			return
@@ -117,12 +160,12 @@ func main() {
 			}
 		} else {
 			row := db.QueryRow(`
-			SELECT user_id, pw_hash
+			SELECT user_id, pw_hash, display_name, pic_url
 			FROM users
 			WHERE username = $1;
 		`, msg.Payload.Username)
 
-			errSql := row.Scan(&userID,&hash)
+			errSql := row.Scan(&userID,&hash,&dispName,&picUrl)
 
 			switch errSql {
 			case sql.ErrNoRows:
@@ -136,11 +179,14 @@ func main() {
 			case nil:
 				errHash := bcrypt.CompareHashAndPassword(hash, []byte(msg.Payload.Password))
 				if (errHash == nil) {
-					message := fmt.Sprintf("Connection OK.\n User ID is: %d", userID)
 
 					response = loginResponse{
 						Success: true,
-						Error:   message,
+						WsID: msg.WsID,
+						UserID: userID,
+						Username: msg.Payload.Username,
+						Displayname: dispName,
+						Picture: picUrl,
 					}
 					var req sendInfoRequest
 					req = sendInfoRequest {
