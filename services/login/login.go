@@ -7,8 +7,8 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"syscall"
 	"reflect"
+	"syscall"
 
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
@@ -21,19 +21,19 @@ type loginRequest struct {
 	Action  string `json:"action"`
 	WsID    string `json:"ws-id"`
 	Payload struct {
-		Username             string `json:"username"`
-		Password             string `json:"password"`
+		Username string `json:"username"`
+		Password string `json:"password"`
 	} `json:"payload"`
 }
 
 type loginResponse struct {
-	Success     bool       `json:"success"`
-	Error       string     `json:"error,omitempty"`
-	WsID        string     `json:"ws-id,omitempty"`
-	UserID      int        `json:"userid,omitempty"`
-	Username    string     `json:"username,omitempty"`
-	Displayname NullString `json:"displayname,omitempty"`
-	Picture     NullString `json:"picture,omitempty"`
+	Success     bool    `json:"success"`
+	Error       string  `json:"error,omitempty"`
+	WsID        string  `json:"ws-id,omitempty"`
+	UserID      int     `json:"userid,omitempty"`
+	Username    *string `json:"username,omitempty"`
+	Displayname *string `json:"displayname,omitempty"`
+	Picture     *string `json:"picture,omitempty"`
 }
 
 type sendInfoRequest struct {
@@ -133,25 +133,24 @@ func main() {
 			return
 		}
 
-
 		var response loginResponse
 		var userID int
 		var hash []byte
-		var dispName, picUrl NullString
+		var dispName, picURL, userUsername *string
 
 		if err != nil {
 			log.Print("failed to hash password", err)
 			return
 		}
 
-		if(msg.Payload.Password == "" ) {
+		if msg.Payload.Password == "" {
 			message := fmt.Sprintf("No password given")
 
 			response = loginResponse{
 				Success: false,
 				Error:   message,
 			}
-		} else if (msg.Payload.Username == "") {
+		} else if msg.Payload.Username == "" {
 			message := fmt.Sprintf("No username given")
 
 			response = loginResponse{
@@ -160,14 +159,14 @@ func main() {
 			}
 		} else {
 			row := db.QueryRow(`
-			SELECT user_id, pw_hash, display_name, pic_url
+			SELECT user_id, pw_hash, display_name, pic_url, username
 			FROM users
 			WHERE username = $1;
 		`, msg.Payload.Username)
 
-			errSql := row.Scan(&userID,&hash,&dispName,&picUrl)
+			errSQL := row.Scan(&userID, &hash, &dispName, &picURL, &userUsername)
 
-			switch errSql {
+			switch errSQL {
 			case sql.ErrNoRows:
 				log.Println("No rows were returned!")
 				message := fmt.Sprintf("User not registered")
@@ -178,22 +177,24 @@ func main() {
 				}
 			case nil:
 				errHash := bcrypt.CompareHashAndPassword(hash, []byte(msg.Payload.Password))
-				if (errHash == nil) {
+				if errHash == nil {
 
 					response = loginResponse{
-						Success: true,
-						WsID: msg.WsID,
-						UserID: userID,
-						Username: msg.Payload.Username,
+						Success:     true,
+						WsID:        msg.WsID,
+						UserID:      userID,
+						Username:    userUsername,
 						Displayname: dispName,
-						Picture: picUrl,
+						Picture:     picURL,
 					}
+
 					var req sendInfoRequest
-					req = sendInfoRequest {
-						Action : "all",
-						WsID : msg.WsID,
+					req = sendInfoRequest{
+						Action: "all",
+						WsID:   msg.WsID,
 						UserID: userID,
 					}
+
 					j, _ := json.Marshal(req)
 					sendInfo := fmt.Sprintf("service.%s", "send-info")
 					sc.Publish(sendInfo, []byte(j))
@@ -214,7 +215,6 @@ func main() {
 				}
 			}
 		}
-
 
 		j, err := json.Marshal(response)
 		nc.Publish("ws."+msg.WsID+".send", j)

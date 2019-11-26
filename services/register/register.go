@@ -7,16 +7,16 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"syscall"
-	"strings"
 	"regexp"
+	"strings"
+	"syscall"
 
+	dberror "github.com/Shyp/go-dberror"
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
 	nats "github.com/nats-io/nats.go"
 	stan "github.com/nats-io/stan.go"
 	"golang.org/x/crypto/bcrypt"
-	dberror "github.com/Shyp/go-dberror"
 )
 
 type registerRequest struct {
@@ -36,11 +36,12 @@ type registerRequest struct {
 }*/
 
 type registerResponse struct {
-	Success     bool   `json:"success"`
-	Error       string `json:"errors,omitempty"` //Errors []err
-	WsID        string `json:"ws-id,omitempty"`
-	UserID      int    `json:"userid,omitempty"`
-	Username    string `json:"username,omitempty"`
+	Success  bool   `json:"success"`
+	Error    string `json:"errors,omitempty"` //Errors []err
+	WsID     string `json:"ws-id,omitempty"`
+	UserID   int    `json:"userid,omitempty"`
+	Username string `json:"username,omitempty"`
+	Email    string `json:"email,omitempty"`
 }
 
 type sendInfoRequest struct {
@@ -48,6 +49,7 @@ type sendInfoRequest struct {
 	WsID   string `json:"ws-id"`
 	UserID int    `json:"userid"`
 }
+
 // get environment variable, if not found will be set to `fallback` value
 func getEnv(key, fallback string) string {
 	if value, ok := os.LookupEnv(key); ok {
@@ -108,27 +110,29 @@ func main() {
 		re := regexp.MustCompile("[a-zA-Z0-9_]+")
 
 		if !re.MatchString(msg.Payload.Username) {
-			response = registerResponse {
+			response = registerResponse{
 				Success: false,
-				Error: "Login contains excentric characters",
+				Error:   "Only alphanumeric and underscore characters are allowed.",
 			}
 		} else if !strings.Contains(msg.Payload.Email, "@") {
-			response = registerResponse {
+			response = registerResponse{
 				Success: false,
-				Error: "Not an email address",
+				Error:   "Not an email address",
 			}
 		} else if msg.Payload.Password != msg.Payload.PasswordConfirmation {
-			response = registerResponse {
+			response = registerResponse{
 				Success: false,
-				Error: "Both password fields do not match",
+				Error:   "Both password fields do not match",
 			}
-		} else if len(msg.Payload.Password) <= 5 {
-			response = registerResponse {
+		} else if len(msg.Payload.Password) < 5 {
+			response = registerResponse{
 				Success: false,
-				Error: "Password is too weak",
+				Error:   "Password is too weak",
 			}
 		} else {
 			var userID int
+			var userUsername, userEmail string
+
 			hash, err := bcrypt.GenerateFromPassword([]byte(msg.Payload.Password), 14)
 			if err != nil {
 				log.Print("failed to hash password", err)
@@ -138,20 +142,21 @@ func main() {
 			err = db.QueryRow(`
 				INSERT INTO users(username, email, pw_hash, display_name, status, pic_url)
 				VALUES($1, $2, $3, NULL, NULL, NULL)
-				RETURNING user_id;
-			`, msg.Payload.Username, msg.Payload.Email, hash).Scan(&userID)
+				RETURNING user_id, username, email;
+			`, msg.Payload.Username, msg.Payload.Email, hash).Scan(&userID, &userUsername, &userEmail)
 
 			if err == nil {
-				response = registerResponse {
-					Success: true,
-					WsID: msg.WsID,
-					UserID: userID,
-					Username: msg.Payload.Username,
+				response = registerResponse{
+					Success:  true,
+					WsID:     msg.WsID,
+					UserID:   userID,
+					Username: userUsername,
+					Email:    userEmail,
 				}
 				var req sendInfoRequest
-				req = sendInfoRequest {
-					Action : "all",
-					WsID : msg.WsID,
+				req = sendInfoRequest{
+					Action: "all",
+					WsID:   msg.WsID,
 					UserID: userID,
 				}
 				j, _ := json.Marshal(req)
@@ -160,16 +165,16 @@ func main() {
 			} else {
 				dberr := dberror.GetError(err)
 				switch e := dberr.(type) {
-					case *dberror.Error:
-						errmsg := e.Error()
-						response = registerResponse {
-							Success: false,
-							Error: errmsg,
-						}
-					default :
-						response = registerResponse {
-							Success: false,
-						}
+				case *dberror.Error:
+					errmsg := e.Error()
+					response = registerResponse{
+						Success: false,
+						Error:   errmsg,
+					}
+				default:
+					response = registerResponse{
+						Success: false,
+					}
 				}
 
 			}
@@ -179,7 +184,7 @@ func main() {
 		nc.Publish("ws."+msg.WsID+".send", j)
 	})
 
-	<-c
+	<-c // just wait for terminaison signal to continue (exit)
 
 	sub.Unsubscribe()
 	sc.Close()
