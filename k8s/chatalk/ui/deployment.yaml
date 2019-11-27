@@ -10,3 +10,6 @@ spec:
       - name: ui
         image: registry.chatalk.fr/ui:master
         imagePullPolicy: Always
+        env:
+        - name: BACKEND_URL
+          value: wss://ws.chatalk.fr

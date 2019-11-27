@@ -3,6 +3,7 @@
 ## first part: build the app (need build dependencies)
 FROM node:12.13-alpine AS build
 ENV NPM_CONFIG_LOGLEVEL warn
+ENV REACT_APP_ENDPOINT __BACKEND_URL__
 WORKDIR /app
 COPY package.json .
 COPY package-lock.json .

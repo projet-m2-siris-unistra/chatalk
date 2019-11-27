@@ -6,9 +6,11 @@ import WebsocketProvider from './component/WebsocketProvider';
 import AppRouter from './router';
 
 const App: React.FC = () => {
+  const websocketEndpoint = process.env.REACT_APP_ENDPOINT || "ws://localhost:42042";
+
   return (
     <Provider store={store}>
-      <WebsocketProvider wsUrl="ws://localhost:42042">
+      <WebsocketProvider wsUrl={websocketEndpoint}>
         <CssBaseline />
         <AppRouter />
       </WebsocketProvider>
