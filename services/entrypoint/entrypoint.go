@@ -59,33 +59,49 @@ func handleWS(w http.ResponseWriter, r *http.Request) {
 
 	c, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		log.Print("upgrade: ", wsID, " -- ", err)
+		log.Fatal("upgrade: ", wsID, " -- ", err)
 	}
 
 	// send data back to the websocket
-	subWsSend, _ := nc.Subscribe("ws."+wsID+".send", func(m *nats.Msg) {
+	subWsSend, err := nc.Subscribe("ws."+wsID+".send", func(m *nats.Msg) {
 		err = c.WriteMessage(websocket.TextMessage, m.Data)
 		if err != nil {
 			log.Print("subWsSend/write: ", wsID, " -- ", err)
 		}
 	})
 
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// subscribe to a topic
-	subWsSub, _ := nc.Subscribe("ws."+wsID+".sub", func(m *nats.Msg) {
-		sub, _ := nc.Subscribe(string(m.Data), func(msg *nats.Msg) {
+	subWsSub, err := nc.Subscribe("ws."+wsID+".sub", func(m *nats.Msg) {
+		sub, err := nc.Subscribe(string(m.Data), func(msg *nats.Msg) {
 			nc.Publish("ws."+wsID+".send", msg.Data)
 		})
+
+		if err != nil {
+			log.Fatal(err)
+		}
 
 		//if multiple sub per sibject =>
 		//subscriptions[string(m.Data)] = append(subscriptions[string(m.Data)],sub)
 		subscriptions[string(m.Data)] = sub
 	})
 
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	// unsubscribe to a topic
-	subWsUnsub, _ := nc.Subscribe("ws."+wsID+".unsub", func(m *nats.Msg) {
+	subWsUnsub, err := nc.Subscribe("ws."+wsID+".unsub", func(m *nats.Msg) {
 		subscriptions[string(m.Data)].Unsubscribe()
 		delete(subscriptions, string(m.Data))
 	})
+
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	defer subWsSend.Unsubscribe()
 	defer subWsSub.Unsubscribe()
