@@ -53,9 +53,9 @@ const WebsocketProvider: React.FC<Props> = ({ children, wsUrl }: Props) => {
       console.log('ws closed');
       store.dispatch(clearAuth());
       setIsOpen(false);
-      setTimeout(() => {
-        handleWs();
-      }, 2000);
+      // setTimeout(() => {
+      //   handleWs();
+      // }, 2000);
     };
 
     connectionRef.current.onerror = error => {
@@ -76,21 +76,25 @@ const WebsocketProvider: React.FC<Props> = ({ children, wsUrl }: Props) => {
           break;
 
         case 'register':
-          store.dispatch(setAuth({
-            userId: data.userid,
-            username: data.username,
-            displayName: `${data.username}@${data['ws-id']}`,
-          }));
+          store.dispatch(
+            setAuth({
+              userId: data.userid,
+              username: data.username,
+              displayName: `${data.username}@${data['ws-id']}`,
+            })
+          );
           console.log('got register response');
           break;
 
         case 'login':
-          store.dispatch(setAuth({
-            userId: data.userid,
-            username: data.username,
-            displayName: `${data.displayname}@${data['ws-id']}`,
-            avatar: data.picture,
-          }));
+          store.dispatch(
+            setAuth({
+              userId: data.userid,
+              username: data.username,
+              displayName: `${data.displayname}@${data['ws-id']}`,
+              avatar: data.picture,
+            })
+          );
           console.log('got login response');
           break;
 
@@ -107,7 +111,7 @@ const WebsocketProvider: React.FC<Props> = ({ children, wsUrl }: Props) => {
           break;
       }
     };
-  }
+  };
 
   const wsCallback = useCallback(handleWs, [wsUrl]);
   wsCallback();
