@@ -7,7 +7,6 @@ commonLabels:
 namespace: chatalk
 
 bases:
-- bus
 - db
 - conv_creation
 - conv_manag

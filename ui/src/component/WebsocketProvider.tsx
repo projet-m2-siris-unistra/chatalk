@@ -1,12 +1,7 @@
 import React, {
   ReactNode,
   Context,
-  useState,
-  // useEffect,
-  useRef,
-  MutableRefObject,
   useContext,
-  useCallback,
 } from 'react';
 import store from '../store';
 import { setAuth, clearAuth } from '../store/actions';
@@ -32,101 +27,122 @@ interface Props {
   wsUrl: string;
 }
 
-const WebsocketProvider: React.FC<Props> = ({ children, wsUrl }: Props) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const connectionRef: MutableRefObject<WebSocket | null> = useRef<WebSocket>(
-    null
-  );
+interface State {
+  socket: WebSocket | null,
+  isOpen: boolean,
+}
 
-  const handleWs = () => {
-    if (isOpen) return;
-
-    connectionRef.current = new WebSocket(wsUrl);
-    connectionRef.current.binaryType = 'blob';
-
-    connectionRef.current.onopen = () => {
-      console.log('ws opened');
-      setIsOpen(true);
-    };
-
-    connectionRef.current.onclose = () => {
-      console.log('ws closed');
-      store.dispatch(clearAuth());
-      setIsOpen(false);
-      // setTimeout(() => {
-      //   handleWs();
-      // }, 2000);
-    };
-
-    connectionRef.current.onerror = error => {
-      console.log('ws errored:', error);
-      store.dispatch(clearAuth());
-      setIsOpen(false);
-    };
-
-    connectionRef.current.onmessage = msg => {
-      setIsOpen(true);
-      const data = JSON.parse(msg.data);
-      console.log('ws messaged:', data);
-      if (!data || !data.action) return;
-
-      switch (data.action) {
-        case 'send-info':
-          console.log('got send-info response');
-          break;
-
-        case 'register':
-          store.dispatch(
-            setAuth({
-              userId: data.userid,
-              username: data.username,
-              displayName: `${data.username}@${data['ws-id']}`,
-            })
-          );
-          console.log('got register response');
-          break;
-
-        case 'login':
-          store.dispatch(
-            setAuth({
-              userId: data.userid,
-              username: data.username,
-              displayName: `${data.displayname}@${data['ws-id']}`,
-              avatar: data.picture,
-            })
-          );
-          console.log('got login response');
-          break;
-
-        case 'ping':
-          console.log('got ping response');
-          store.dispatch(
-            setAuth({
-              userId: 42,
-              username: 'toto',
-              displayName: `Toto@${data['ws-id']}`,
-              avatar: 'toto.jpg',
-            })
-          );
-          break;
-      }
-    };
+class WebsocketProvider extends React.Component<Props, State> {
+  state: State = {
+    socket: null,
+    isOpen: false,
   };
 
-  const wsCallback = useCallback(handleWs, [wsUrl]);
-  wsCallback();
+  componentDidMount() {
+    this.createWs(this.props.wsUrl);
+  }
 
-  return (
-    <WebsocketContext.Provider
-      value={{
-        isOpen,
-        connection: connectionRef.current,
-      }}
-    >
-      {children}
-    </WebsocketContext.Provider>
-  );
-};
+  serviceResponseSendInfos(data: any) {
+    console.log('svc/send-info: ', data);
+  }
+
+  serviceResponseRegister(data: any) {
+    console.log('svc/register: ', data);
+    store.dispatch(
+      setAuth({
+        userId: data.userid,
+        username: data.username,
+        displayName: `${data.username}@${data['ws-id']}`,
+      })
+    );
+  }
+
+  serviceResponseLogin(data: any) {
+    console.log('svc/login: ', data);
+    store.dispatch(
+      setAuth({
+        userId: data.userid,
+        username: data.username,
+        displayName: `${data.displayname}@${data['ws-id']}`,
+        avatar: data.picture,
+      })
+    );
+  }
+
+  serviceResponsePing(data: any) {
+    console.log('svc/ping: ', data);
+  }
+
+  onWsOpen() {
+    console.log('ws opened');
+    this.setState({ isOpen: true });
+  }
+
+  onWsClose() {
+    console.log('ws closed');
+    store.dispatch(clearAuth());
+    this.setState({ isOpen: false });
+    setTimeout(() => this.createWs(this.props.wsUrl), 2000)
+  }
+
+  onWsError(error: any) {
+    console.log('ws errored:', error);
+    store.dispatch(clearAuth());
+    this.setState({ isOpen: false });
+  }
+
+  onWsMessage(msg: any) {
+    this.setState({ isOpen: true });
+    const data = JSON.parse(msg.data);
+    console.log('ws messaged:', data);
+    if (!data || !data.action) return;
+
+    switch (data.action) {
+      case 'send-info':
+        this.serviceResponseSendInfos(data);
+        break;
+
+      case 'register':
+        this.serviceResponseRegister(data);
+        break;
+
+      case 'login':
+        this.serviceResponseLogin(data);
+        break;
+
+      case 'ping':
+        this.serviceResponsePing(data);
+        break;
+    }
+  }
+
+  createWs(wsUrl: string) {
+    if (this.state.isOpen) return;
+
+    let ws = new WebSocket(wsUrl);
+    ws.binaryType = 'blob';
+
+    ws.onopen = () => this.onWsOpen();
+    ws.onclose = () => this.onWsClose();
+    ws.onerror = err => this.onWsError(err);
+    ws.onmessage = msg => this.onWsMessage(msg);
+
+    this.setState({ socket: ws });
+  }
+
+  render() {
+    return (
+      <WebsocketContext.Provider
+        value={{
+          isOpen: this.state.isOpen,
+          connection: this.state.socket,
+        }}
+      >
+        { this.props.children }
+      </WebsocketContext.Provider>
+    );
+  }
+}
 
 export default WebsocketProvider;
 export { useWebsocket };
