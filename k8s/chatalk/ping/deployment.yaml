@@ -12,6 +12,6 @@ spec:
         imagePullPolicy: Always
         env:
         - name: NATS_URL
-          value: nats://bus:4222
+          value: nats://nats:4222
         - name: NATS_CLUSTER_ID
-          value: chatalk
+          value: stan
