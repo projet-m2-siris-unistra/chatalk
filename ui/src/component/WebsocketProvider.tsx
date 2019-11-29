@@ -1,10 +1,6 @@
-import React, {
-  ReactNode,
-  Context,
-  useContext,
-} from 'react';
-import store from '../store';
-import { setAuth, clearAuth } from '../store/actions';
+import React, { ReactNode, Context, useContext } from 'react';
+import { Action, setAuth, clearAuth } from '../store/actions';
+import { DispatchProp, connect } from 'react-redux';
 
 interface WebsocketContextValue {
   isOpen: boolean;
@@ -22,20 +18,22 @@ const WebsocketContext: Context<WebsocketContextValue> = React.createContext(
 
 const useWebsocket = () => useContext(WebsocketContext);
 
-interface Props {
+type Props = {
   children?: ReactNode;
   wsUrl: string;
-}
+} & DispatchProp<Action>;
 
 interface State {
-  socket: WebSocket | null,
-  isOpen: boolean,
+  socket: WebSocket | null;
+  isOpen: boolean;
+  ping: ReturnType<typeof setInterval> | null;
 }
 
 class WebsocketProvider extends React.Component<Props, State> {
   state: State = {
     socket: null,
     isOpen: false,
+    ping: null,
   };
 
   componentDidMount() {
@@ -48,7 +46,7 @@ class WebsocketProvider extends React.Component<Props, State> {
 
   serviceResponseRegister(data: any) {
     console.log('svc/register: ', data);
-    store.dispatch(
+    this.props.dispatch(
       setAuth({
         userId: data.userid,
         username: data.username,
@@ -59,7 +57,7 @@ class WebsocketProvider extends React.Component<Props, State> {
 
   serviceResponseLogin(data: any) {
     console.log('svc/login: ', data);
-    store.dispatch(
+    this.props.dispatch(
       setAuth({
         userId: data.userid,
         username: data.username,
@@ -73,22 +71,49 @@ class WebsocketProvider extends React.Component<Props, State> {
     console.log('svc/ping: ', data);
   }
 
+  sendPing() {
+    if (
+      !this.state.isOpen ||
+      this.state.socket === null ||
+      this.state.ping === null
+    )
+      return;
+
+    this.state.socket.send(
+      JSON.stringify({
+        action: 'ping',
+        payload: {},
+      })
+    );
+  }
+
+  stopPing() {
+    if (this.state.ping === null) return;
+    clearInterval(this.state.ping);
+    this.setState({ ping: null });
+  }
+
   onWsOpen() {
     console.log('ws opened');
-    this.setState({ isOpen: true });
+    this.setState({
+      isOpen: true,
+      ping: setInterval(() => this.sendPing(), 15000),
+    });
   }
 
   onWsClose() {
     console.log('ws closed');
-    store.dispatch(clearAuth());
+    this.props.dispatch(clearAuth());
     this.setState({ isOpen: false });
-    setTimeout(() => this.createWs(this.props.wsUrl), 2000)
+    this.stopPing();
+    setTimeout(() => this.createWs(this.props.wsUrl), 2000);
   }
 
   onWsError(error: any) {
     console.log('ws errored:', error);
-    store.dispatch(clearAuth());
+    this.props.dispatch(clearAuth());
     this.setState({ isOpen: false });
+    this.stopPing();
   }
 
   onWsMessage(msg: any) {
@@ -119,7 +144,7 @@ class WebsocketProvider extends React.Component<Props, State> {
   createWs(wsUrl: string) {
     if (this.state.isOpen) return;
 
-    let ws = new WebSocket(wsUrl);
+    const ws = new WebSocket(wsUrl);
     ws.binaryType = 'blob';
 
     ws.onopen = () => this.onWsOpen();
@@ -138,11 +163,11 @@ class WebsocketProvider extends React.Component<Props, State> {
           connection: this.state.socket,
         }}
       >
-        { this.props.children }
+        {this.props.children}
       </WebsocketContext.Provider>
     );
   }
 }
 
-export default WebsocketProvider;
+export default connect()(WebsocketProvider);
 export { useWebsocket };
