@@ -4,6 +4,7 @@ import store from './store';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import WebsocketProvider from './component/WebsocketProvider';
 import AppRouter from './router';
+import Alert from './component/Alert';
 
 const App: React.FC = () => {
   const websocketEndpoint =
@@ -13,6 +14,7 @@ const App: React.FC = () => {
     <Provider store={store}>
       <WebsocketProvider wsUrl={websocketEndpoint}>
         <CssBaseline />
+        <Alert />
         <AppRouter />
       </WebsocketProvider>
     </Provider>

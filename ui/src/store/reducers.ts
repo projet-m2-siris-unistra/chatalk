@@ -13,6 +13,16 @@ export default (state: State = initialState, action: actions.Action): State => {
         ...state,
         auth: false,
       };
+    case actions.SET_ALERT:
+      return {
+        ...state,
+        alert: action.alert,
+      };
+    case actions.CLEAR_ALERT:
+      return {
+        ...state,
+        alert: false,
+      };
   }
   return state;
 };

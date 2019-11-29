@@ -1,5 +1,11 @@
 import React, { ReactNode, Context, useContext } from 'react';
-import { Action, setAuth, clearAuth } from '../store/actions';
+import {
+  Action,
+  setAuth,
+  clearAuth,
+  alertError,
+  clearAlert,
+} from '../store/actions';
 import { DispatchProp, connect } from 'react-redux';
 
 interface WebsocketContextValue {
@@ -99,6 +105,7 @@ class WebsocketProvider extends React.Component<Props, State> {
       isOpen: true,
       ping: setInterval(() => this.sendPing(), 15000),
     });
+    this.props.dispatch(clearAlert());
   }
 
   onWsClose() {
@@ -107,6 +114,11 @@ class WebsocketProvider extends React.Component<Props, State> {
     this.setState({ isOpen: false });
     this.stopPing();
     setTimeout(() => this.createWs(this.props.wsUrl), 2000);
+    this.props.dispatch(
+      alertError(
+        'Server connection lost. Please check your Internet connection and wait…'
+      )
+    );
   }
 
   onWsError(error: any) {

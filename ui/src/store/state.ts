@@ -5,10 +5,17 @@ export interface Auth {
   avatar?: string;
 }
 
+export interface Alert {
+  kind: 'info' | 'error';
+  content: string;
+}
+
 export interface State {
   auth: Auth | false;
+  alert: Alert | false;
 }
 
 export const initialState: State = {
   auth: false,
+  alert: false,
 };
