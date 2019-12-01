@@ -47,6 +47,16 @@ Run the following command to deploy it:
 kubectl apply -k nats-streaming-operator/overlays/unistra
 ```
 
+## Deploy the database
+
+For the database, we will use `postgres-operator`.
+
+Run the following command to deploy it:
+
+```sh
+kubectl apply -k postgres-operator/overlays/unistra
+```
+
 ## Configure the namespace to pull images from our private registry
 
 First we will need to create a new secret with the credentials:
