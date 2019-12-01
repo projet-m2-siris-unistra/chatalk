@@ -1,0 +1,17 @@
+[Unit]
+Description=Minio (S3 compatible storage)
+Wants=docker.socket
+After=docker.service
+
+[Service]
+User=root
+PermissionsStartOnly=true
+ExecStart=/usr/bin/docker run -p 9000:9000  -e "MINIO_ACCESS_KEY=VWFMMF0IAU20NOYU49W5" -e "MINIO_SECRET_KEY=pZivezDT92M57agFLYhbdOFXZNXi0bDjUbOMExK4" -v /mnt/data:/data --restart on-failure:5 --name minio minio/minio server /data
+ExecStartPre=-/usr/bin/docker rm -f minio
+ExecStop=/usr/bin/docker stop minio
+Restart=always
+RestartSec=15s
+TimeoutStartSec=30s
+
+[Install]
+WantedBy=multi-user.target

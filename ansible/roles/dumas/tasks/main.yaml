@@ -98,12 +98,25 @@
     src: registry.service
     dest: /etc/systemd/system/registry.service
 
+- name: create minio service
+  notify:
+    - reload systemd
+    - restart minio
+  copy:
+    src: minio.service
+    dest: /etc/systemd/system/minio.service
+
 - name: flush handlers
   meta: flush_handlers
 
 - name: enable registry
   systemd:
     name: registry
+    enabled: yes
+
+- name: enable minio
+  systemd:
+    name: minio
     enabled: yes
 
 - name: remove default site configuration for nginx

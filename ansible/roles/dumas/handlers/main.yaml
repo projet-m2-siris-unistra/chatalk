@@ -7,3 +7,8 @@
   systemd:
     name: registry
     state: restarted
+
+- name: restart minio
+  systemd:
+    name: minio
+    state: restarted
