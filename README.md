@@ -3,9 +3,13 @@ ChaTalK
 
 ## Repository structure
 
-### ansible
+### infra
 
 All the required Ansible configuration files to setup machines as we want.
+
+Documentation about the infrastructure.
+
+All manifests for Kubernetes (k8s) to deploy all applications that we need in our clusters.
 
 ### blog
 
@@ -14,10 +18,6 @@ The sources of the blog that is available here: https://blog.chatalk.fr/
 ### database
 
 Informations about the database.
-
-### k8s
-
-All manifests for Kubernetes (k8s) to deploy all applications that we need in our clusters.
 
 ### mock-up
 

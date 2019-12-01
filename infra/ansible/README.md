@@ -12,7 +12,7 @@ Documentation: https://github.com/kubernetes-sigs/kubespray
 
 ## Python dependencies
 
-Install pipenv on yur local machine using for example `sudo apt install pipenv` if you are on Ubuntu.
+Install pipenv on your local machine using for example `sudo apt install pipenv` if you are on Ubuntu.
 
 Documentation: https://pipenv.kennethreitz.org/en/latest/.
 
