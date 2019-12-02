@@ -7,8 +7,8 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"syscall"
 	"strconv"
+	"syscall"
 
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
@@ -111,7 +111,7 @@ func main() {
 			`, userID, convID, msg.Payload).Scan(&msgID)
 
 			message := fmt.Sprintf("Message ID is: %s", msgID)
-			jm, err := json.Marshal(messageBroad{Src: msg.Src,Dst: msg.Dst,Payload:msg.Payload,})
+			jm, err := json.Marshal(messageBroad{Src: msg.Src, Dst: msg.Dst, Payload: msg.Payload})
 			nc.Publish("conv."+msg.Dst, []byte(jm))
 
 			response = messageResponse{

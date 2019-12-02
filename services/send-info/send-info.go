@@ -41,6 +41,7 @@ type Conv struct {
 }
 
 type sendInfoResponse struct {
+	Action  string `json:"action"`
 	Success bool   `json:"success"`
 	Error   string `json:"error,omitempty"`
 	Users   []User `json:"users,omitempty"`
@@ -117,6 +118,7 @@ func main() {
 
 		if err != nil {
 			response = sendInfoResponse{
+				Action:  "send-info",
 				Success: false,
 				Error:   "Issue on Database, reload later",
 			}
@@ -128,6 +130,7 @@ func main() {
 			if err == sql.ErrNoRows {
 				log.Println("No rows were returned!")
 				response = sendInfoResponse{
+					Action:  "send-info",
 					Success: false,
 					Error:   "No rows were returned!",
 				}
@@ -138,12 +141,14 @@ func main() {
 				case *dberror.Error:
 					errmsg := e.Error()
 					response = sendInfoResponse{
+						Action:  "send-info",
 						Success: false,
 						Error:   errmsg,
 					}
 				default:
 					log.Println("err:", err)
 					response = sendInfoResponse{
+						Action:  "send-info",
 						Success: false,
 					}
 				}
@@ -167,6 +172,7 @@ func main() {
 
 		if err != nil {
 			response = sendInfoResponse{
+				Action:  "send-info",
 				Success: false,
 				Error:   "Issue on Database, reload later",
 			}
@@ -178,6 +184,7 @@ func main() {
 			if err != nil {
 				log.Println("err:", err)
 				response = sendInfoResponse{
+					Action:  "send-info",
 					Success: false,
 					Error:   "Issue on Database, reload later",
 				}
@@ -191,6 +198,7 @@ func main() {
 		rows.Close()
 
 		response = sendInfoResponse{
+			Action:  "send-info",
 			Success: true,
 			Users:   usersArr,
 			Convs:   convsArr,

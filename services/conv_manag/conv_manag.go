@@ -7,8 +7,8 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"syscall"
 	"strconv"
+	"syscall"
 
 	dberror "github.com/Shyp/go-dberror"
 	"github.com/google/uuid"
@@ -21,14 +21,15 @@ type registerRequest struct {
 	Action  string `json:"action"`
 	WsID    string `json:"ws-id"`
 	Payload struct {
-		TypeManag   string `json:"type"`
-		UserID      string `json:"userid"`
-		ConvID      string `json:"convid"`
+		TypeManag string `json:"type"`
+		UserID    string `json:"userid"`
+		ConvID    string `json:"convid"`
 	} `json:"payload"`
 }
 
 type registerResponse struct {
-	Success bool  `json:"success"`
+	Action  string `json:"action"`
+	Success bool   `json:"success"`
 	Error   string `json:"error,omitempty"`
 }
 
@@ -100,31 +101,33 @@ func main() {
 				log.Println("conv management: userid = %s", userID)
 			}
 			response = registerResponse{
+				Action:  "conv_manag",
 				Success: false,
-				Error: "User ID is not valid",
+				Error:   "User ID is not valid",
 			}
 			goto send_msg
 		}
 
 		convID, err = strconv.Atoi(msg.Payload.ConvID)
 
-		if  err != nil {
+		if err != nil {
 			response = registerResponse{
+				Action:  "conv_manag",
 				Success: false,
-				Error: "Conversation ID is not valid",
+				Error:   "Conversation ID is not valid",
 			}
 			goto send_msg
 		}
 
 		typeManag, err = strconv.Atoi(msg.Payload.TypeManag)
-		if  err != nil {
+		if err != nil {
 			response = registerResponse{
+				Action:  "conv_manag",
 				Success: false,
-				Error: "Management Type is not valid",
+				Error:   "Management Type is not valid",
 			}
 			goto send_msg
 		}
-
 
 		if typeManag == 1 { // add participant
 			topicName = "conv." + strconv.Itoa(convID)
@@ -135,6 +138,7 @@ func main() {
 
 			if err == nil {
 				response = registerResponse{
+					Action:  "conv_manag",
 					Success: true,
 				}
 				nc.Publish("ws."+msg.WsID+".sub", []byte(topicName))
@@ -144,6 +148,7 @@ func main() {
 				case *dberror.Error:
 					errmsg := e.Error()
 					response = registerResponse{
+						Action:  "conv_manag",
 						Success: false,
 						Error:   errmsg,
 					}
@@ -160,6 +165,7 @@ func main() {
 
 			if err == nil {
 				response = registerResponse{
+					Action:  "conv_manag",
 					Success: true,
 				}
 			} else {
@@ -168,15 +174,16 @@ func main() {
 				case *dberror.Error:
 					errmsg := e.Error()
 					response = registerResponse{
+						Action:  "conv_manag",
 						Success: false,
 						Error:   errmsg,
 					}
 				}
 			}
 		}
-		send_msg:
-			j, err := json.Marshal(response)
-			nc.Publish("ws."+msg.WsID+".send", j)
+	send_msg:
+		j, err := json.Marshal(response)
+		nc.Publish("ws."+msg.WsID+".send", j)
 	})
 
 	<-c

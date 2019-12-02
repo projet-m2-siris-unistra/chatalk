@@ -7,8 +7,8 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"syscall"
 	"strconv"
+	"syscall"
 
 	dberror "github.com/Shyp/go-dberror"
 	"github.com/google/uuid"
@@ -21,7 +21,7 @@ type registerRequest struct {
 	Action  string `json:"action"`
 	WsID    string `json:"ws-id"`
 	Payload struct {
-		UserID 	 string `json:"userid"`
+		UserID   string `json:"userid"`
 		Convname string `json:"convname"`
 		Topic    string `json:"topic"`
 		Picture  string `json:"picture"`
@@ -29,7 +29,8 @@ type registerRequest struct {
 }
 
 type registerResponse struct {
-	Success bool  `json:"success"`
+	Action  string `json:"action"`
+	Success bool   `json:"success"`
 	Error   string `json:"error,omitempty"`
 }
 
@@ -97,17 +98,18 @@ func main() {
 
 		if err != nil {
 			response = registerResponse{
+				Action:  "conv_creation",
 				Success: false,
-				Error: "UserID not valid",
+				Error:   "UserID not valid",
 			}
 			goto send_msg
 		}
 
-
 		if msg.Payload.Convname == "" {
 			response = registerResponse{
+				Action:  "conv_creation",
 				Success: false,
-				Error: "Conversation name is not valid",
+				Error:   "Conversation name is not valid",
 			}
 		} else {
 			err = db.QueryRow(
@@ -124,6 +126,7 @@ func main() {
 				if err == nil {
 					message := fmt.Sprintf("Creation OK.\n conv ID is: %s", convID)
 					response = registerResponse{
+						Action:  "conv_creation",
 						Success: true,
 						Error:   message,
 					}
@@ -135,11 +138,13 @@ func main() {
 					case *dberror.Error:
 						errmsg := e.Error()
 						response = registerResponse{
+							Action:  "conv_creation",
 							Success: false,
 							Error:   errmsg,
 						}
-					default :
-						response = registerResponse {
+					default:
+						response = registerResponse{
+							Action:  "conv_creation",
 							Success: false,
 						}
 					}
@@ -153,19 +158,21 @@ func main() {
 				case *dberror.Error:
 					errmsg := e.Error()
 					response = registerResponse{
+						Action:  "conv_creation",
 						Success: false,
 						Error:   errmsg,
 					}
-				default :
-					response = registerResponse {
+				default:
+					response = registerResponse{
+						Action:  "conv_creation",
 						Success: false,
 					}
 				}
 			}
 		}
-		send_msg:
-			j, err := json.Marshal(response)
-			nc.Publish("ws."+msg.WsID+".send", j)
+	send_msg:
+		j, err := json.Marshal(response)
+		nc.Publish("ws."+msg.WsID+".send", j)
 	})
 
 	<-c
