@@ -16,12 +16,18 @@ spec:
         - name: NATS_CLUSTER_ID
           value: stan
         - name: DB_HOST
-          value: db
+          value: chatalk-postgres-cluster
         - name: DB_DB
           value: chatalk
         - name: DB_USER
-          value: chatalk
+          valueFrom:
+            secretKeyRef:
+              name: chatalk.chatalk-postgres-cluster.credentials
+              key: username
         - name: DB_PASS
-          value: chatalk
+          valueFrom:
+            secretKeyRef:
+              name: chatalk.chatalk-postgres-cluster.credentials
+              key: password
         - name: DB_MODE
-          value: disable
+          value: require

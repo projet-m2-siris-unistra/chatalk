@@ -1,0 +1,18 @@
+apiVersion: "acid.zalan.do/v1"
+kind: postgresql
+metadata:
+  name: chatalk-postgres-cluster
+spec:
+  teamId: "chatalk"
+  volume:
+    size: 1Gi
+  numberOfInstances: 2
+  users:
+    chatalk:  # database owner
+    - superuser
+    - createdb
+    chatalk_user: []  # role for application chatalk
+  databases:
+    chatalk: chatalk  # dbname: owner
+  postgresql:
+    version: "11"

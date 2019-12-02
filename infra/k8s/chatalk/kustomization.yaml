@@ -7,7 +7,6 @@ commonLabels:
 namespace: chatalk
 
 bases:
-- db
 - conv_creation
 - conv_manag
 - db-migrations

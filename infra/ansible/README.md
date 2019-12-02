@@ -81,9 +81,7 @@ To get it, there are two ways:
   - after lanching the playbook, you should have and `artifacts` folder with the configuration fil in it ; you just have to copy it like this: `mkdir -p ~/.kube; cp artifacts/admin.conf ~/.kube/config`.
 
 
-# Some other tasks
-
-## Reboot all VM
+# Reboot all VM
 
 Only use if absolutely required.
 
@@ -93,6 +91,13 @@ To reboot all VM at the same time you can use the following command:
 ansible all -i hosts.ini -m reboot --become
 ```
 
+# Mark the `local-storage` storage class as default
+
+Run the following command:
+
+```sh
+kubectl patch storageclass local-storage -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+```
 
 # Generate certificates on `dumas`
 

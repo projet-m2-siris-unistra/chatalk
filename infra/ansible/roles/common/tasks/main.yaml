@@ -81,3 +81,16 @@
   set_fact:
     import_kubespray: "yes"
   tags: [ never, k8s ]
+
+- name: create mount directory for pgdata PV
+  file:
+    path: /srv/store/pgdata
+    state: directory
+
+- name: mount directory for pgdata PV
+  mount:
+    path: /srv/data/pgdata
+    src: /srv/store/pgdata
+    state: mounted
+    opts: bind
+    fstype: none

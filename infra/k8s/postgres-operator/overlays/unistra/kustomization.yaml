@@ -5,3 +5,9 @@ namespace: chatalk
 
 bases:
 - ../../base
+
+resources:
+- postgres.yaml
+
+patchesStrategicMerge:
+- postgres-operator.yaml

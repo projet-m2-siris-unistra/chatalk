@@ -9,7 +9,24 @@ spec:
       - name: db-migrations
         image: registry.chatalk.fr/db-migrations:master
         args:
-        - -database=postgres://chatalk:chatalk@db/chatalk?sslmode=disable
+        - -database=postgres://$(DB_USER):$(DB_PASS)@$(DB_HOST)/$(DB_DB)?sslmode=$(DB_MODE)
         - up
+        env:
+        - name: DB_HOST
+          value: chatalk-postgres-cluster
+        - name: DB_DB
+          value: chatalk
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: chatalk.chatalk-postgres-cluster.credentials
+              key: username
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: chatalk.chatalk-postgres-cluster.credentials
+              key: password
+        - name: DB_MODE
+          value: require
       restartPolicy: Never
   backoffLimit: 5
