@@ -63,6 +63,13 @@ class WebsocketProvider extends React.Component<Props, State> {
 
   serviceResponseLogin(data: any) {
     console.log('svc/login: ', data);
+    if (!data.success) {
+      this.props.dispatch(
+        alertError(data.error || 'Login failed. Retry later…')
+      );
+      return;
+    }
+    this.props.dispatch(clearAlert());
     this.props.dispatch(
       setAuth({
         userId: data.userid,
