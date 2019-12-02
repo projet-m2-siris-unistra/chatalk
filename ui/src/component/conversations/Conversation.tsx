@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
   msg: {
@@ -47,7 +47,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+type Params = {
+  id: string,
+};
+
 const Conversation: React.FC = () => {
+  const { id } = useParams<Params>();
   const classes = useStyles();
   const isDesktop = useMediaQuery('(min-width:1000px)');
 
@@ -118,7 +123,7 @@ const Conversation: React.FC = () => {
         <Link to="/conversation" className={displayBackBtn}>
           «
         </Link>
-        Conversation name - config
+        Conversation name - config ({id})
       </div>
       <div className={classes.content}>{msg}</div>
     </>

@@ -1,6 +1,7 @@
 import React from 'react';
-import { RouteComponentProps } from 'react-router-dom';
+import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import Conversation from './Conversation';
+import NewConversation from './New';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Link } from 'react-router-dom';
@@ -10,6 +11,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/Add';
+import SettingsIcon from '@material-ui/icons/Settings';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 
 const useStyles = makeStyles(theme => ({
   layout: {
@@ -55,14 +60,29 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.paper,
   },
   header: {
-    padding: '10px',
+    alignItems: 'center',
+    padding: '0 10px',
     lineHeight: '30px',
     fontSize: '18px',
     height: '50px',
     overflow: 'hidden',
+    display: 'flex',
     borderBottomStyle: 'solid',
     borderBottomWidth: '1px',
     borderBottomColor: theme.palette.grey[200],
+  },
+  headerTitle: {
+    flex: 1,
+    margin: '0 10px',
+  },
+  headerButton: {
+    backgroundColor: '#0b6374',
+    color: '#fff',
+    marginLeft: '8px',
+    '&:hover': {
+      backgroundColor: '#0b6374',
+      opacity: .8,
+    },
   },
   content: {
     minHeight: 'calc(100vh - 50px)',
@@ -86,11 +106,8 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-type TParams = { id?: string };
-
-const ConversationsList: React.FC<RouteComponentProps<TParams>> = ({
-  match,
-}: RouteComponentProps<TParams>) => {
+const ConversationsList: React.FC = () => {
+  const isConversation = useRouteMatch("/conversation/:id") != null;
   const classes = useStyles();
   const isDesktop = useMediaQuery('(min-width:1000px)');
 
@@ -166,7 +183,6 @@ const ConversationsList: React.FC<RouteComponentProps<TParams>> = ({
     </Link>
   ));
 
-  const isConversation = !!match.params.id;
   let leftClass = classes.left;
   let rightClass = classes.right;
   if (!isDesktop) {
@@ -181,13 +197,40 @@ const ConversationsList: React.FC<RouteComponentProps<TParams>> = ({
   return (
     <div className={classes.layout}>
       <div className={leftClass}>
-        <div className={classes.header}>User avatar, +, config</div>
+        <div className={classes.header}>
+          <Avatar>
+            <AccountCircle />
+          </Avatar>
+          <div className={classes.headerTitle}>
+            Conversations
+          </div>
+          <IconButton aria-label="settings" size="small" className={classes.headerButton}>
+            <SettingsIcon />
+          </IconButton>
+          <Link to="/conversation/new">
+            <IconButton
+              aria-label="create conversation"
+              size="small"
+              className={classes.headerButton}>
+              <AddIcon />
+            </IconButton>
+          </Link>
+        </div>
         <div className={classes.content}>
           <List>{listItems}</List>
         </div>
       </div>
       <div className={rightClass}>
-        <Conversation />
+        <Switch>
+          <Route exact path="/conversation/new" component={NewConversation} />
+          <Route path="/conversation/:id" component={Conversation} />
+          <Route>
+            <div className={classes.header} />
+            <div className={classes.content}>
+              <div>No conversation selected.</div>
+            </div>
+          </Route>
+        </Switch>
       </div>
     </div>
   );
