@@ -1,4 +1,5 @@
 import React, { ReactNode, Context, useContext } from 'react';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import {
   Action,
   setAuth,
@@ -6,6 +7,7 @@ import {
   alertError,
   alertInfo,
   clearAlert,
+  setConversations,
 } from '../store/actions';
 import { DispatchProp, connect } from 'react-redux';
 
@@ -28,7 +30,8 @@ const useWebsocket = () => useContext(WebsocketContext);
 type Props = {
   children?: ReactNode;
   wsUrl: string;
-} & DispatchProp<Action>;
+} & DispatchProp<Action> &
+  RouteComponentProps;
 
 interface State {
   socket: WebSocket | null;
@@ -49,6 +52,14 @@ class WebsocketProvider extends React.Component<Props, State> {
 
   serviceResponseSendInfos(data: any) {
     console.log('svc/send-info: ', data);
+    if (!data.success) {
+      console.error('send-info failed');
+      return;
+    }
+
+    if (data.convs) {
+      this.props.dispatch(setConversations(data.convs));
+    }
   }
 
   serviceResponseRegister(data: any) {
@@ -83,6 +94,27 @@ class WebsocketProvider extends React.Component<Props, State> {
         avatar: data.picture,
       })
     );
+  }
+
+  serviceResponseConvCreation(data: any) {
+    console.log('svc/conv_creation: ', data);
+    if (!data.success) {
+      this.props.dispatch(
+        alertError(
+          data.error || 'The creation of the conversation failed. Retry later…'
+        )
+      );
+      return;
+    }
+
+    // if success (whaaaaaaat?!)
+    if (data.error) {
+      const convId = parseInt(data.error.match(/int=(\d*)/)[1]);
+      this.props.dispatch(
+        alertInfo(data.error || 'The conversation was created.')
+      );
+      this.props.history.push(`/conversation/${convId}`);
+    }
   }
 
   serviceResponsePing(data: any) {
@@ -159,6 +191,10 @@ class WebsocketProvider extends React.Component<Props, State> {
         this.serviceResponseLogin(data);
         break;
 
+      case 'conv_creation':
+        this.serviceResponseConvCreation(data);
+        break;
+
       case 'ping':
         this.serviceResponsePing(data);
         break;
@@ -193,5 +229,5 @@ class WebsocketProvider extends React.Component<Props, State> {
   }
 }
 
-export default connect()(WebsocketProvider);
+export default withRouter(connect()(WebsocketProvider));
 export { useWebsocket };

@@ -1,9 +1,10 @@
-import { Auth, Alert } from './state';
+import { Auth, Alert, Conversation } from './state';
 
 export const SET_AUTH = 'SET_AUTH';
 export const CLEAR_AUTH = 'CLEAR_AUTH';
 export const SET_ALERT = 'SET_ALERT';
 export const CLEAR_ALERT = 'CLEAR_ALERT';
+export const SET_CONVERSATIONS = 'SET_CONVERSATIONS';
 
 interface SetAuthAction {
   type: typeof SET_AUTH;
@@ -23,9 +24,14 @@ interface ClearAlertAction {
   type: typeof CLEAR_ALERT;
 }
 
+interface SetConversationsAction {
+  type: typeof SET_CONVERSATIONS;
+  conversations: Conversation[];
+}
+
 export type AuthAction = SetAuthAction | ClearAuthAction;
 export type AlertAction = SetAlertAction | ClearAlertAction;
-export type Action = AuthAction | AlertAction;
+export type Action = AuthAction | AlertAction | SetConversationsAction;
 
 export function setAuth(auth: Auth): SetAuthAction {
   return {
@@ -63,5 +69,14 @@ export function alertError(content: string): SetAlertAction {
 export function clearAlert(): ClearAlertAction {
   return {
     type: CLEAR_ALERT,
+  };
+}
+
+export function setConversations(
+  conversations: Conversation[]
+): SetConversationsAction {
+  return {
+    type: SET_CONVERSATIONS,
+    conversations,
   };
 }

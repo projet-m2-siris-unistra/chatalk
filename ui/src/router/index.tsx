@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import Homepage from '../component/Homepage';
 import Login from '../component/Login';
 import SignUp from '../component/SignUp';
@@ -13,18 +13,16 @@ import PublicRoute from './PublicRoute';
 
 const AppRouter: React.FC = () => {
   return (
-    <Router>
-      <Switch>
-        <Route exact path="/" component={Homepage} />
-        <PublicRoute exact path="/login" component={Login} />
-        <PublicRoute exact path="/register" component={SignUp} />
-        <PrivateRoute path="/conversation" component={ConversationsList} />
-        <Route exact path="/credits" component={Credits} />
-        <Route exact path="/privacy" component={Privacy} />
-        <Route exact path="/terms" component={Terms} />
-        <Route component={NotFound} />
-      </Switch>
-    </Router>
+    <Switch>
+      <Route exact path="/" component={Homepage} />
+      <PublicRoute exact path="/login" component={Login} />
+      <PublicRoute exact path="/register" component={SignUp} />
+      <PrivateRoute path="/conversation" component={ConversationsList} />
+      <Route exact path="/credits" component={Credits} />
+      <Route exact path="/privacy" component={Privacy} />
+      <Route exact path="/terms" component={Terms} />
+      <Route component={NotFound} />
+    </Switch>
   );
 };
 

@@ -48,7 +48,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 type Params = {
-  id: string,
+  id: string;
 };
 
 const Conversation: React.FC = () => {

@@ -23,6 +23,11 @@ export default (state: State = initialState, action: actions.Action): State => {
         ...state,
         alert: false,
       };
+    case actions.SET_CONVERSATIONS:
+      return {
+        ...state,
+        conversations: action.conversations,
+      };
   }
   return state;
 };

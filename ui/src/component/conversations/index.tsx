@@ -15,6 +15,8 @@ import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import SettingsIcon from '@material-ui/icons/Settings';
 import AccountCircle from '@material-ui/icons/AccountCircle';
+import { useSelector } from 'react-redux';
+import { State } from '../../store/state';
 
 const useStyles = makeStyles(theme => ({
   layout: {
@@ -81,7 +83,7 @@ const useStyles = makeStyles(theme => ({
     marginLeft: '8px',
     '&:hover': {
       backgroundColor: '#0b6374',
-      opacity: .8,
+      opacity: 0.8,
     },
   },
   content: {
@@ -107,75 +109,30 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ConversationsList: React.FC = () => {
-  const isConversation = useRouteMatch("/conversation/:id") != null;
+  const isConversation = useRouteMatch('/conversation/:id') != null;
   const classes = useStyles();
   const isDesktop = useMediaQuery('(min-width:1000px)');
-
-  const conversations = [
-    {
-      id: '11132ba9-43e5-4684-9c3f-209453ecd213',
-      name: 'Conversation1',
-      avatar: `https://lorempixel.com/120/120/people/1`,
-      lastMessage: {
-        timestamp: Date.now(),
-        from: {
-          displayName: 'John Doe',
-          username: 'jdoe',
-          avatar: `https://lorempixel.com/120/120/people/1`,
-        },
-        message: 'Hello, this is a message! This application is amazing!',
-      },
-    },
-    {
-      id: '2d43fb7f-39dd-4a76-b281-65f1efbce7ed',
-      name: 'Conversation2',
-      avatar: `https://lorempixel.com/120/120/people/2`,
-      lastMessage: {
-        timestamp: Date.now(),
-        from: {
-          displayName: 'Jane Doe',
-          username: 'j.doe',
-          avatar: `https://lorempixel.com/120/120/people/2`,
-        },
-        message: 'Hi! I am happy to speak with you. :)',
-      },
-    },
-    {
-      id: 'dbf302b3-3abf-4a48-9ab3-2cc1b99f3f9d',
-      name: 'Conversation3',
-      avatar: `https://lorempixel.com/120/120/people/3`,
-      lastMessage: {
-        id: 'dbf302b3-3abf-4a48-9ab3-2cc1b99f3f9d',
-        timestamp: Date.now(),
-        from: {
-          displayName: 'Someone',
-          username: 'someone',
-          avatar: `https://lorempixel.com/120/120/people/3`,
-        },
-        message: 'I am mysterious...',
-      },
-    },
-  ];
+  const conversations = useSelector((state: State) => state.conversations);
 
   const listItems = conversations.map(c => (
     <Link
-      to={`/conversation/${c.id}`}
-      key={c.id}
+      to={`/conversation/${c.convid}`}
+      key={c.convid}
       className={classes.listLinkItem}
     >
       <ListItem alignItems="flex-start" className={classes.listItem}>
         <ListItemAvatar>
-          <Avatar alt={c.name} src={c.avatar} />
+          <Avatar alt={c.convname} />
         </ListItemAvatar>
         <ListItemText
           className={classes.conversationName}
-          primary={c.name}
+          primary={c.convname}
           secondary={
             <React.Fragment>
               <Typography component="span" variant="body2" color="textPrimary">
-                {c.lastMessage.from.displayName}
+                Someone
               </Typography>
-              <Typography component="span">{` - ${c.lastMessage.message}`}</Typography>
+              <Typography component="span">- Hello!</Typography>
             </React.Fragment>
           }
         />
@@ -201,17 +158,20 @@ const ConversationsList: React.FC = () => {
           <Avatar>
             <AccountCircle />
           </Avatar>
-          <div className={classes.headerTitle}>
-            Conversations
-          </div>
-          <IconButton aria-label="settings" size="small" className={classes.headerButton}>
+          <div className={classes.headerTitle}>Conversations</div>
+          <IconButton
+            aria-label="settings"
+            size="small"
+            className={classes.headerButton}
+          >
             <SettingsIcon />
           </IconButton>
           <Link to="/conversation/new">
             <IconButton
               aria-label="create conversation"
               size="small"
-              className={classes.headerButton}>
+              className={classes.headerButton}
+            >
               <AddIcon />
             </IconButton>
           </Link>

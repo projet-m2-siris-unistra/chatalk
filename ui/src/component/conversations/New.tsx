@@ -89,16 +89,25 @@ const NewConversation: React.FC = () => {
         Create a new conversation
       </div>
       <div className={classes.content}>
-        <p>Create a new conversation by specifying a conversation name and a topic.</p>
+        <p>
+          Create a new conversation by specifying a conversation name and a
+          topic.
+        </p>
         <TextField
           label="Conversation name"
           variant="outlined"
-          onChange={e => setName(e.target.value)} />
+          onChange={e => setName(e.target.value)}
+        />
         <TextField
           label="Topic"
           variant="outlined"
-          onChange={e => setTopic(e.target.value)} />
-        <Button variant="contained" color="primary" onClick={createConversation}>
+          onChange={e => setTopic(e.target.value)}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={createConversation}
+        >
           Create the conversation
         </Button>
       </div>

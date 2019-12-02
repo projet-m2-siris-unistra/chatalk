@@ -5,6 +5,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import WebsocketProvider from './component/WebsocketProvider';
 import AppRouter from './router';
 import Alert from './component/Alert';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 const App: React.FC = () => {
   const websocketEndpoint =
@@ -12,11 +13,13 @@ const App: React.FC = () => {
 
   return (
     <Provider store={store}>
-      <WebsocketProvider wsUrl={websocketEndpoint}>
-        <CssBaseline />
-        <Alert />
-        <AppRouter />
-      </WebsocketProvider>
+      <Router>
+        <WebsocketProvider wsUrl={websocketEndpoint}>
+          <CssBaseline />
+          <Alert />
+          <AppRouter />
+        </WebsocketProvider>
+      </Router>
     </Provider>
   );
 };
