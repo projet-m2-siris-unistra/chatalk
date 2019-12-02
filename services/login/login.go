@@ -114,6 +114,7 @@ func main() {
 
 			response = loginResponse{
 				Success: false,
+				Action:  "login",
 				Error:   message,
 			}
 		} else if msg.Payload.Username == "" {
@@ -121,6 +122,7 @@ func main() {
 
 			response = loginResponse{
 				Success: false,
+				Action:  "login",
 				Error:   message,
 			}
 		} else {
@@ -187,7 +189,6 @@ func main() {
 
 		j, err := json.Marshal(response)
 		nc.Publish("ws."+msg.WsID+".send", j)
-
 	})
 
 	<-c

@@ -36,6 +36,7 @@ type registerRequest struct {
 }*/
 
 type registerResponse struct {
+	Action   string `json:"action"`
 	Success  bool   `json:"success"`
 	Error    string `json:"errors,omitempty"` //Errors []err
 	WsID     string `json:"ws-id,omitempty"`
@@ -111,21 +112,25 @@ func main() {
 
 		if !re.MatchString(msg.Payload.Username) {
 			response = registerResponse{
+				Action:  "register",
 				Success: false,
 				Error:   "Only alphanumeric and underscore characters are allowed.",
 			}
 		} else if !strings.Contains(msg.Payload.Email, "@") {
 			response = registerResponse{
+				Action:  "register",
 				Success: false,
 				Error:   "Not an email address",
 			}
 		} else if msg.Payload.Password != msg.Payload.PasswordConfirmation {
 			response = registerResponse{
+				Action:  "register",
 				Success: false,
 				Error:   "Both password fields do not match",
 			}
 		} else if len(msg.Payload.Password) < 5 {
 			response = registerResponse{
+				Action:  "register",
 				Success: false,
 				Error:   "Password is too weak",
 			}
@@ -147,8 +152,8 @@ func main() {
 
 			if err == nil {
 				response = registerResponse{
+					Action:   "register",
 					Success:  true,
-					WsID:     msg.WsID,
 					UserID:   userID,
 					Username: userUsername,
 					Email:    userEmail,
@@ -168,11 +173,13 @@ func main() {
 				case *dberror.Error:
 					errmsg := e.Error()
 					response = registerResponse{
+						Action:  "register",
 						Success: false,
 						Error:   errmsg,
 					}
 				default:
 					response = registerResponse{
+						Action:  "register",
 						Success: false,
 					}
 				}
