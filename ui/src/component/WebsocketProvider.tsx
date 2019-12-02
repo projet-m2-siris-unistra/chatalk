@@ -53,12 +53,14 @@ class WebsocketProvider extends React.Component<Props, State> {
 
   serviceResponseRegister(data: any) {
     console.log('svc/register: ', data);
+    if (!data.success) {
+      this.props.dispatch(
+        alertError(data.error || 'Registration failed. Retry later…')
+      );
+      return;
+    }
     this.props.dispatch(
-      setAuth({
-        userId: data.userid,
-        username: data.username,
-        displayName: `${data.username}@${data['ws-id']}`,
-      })
+      alertInfo('Registration succeeded. You can now log in!')
     );
   }
 

@@ -38,7 +38,7 @@ type registerRequest struct {
 type registerResponse struct {
 	Action   string `json:"action"`
 	Success  bool   `json:"success"`
-	Error    string `json:"errors,omitempty"` //Errors []err
+	Error    string `json:"error,omitempty"` //Errors []err
 	WsID     string `json:"ws-id,omitempty"`
 	UserID   int    `json:"userid,omitempty"`
 	Username string `json:"username,omitempty"`
