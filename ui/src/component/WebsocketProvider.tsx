@@ -4,6 +4,7 @@ import {
   setAuth,
   clearAuth,
   alertError,
+  alertInfo,
   clearAlert,
 } from '../store/actions';
 import { DispatchProp, connect } from 'react-redux';
@@ -69,7 +70,9 @@ class WebsocketProvider extends React.Component<Props, State> {
       );
       return;
     }
-    this.props.dispatch(clearAlert());
+    this.props.dispatch(
+      alertInfo(`Welcome ${data.displayname || data.username || ''}!`)
+    );
     this.props.dispatch(
       setAuth({
         userId: data.userid,

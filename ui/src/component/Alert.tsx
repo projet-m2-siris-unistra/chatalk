@@ -19,7 +19,8 @@ const useStyles = makeStyles({
     top: 0,
     left: 0,
     right: 0,
-    backgroundColor: 'green',
+    zIndex: 999,
+    backgroundColor: '#22b26a',
   },
   error: {
     color: '#fff',
@@ -33,6 +34,7 @@ const useStyles = makeStyles({
     top: 0,
     left: 0,
     right: 0,
+    zIndex: 999,
     backgroundColor: '#b22222',
   },
 });

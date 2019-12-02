@@ -18,8 +18,6 @@ import {
 } from '@material-ui/core/styles';
 
 import { useWebsocket } from './WebsocketProvider';
-import { State } from '../store/state';
-import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -44,6 +42,13 @@ const useStyles = makeStyles(theme => ({
     paddingTop: theme.spacing(8),
     marginTop: 'auto',
     display: 'flex',
+  },
+
+  logo: {
+    maxWidth: '90vw',
+  },
+  title: {
+    fontSize: '32px',
   },
 }));
 
@@ -74,7 +79,6 @@ const CssTextField = withStyles({
 const SignUp: React.FC = () => {
   const classes = useStyles();
   const { connection, isOpen } = useWebsocket();
-  const auth = useSelector((state: State) => state.auth);
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -103,11 +107,10 @@ const SignUp: React.FC = () => {
     <div className={classes.paper}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
-        <img src={Logo} alt="ChaTalK" />
-        <Typography component="h1" variant="h2" align="center">
+        <img src={Logo} alt="ChaTalK" className={classes.logo} />
+        <Typography className={classes.title} align="center">
           Sign up
         </Typography>
-        <pre>{JSON.stringify(auth)}</pre>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
             <Grid item xs={12}>

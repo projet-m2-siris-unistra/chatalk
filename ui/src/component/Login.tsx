@@ -46,6 +46,13 @@ const useStyles = makeStyles(theme => ({
     marginTop: 'auto',
     display: 'flex',
   },
+
+  logo: {
+    maxWidth: '90vw',
+  },
+  title: {
+    fontSize: '32px',
+  },
 }));
 
 const theme = createMuiTheme({
@@ -93,8 +100,8 @@ const Login: React.FC = () => {
     <div className={classes.paper}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
-        <img src={Logo} alt="ChaTalK" />
-        <Typography component="h1" variant="h2" align="center">
+        <img src={Logo} alt="ChaTalK" className={classes.logo} />
+        <Typography className={classes.title} align="center">
           Sign in
         </Typography>
         <form className={classes.form} noValidate>
