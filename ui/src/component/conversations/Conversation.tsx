@@ -2,6 +2,12 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Link, useParams } from 'react-router-dom';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import Input from '@material-ui/core/Input';
+import Icon from '@material-ui/core/Icon';
+import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles(theme => ({
   msg: {
@@ -10,15 +16,16 @@ const useStyles = makeStyles(theme => ({
     width: '100%',
   },
   header: {
-    padding: '10px',
-    lineHeight: '30px',
+    padding: '24.5px',
+    lineHeight: '2px',
     fontSize: '18px',
-    height: '50px',
+    display:'flex',
+    height: '60px',
     overflow: 'hidden',
     borderBottomStyle: 'solid',
     borderBottomWidth: '1px',
     borderBottomColor: theme.palette.grey[200],
-  },
+    },
   content: {
     minHeight: 'calc(100vh - 50px)',
     maxHeight: 'calc(100vh - 50px)',
@@ -45,6 +52,15 @@ const useStyles = makeStyles(theme => ({
   hidden: {
     display: 'none',
   },
+  footer: {
+    padding: '35px',
+    lineHeight: '2px',
+    fontSize: '18px',
+    height: '30px',
+    overflow: 'hidden',
+    borderTopStyle: 'solid',
+    borderTopWidth: '1px',
+    borderTopColor: theme.palette.grey[200],  },
 }));
 
 type Params = {
@@ -109,6 +125,7 @@ const Conversation: React.FC = () => {
           {m.message}
         </div>
       </div>
+     
     );
   });
 
@@ -125,7 +142,26 @@ const Conversation: React.FC = () => {
         </Link>
         Conversation name - config ({id})
       </div>
-      <div className={classes.content}>{msg}</div>
+      <div className={classes.content}>{msg}
+     
+      </div>
+      <div className={classes.footer}>
+      <Input
+        placeholder="Your text"
+        inputProps={{
+          'aria-label': 'description',
+        }}
+      />
+      <Button
+        variant="contained"
+        color="primary"
+        endIcon={<Icon>send</Icon>}
+      >
+        Send
+      </Button>
+
+
+   </div>
     </>
   );
 };
