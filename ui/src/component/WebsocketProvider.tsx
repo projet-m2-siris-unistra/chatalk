@@ -8,6 +8,7 @@ import {
   alertInfo,
   clearAlert,
   setConversations,
+  setUsers,
 } from '../store/actions';
 import { DispatchProp, connect } from 'react-redux';
 
@@ -59,6 +60,9 @@ class WebsocketProvider extends React.Component<Props, State> {
 
     if (data.convs) {
       this.props.dispatch(setConversations(data.convs));
+    }
+    if (data.users) {
+      this.props.dispatch(setUsers(data.users));
     }
   }
 

@@ -17,6 +17,10 @@ export interface Conversation {
   members: string;
 }
 
+export interface User extends Auth {
+  online?: boolean;
+}
+
 export interface State {
   auth: Auth | false;
   alert: Alert | false;
