@@ -1,5 +1,9 @@
 # Preparation
 
+When you see `hosts.ini` you should replace it with the one depending of the cluster you want to deploy to:
+- for cluster1: `hosts-cluster1.ini`
+- for cluster2: `hosts-cluster2.ini`
+
 ## Kubespray
 
 Fetch the Kubespray submodule:
@@ -65,21 +69,11 @@ Run the whole playbook using the following command:
 ansible-playbook -i hosts.ini site.yaml --become
 ```
 
-To run the Kubespray playbook:
-
-```sh
-ansible-playbook -i hosts.ini site.yaml --become --tags k8s
-```
-
-
 # Get the Kubernetes configuration file
 
 To interact with the Kubernetes cluster, you will need a specific configuration file for `kubectl`.
 
-To get it, there are two ways:
-  - copy it from one VM using: `mkdir -p ~/.kube; ssh USER@VM_NAME -- sudo cat /etc/kubernetes/admin.conf > ~/.kube/config`
-  - after lanching the playbook, you should have and `artifacts` folder with the configuration fil in it ; you just have to copy it like this: `mkdir -p ~/.kube; cp artifacts/admin.conf ~/.kube/config`.
-
+To get it, copy it from one VM using: `mkdir -p ~/.kube; ssh USER@VM_NAME -- sudo cat /etc/kubernetes/admin.conf > ~/.kube/config`.
 
 # Reboot all VM
 

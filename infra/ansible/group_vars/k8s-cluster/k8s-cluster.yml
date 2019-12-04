@@ -39,7 +39,7 @@ kube_cert_group: kube-cert
 kube_log_level: 2
 
 # Directory where credentials will be stored
-credentials_dir: "{{ inventory_dir }}/credentials"
+credentials_dir: "{{ inventory_dir }}/credentials-{{ cluster_local_name }}"
 
 # Users to create for basic auth in Kubernetes API via HTTP
 # Optionally add groups for user
@@ -185,7 +185,7 @@ dynamic_kubelet_configuration_dir: "{{ kubelet_config_dir | default(default_kube
 podsecuritypolicy_enabled: false
 
 # Make a copy of kubeconfig on the host that runs Ansible in {{ inventory_dir }}/artifacts
-kubeconfig_localhost: true
+kubeconfig_localhost: false
 # Download kubectl onto the host that runs Ansible in {{ bin_dir }}
 # kubectl_localhost: false
 

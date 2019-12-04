@@ -71,17 +71,6 @@
   tags:
     - first-run
 
-- name: set default value for Kubespray import
-  set_fact:
-    import_kubespray: "false"
-  tags:
-    - first-run
-
-- name: enable Kubespray import
-  set_fact:
-    import_kubespray: "yes"
-  tags: [ never, k8s ]
-
 - name: create mount directory for pgdata PV
   file:
     path: /srv/store/pgdata
