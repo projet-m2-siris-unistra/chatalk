@@ -12,6 +12,12 @@ spec:
         imagePullPolicy: Always
         env:
         - name: NATS_URL
-          value: nats://nats:4222
+          valueFrom:
+            configMapKeyRef:
+              name: svc-config
+              key: NATS_URL
         - name: NATS_CLUSTER_ID
-          value: stan
+          valueFrom:
+            configMapKeyRef:
+              name: svc-config
+              key: NATS_CLUSTER_ID

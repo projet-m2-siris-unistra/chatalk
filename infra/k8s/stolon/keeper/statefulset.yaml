@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: stolon-keeper
+spec:
+  serviceName: "stolon-keeper"
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        component: stolon-keeper
+        stolon-cluster: chatalk
+    spec:
+      serviceAccount: stolon
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels: {}
+            topologyKey: kubernetes.io/hostname
+      securityContext:
+        runAsUser: 65534
+        runAsGroup: 65534
+      containers:
+      - name: stolon-keeper
+        image: sandhose/stolon:latest
+        command:
+        - sh
+        - "-ec"
+        - |
+          exec stolon-keeper --uid "$(echo $POD_NAME | tr - _)"  --data-dir=/stolon-data
+        ports:
+        - containerPort: 5432
+          name: postgres
+        - containerPort: 8080
+          name: metrics
+        volumeMounts:
+        - name: data
+          mountPath: /stolon-data
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: STKEEPER_PG_LISTEN_ADDRESS
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: STKEEPER_CLUSTER_NAME
+          value: chatalk
+        - name: STKEEPER_STORE_BACKEND
+          value: "kubernetes"
+        - name: STKEEPER_KUBE_RESOURCE_KIND
+          value: "configmap"
+        - name: STKEEPER_PG_REPL_USERNAME
+          value: "replication"
+        - name: STKEEPER_PG_REPL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: stolon
+              key: repl-password
+        - name: STKEEPER_PG_SU_USERNAME
+          value: "stolon"
+        - name: STKEEPER_PG_SU_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: stolon
+              key: su-password
+        - name: STKEEPER_METRICS_LISTEN_ADDRESS
+          value: "0.0.0.0:8080"
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1G

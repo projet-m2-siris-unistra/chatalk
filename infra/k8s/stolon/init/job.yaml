@@ -1,0 +1,30 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: stolon-init
+spec:
+  template:
+    spec:
+      serviceAccount: stolon
+      securityContext:
+        runAsUser: 65534
+        runAsGroup: 65534
+      containers:
+      - name: stolonctl
+        image: sandhose/stolon:latest
+        imagePullPolicy: Always
+        command:
+        - "stolonctl"
+        - "init"
+        - "--cluster-name=chatalk"
+        - "--store-backend=kubernetes"
+        - "--kube-resource-kind=configmap"
+        - "--yes"
+        env:
+        - name: STKEEPER_CLUSTER_NAME
+          value: chatalk
+        - name: STKEEPER_STORE_BACKEND
+          value: "kubernetes"
+        - name: STKEEPER_KUBE_RESOURCE_KIND
+          value: "configmap"
+      restartPolicy: OnFailure

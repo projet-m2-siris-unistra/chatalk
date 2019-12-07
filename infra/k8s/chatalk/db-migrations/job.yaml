@@ -13,20 +13,29 @@ spec:
         - up
         env:
         - name: DB_HOST
-          value: chatalk-postgres-cluster
+          valueFrom:
+            configMapKeyRef:
+              name: svc-config
+              key: DB_HOST
         - name: DB_DB
-          value: chatalk
+          valueFrom:
+            configMapKeyRef:
+              name: svc-config
+              key: DB_DB
         - name: DB_USER
           valueFrom:
-            secretKeyRef:
-              name: chatalk.chatalk-postgres-cluster.credentials
-              key: username
+            configMapKeyRef:
+              name: svc-config
+              key: DB_USER
         - name: DB_PASS
           valueFrom:
-            secretKeyRef:
-              name: chatalk.chatalk-postgres-cluster.credentials
-              key: password
+            configMapKeyRef:
+              name: svc-config
+              key: DB_PASS
         - name: DB_MODE
-          value: require
+          valueFrom:
+            configMapKeyRef:
+              name: svc-config
+              key: DB_MODE
       restartPolicy: Never
   backoffLimit: 5

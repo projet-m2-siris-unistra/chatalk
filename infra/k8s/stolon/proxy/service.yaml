@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: stolon-proxy
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432

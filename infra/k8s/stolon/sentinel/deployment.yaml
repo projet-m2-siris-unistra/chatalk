@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stolon-sentinel
+spec:
+  replicas: 3
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        component: stolon-keeper
+        stolon-cluster: chatalk
+    spec:
+      serviceAccount: stolon
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels: {}
+            topologyKey: kubernetes.io/hostname
+      securityContext:
+        runAsUser: 65534
+        runAsGroup: 65534
+      containers:
+      - name: stolon-sentinel
+        image: sandhose/stolon:latest
+        imagePullPolicy: Always
+        command:
+        - stolon-sentinel
+        env:
+        - name: STSENTINEL_CLUSTER_NAME
+          value: "chatalk"
+        - name: STSENTINEL_STORE_BACKEND
+          value: "kubernetes"
+        - name: STSENTINEL_KUBE_RESOURCE_KIND
+          value: "configmap"
+        - name: STSENTINEL_METRICS_LISTEN_ADDRESS
+          value: "0.0.0.0:8080"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        ports:
+        - containerPort: 8080
+          name: metrics

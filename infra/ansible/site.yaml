@@ -6,7 +6,7 @@
     - common
 
 # import Kubespray playbook
-- import_playbook: kubespray/cluster.yml
+# - import_playbook: kubespray/cluster.yml
 
 # run tasks for dumas
 - hosts: dumas

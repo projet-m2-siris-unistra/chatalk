@@ -49,12 +49,26 @@ kubectl apply -k nats-streaming-operator/overlays/unistra
 
 ## Deploy the database
 
-For the database, we will use `postgres-operator`.
+For the database, we will use `stolon`.
 
 Run the following command to deploy it:
 
 ```sh
-kubectl apply -k postgres-operator/overlays/unistra
+kubectl apply -k stolon
+```
+
+Create the `chatalk` role and database by connecting to postgres:
+
+```sh
+# in one shell, we forward the postgres port
+kubectl port-forward --namespace stolon service/stolon-proxy 5432:5432
+
+# in another shell, we will connect to the forwarded postgres
+# password in stolon/kustomization.yaml: aix7eePeH9ooqui6ShaiT7eiphaeTee2isahg2ahwibiwoh8Ailequ2jeiceeSho
+psql -h localhost -U stolon postgres <<EOF
+create role chatalk login password 'ieceetiothux6aechieBohvoozaezo1zaetequahShuw6faePeng4shaem3raece';
+create database chatalk owner chatalk;
+EOF
 ```
 
 ## Configure the namespace to pull images from our private registry

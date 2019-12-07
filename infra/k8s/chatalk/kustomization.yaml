@@ -18,3 +18,14 @@ bases:
 - register
 - send-info
 - ui
+
+configMapGenerator:
+- name: svc-config
+  literals:
+  - NATS_URL=nats://nats:4222
+  - NATS_CLUSTER_ID=stan
+  - DB_HOST=stolon-proxy.stolon.svc
+  - DB_DB=chatalk
+  - DB_USER=chatalk
+  - DB_PASS=ieceetiothux6aechieBohvoozaezo1zaetequahShuw6faePeng4shaem3raece
+  - DB_MODE=disable

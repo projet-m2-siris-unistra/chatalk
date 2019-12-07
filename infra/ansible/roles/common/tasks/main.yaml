@@ -75,6 +75,7 @@
   file:
     path: /srv/store/pgdata
     state: directory
+    mode: '777'
 
 - name: mount directory for pgdata PV
   mount:

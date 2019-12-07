@@ -11,7 +11,13 @@ spec:
         image: registry.chatalk.fr/ping:master
         imagePullPolicy: Always
         env:
-        - name: NATS_URL
-          value: nats://nats:4222
-        - name: NATS_CLUSTER_ID
-          value: stan
+          - name: NATS_URL
+            valueFrom:
+              configMapKeyRef:
+                name: svc-config
+                key: NATS_URL
+          - name: NATS_CLUSTER_ID
+            valueFrom:
+              configMapKeyRef:
+                name: svc-config
+                key: NATS_CLUSTER_ID
