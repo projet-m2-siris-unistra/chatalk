@@ -14,7 +14,7 @@ To have a IP failover, we will deploy `metallb`.
 Just run the following command:
 
 ```sh
-kubectl apply -k k8s/metallb/overlays/unistra
+kubectl apply -k k8s/metallb/overlays/clusterX
 ```
 
 ### Ingress controller
@@ -116,17 +116,22 @@ kubectl -n default get $(k -n default get secrets -o name | grep secret/certs-to
 
 Go to the `dumas` VM using SSH.
 
-You have normally created a widcard certificate.
+You have normally created a wildcard certificate.
 
-Use the following command by replacing `TOKEN_FROM_PREVIOUS_STEP` with the token you got before to create the cert secret on the cluster:
+Use the following command by replacing:
+- `TOKEN_FROM_PREVIOUS_STEP` with the token you got before
+- `SERVER_URL` with:
+  - `https://chatalk-balzac.u-strasbg.fr:6443` for `cluster1`
+  - `https://chatalk1.u-strasbg.fr:6443` for `cluster2`
+to create the cert secret on the cluster:
 
 ```sh
-docker run --rm \
+sudo docker run --rm \
   -v /etc/letsencrypt:/etc/letsencrypt:ro \
   ludovicm67/k8s-tools \
   kubectl \
     --insecure-skip-tls-verify=true \
-    --server=https://chatalk-balzac.u-strasbg.fr:6443 \
+    --server=SERVER_URL \
     --token=TOKEN_FROM_PREVIOUS_STEP \
     -n chatalk \
     create secret tls \
