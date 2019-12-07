@@ -1,0 +1,33 @@
+---
+# Source: kubefed/charts/controllermanager/templates/kubefedconfig.yaml
+apiVersion: core.kubefed.io/v1beta1
+kind: KubeFedConfig
+metadata:
+  name: kubefed
+  namespace: kube-federation-system
+spec:
+  scope: "Cluster"
+  controllerDuration:
+    availableDelay: "20s"
+    unavailableDelay: "60s"
+  leaderElect:
+    leaseDuration: "15s"
+    renewDeadline: "10s"
+    retryPeriod: "5s"
+    resourceLock: "configmaps"
+  clusterHealthCheck:
+    period: "10s"
+    failureThreshold: 3
+    successThreshold: 1
+    timeout: "3s"
+  syncController:
+    adoptResources: "Enabled"
+  featureGates:
+  - name: PushReconciler
+    configuration: "Enabled"
+  - name: SchedulerPreferences
+    configuration: "Enabled"
+  - name: CrossClusterServiceDiscovery
+    configuration: "Enabled"
+  - name: FederatedIngress
+    configuration: "Enabled"

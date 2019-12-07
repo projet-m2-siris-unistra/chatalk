@@ -1,0 +1,48 @@
+---
+# Source: kubefed/charts/controllermanager/templates/roles.yaml
+# Only need access to these core namespaced resources in the KubeFed system
+# namespace regardless of kubefed deployment scope.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    api: kubefed
+    kubebuilder.k8s.io: 1.0.0
+  name: kubefed-admission-webhook-role
+  namespace: kube-federation-system
+rules:
+- apiGroups:
+  - core.kubefed.io
+  resources:
+  - federatedtypeconfigs
+  - kubefedclusters
+  - kubefedconfigs
+  verbs:
+  - get
+  - watch
+  - list
+---
+# Source: kubefed/charts/controllermanager/templates/roles.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    api: kubefed
+    kubebuilder.k8s.io: 1.0.0
+  name: kubefed-config-role
+  namespace: kube-federation-system
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - create
+  - update
+- apiGroups:
+  - ""
+  resources:
+  - secrets
+  verbs:
+  - get
