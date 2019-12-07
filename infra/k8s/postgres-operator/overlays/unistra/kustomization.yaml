@@ -10,4 +10,19 @@ resources:
 - postgres.yaml
 
 patchesStrategicMerge:
+- configmap.yaml
 - postgres-operator.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+- name: postgres-env-config
+  literals:
+  - AWS_ENDPOINT=https://s3.chatalk.fr/postgres-wal
+  - AWS_REGION=minio
+  - AWS_ACCESS_KEY_ID=VWFMMF0IAU20NOYU49W5
+  - AWS_SECRET_ACCESS_KEY=pZivezDT92M57agFLYhbdOFXZNXi0bDjUbOMExK4
+  - WALG_DISABLE_S3_SSE=true
+  - USE_WALG_BACKUP=true
+  - AWS_S3_FORCE_PATH_STYLE=true
