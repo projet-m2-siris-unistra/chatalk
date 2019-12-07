@@ -2,5 +2,3 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: ingress-nginx
-  annotations:
-    linkerd.io/inject: enabled

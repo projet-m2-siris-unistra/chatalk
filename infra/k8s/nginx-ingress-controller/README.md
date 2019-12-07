@@ -14,7 +14,7 @@ You need to have:
 Use the following command:
 
 ```sh
-kustomize build overlays/default | kubectl apply -f -
+kubectl apply -k overlay/default
 ```
 
 ## Update
