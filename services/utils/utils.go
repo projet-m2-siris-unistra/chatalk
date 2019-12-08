@@ -6,7 +6,10 @@ import (
 	"log"
 	"os"
 
+	"github.com/google/uuid"
 	"github.com/ludovicm67/go-rwdatabasepool"
+	nats "github.com/nats-io/nats.go"
+	stan "github.com/nats-io/stan.go"
 )
 
 // GetEnv get one environment variable, if not found will be set to `fallback` value
@@ -49,4 +52,23 @@ func DBConnect() *rwdatabasepool.RWDatabasePool {
 	}
 
 	return rwdatabasepool.Init([]*sql.DB{writeDB}, []*sql.DB{readDB})
+}
+
+// InitBus instantiates Nats and Nats Streaming
+func InitBus() (*nats.Conn, stan.Conn) {
+	natsURL := GetEnv("NATS_URL", "nats://localhost:4222")
+	clusterID := GetEnv("NATS_CLUSTER_ID", "nats-cluster")
+
+	clientID := uuid.New().String()
+	nc, err := nats.Connect(natsURL)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	sc, err := stan.Connect(clusterID, clientID, stan.NatsConn(nc))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return nc, sc
 }

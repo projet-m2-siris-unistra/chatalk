@@ -37,7 +37,10 @@ services:
       - 42042:42042
 
   register:
-    build: register/
+    build:
+      context: .
+      args:
+        service: register
     depends_on:
       - bus
       - db-migrations

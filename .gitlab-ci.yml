@@ -111,11 +111,12 @@ deploy-blog:
       fi
       /kaniko/executor $ARGS \
         --destination $CI_REGISTRY/$IMAGE:$CI_COMMIT_REF_SLUG \
-        --context $CI_PROJECT_DIR/services/$IMAGE \
-        --dockerfile $CI_PROJECT_DIR/services/$IMAGE/Dockerfile \
+        --context $CI_PROJECT_DIR/services \
+        --dockerfile $CI_PROJECT_DIR/services/Dockerfile \
         --build-arg "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
         --build-arg "COMMIT=$CI_COMMIT_SHA" \
         --build-arg "VERSION=$CI_COMMIT_REF_SLUG" \
+        --build-arg "service=$IMAGE" \
         --digest-file "$CI_PROJECT_DIR/.build/$IMAGE.digest"
 
 build-service-conv_creation:
