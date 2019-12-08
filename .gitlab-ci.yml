@@ -137,15 +137,6 @@ build-service-conv_manag:
       - ".gitlab-ci.yml"
       - "services/conv_manag/**/*"
 
-build-service-db-migrations:
-  <<: *build-service-image
-  variables:
-    IMAGE: db-migrations
-  only:
-    changes:
-      - ".gitlab-ci.yml"
-      - "services/db-migrations/**/*"
-
 build-service-entrypoint:
   <<: *build-service-image
   variables:
@@ -154,15 +145,6 @@ build-service-entrypoint:
     changes:
       - ".gitlab-ci.yml"
       - "services/entrypoint/**/*"
-
-build-service-fake-ui:
-  <<: *build-service-image
-  variables:
-    IMAGE: fake-ui
-  only:
-    changes:
-      - ".gitlab-ci.yml"
-      - "services/fake-ui/**/*"
 
 build-service-login:
   <<: *build-service-image
@@ -209,7 +191,6 @@ build-service-send-info:
       - ".gitlab-ci.yml"
       - "services/send-info/**/*"
 
-
 deploy-service-entrypoint:
   stage: deploy
   tags:
@@ -226,3 +207,32 @@ deploy-service-entrypoint:
     changes:
       - ".gitlab-ci.yml"
       - "services/entrypoint/**/*"
+
+# database migrations
+build-db-migrations:
+  stage: build
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  tags:
+    - docker
+    - socket
+  script:
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - |
+      if [ "$CI_COMMIT_REF_SLUG" == master ]; then
+        ARGS="--destination $CI_REGISTRY/$IMAGE"
+      fi
+      /kaniko/executor $ARGS \
+        --destination $CI_REGISTRY/$IMAGE:$CI_COMMIT_REF_SLUG \
+        --context $CI_PROJECT_DIR/$IMAGE \
+        --dockerfile $CI_PROJECT_DIR/$IMAGE/Dockerfile \
+        --build-arg "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+        --build-arg "COMMIT=$CI_COMMIT_SHA" \
+        --build-arg "VERSION=$CI_COMMIT_REF_SLUG"
+  variables:
+    IMAGE: db-migrations
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/db-migrations/**/*"

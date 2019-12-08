@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
@@ -13,7 +12,6 @@ import (
 
 	"chatalk.fr/utils"
 	dberror "github.com/Shyp/go-dberror"
-	_ "github.com/lib/pq"
 	stan "github.com/nats-io/stan.go"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -61,13 +59,12 @@ func verifyPayload(request registerRequest) error {
 
 func triggerSendInfos(sc stan.Conn, wsID string, userID int) {
 	req := sendInfoRequest{
-		Action: "send-infos",
+		Action: "send-info",
 		WsID:   wsID,
 		UserID: userID,
 	}
 	j, _ := json.Marshal(req)
-	sendInfo := fmt.Sprintf("service.%s", "sendInfo")
-	sc.Publish(sendInfo, []byte(j))
+	sc.Publish("service.send-info", []byte(j))
 }
 
 func main() {

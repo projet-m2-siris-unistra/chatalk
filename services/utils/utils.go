@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/google/uuid"
+	_ "github.com/lib/pq"
 	"github.com/ludovicm67/go-rwdatabasepool"
 	nats "github.com/nats-io/nats.go"
 	stan "github.com/nats-io/stan.go"
@@ -51,7 +52,12 @@ func DBConnect() *rwdatabasepool.RWDatabasePool {
 		}
 	}
 
-	return rwdatabasepool.Init([]*sql.DB{writeDB}, []*sql.DB{readDB})
+	readDBArray := []*sql.DB{readDB}
+	if readDB == nil {
+		readDBArray = []*sql.DB{}
+	}
+
+	return rwdatabasepool.Init([]*sql.DB{writeDB}, readDBArray)
 }
 
 // InitBus instantiates Nats and Nats Streaming

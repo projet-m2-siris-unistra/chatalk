@@ -91,7 +91,10 @@ services:
       - DB_MODE=disable
 
   login:
-    build: login/
+    build:
+      context: .
+      args:
+        service: login
     depends_on:
       - bus
       - db-migrations
@@ -117,7 +120,6 @@ services:
       - DB_USER=chatalk
       - DB_PASS=chatalk
       - DB_MODE=disable
-
 
   msg_sender:
     build: msg_sender
