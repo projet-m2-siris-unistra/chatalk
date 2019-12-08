@@ -9,6 +9,7 @@ import {
   clearAlert,
   setConversations,
   setUsers,
+  setMessages,
 } from '../store/actions';
 import { DispatchProp, connect } from 'react-redux';
 
@@ -121,6 +122,23 @@ class WebsocketProvider extends React.Component<Props, State> {
     }
   }
 
+  serviceResponseMsgSender(data: any) {
+    console.log('svc/msg_sender: ', data);
+    
+    this.props.dispatch(
+      alertInfo(`Received ${data.payload || ''}!`)
+    );
+    this.props.dispatch(
+      setMessages({
+        msgid: data.msgid,
+        senderid: data.source,
+        convid: data.destination,
+        content: data.payload,
+      })
+    );
+  }
+
+
   serviceResponsePing(data: any) {
     console.log('svc/ping: ', data);
   }
@@ -201,6 +219,10 @@ class WebsocketProvider extends React.Component<Props, State> {
 
       case 'ping':
         this.serviceResponsePing(data);
+        break;
+
+      case 'msg_sender':
+        this.serviceResponseMsgSender(data)
         break;
     }
   }

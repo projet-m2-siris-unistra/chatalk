@@ -33,6 +33,11 @@ export default (state: State = initialState, action: actions.Action): State => {
         ...state,
         users: action.users,
       };
+    case actions.SET_MESSAGES:
+      return {
+        ...state,
+        messages: [...state.messages, action.message]
+      };
   }
   return state;
 };

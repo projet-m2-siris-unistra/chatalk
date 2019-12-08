@@ -1,4 +1,4 @@
-import { Auth, Alert, Conversation, User } from './state';
+import { Auth, Alert, Conversation, User, Message } from './state';
 
 export const SET_AUTH = 'SET_AUTH';
 export const CLEAR_AUTH = 'CLEAR_AUTH';
@@ -6,7 +6,7 @@ export const SET_ALERT = 'SET_ALERT';
 export const CLEAR_ALERT = 'CLEAR_ALERT';
 export const SET_CONVERSATIONS = 'SET_CONVERSATIONS';
 export const SET_USERS = 'SET_USERS';
-
+export const SET_MESSAGES = 'SET_MESSAGES';
 
 interface SetAuthAction {
   type: typeof SET_AUTH;
@@ -36,10 +36,14 @@ interface SetUsersAction {
   users: User[];
 }
 
+interface SetMessagesAction {
+  type: typeof SET_MESSAGES;
+  message : Message;
+}
 
 export type AuthAction = SetAuthAction | ClearAuthAction;
 export type AlertAction = SetAlertAction | ClearAlertAction;
-export type Action = AuthAction | AlertAction | SetConversationsAction | SetUsersAction;
+export type Action = AuthAction | AlertAction | SetConversationsAction | SetUsersAction | SetMessagesAction;
 
 
 
@@ -101,3 +105,11 @@ export function setUsers(
   };
 }
 
+export function setMessages(
+  message: Message
+): SetMessagesAction {
+  return {
+    type: SET_MESSAGES,
+    message
+  };
+}

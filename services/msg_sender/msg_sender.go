@@ -25,8 +25,10 @@ type messageIngress struct {
 }
 
 type messageBroad struct {
-	Src     string `json:"source"`
-	Dst     string `json:"destination"`
+	Action  string `json:"action"`
+	MsgID   int    `json:"msgid"`
+	Src     int    `json:"source"`
+	Dst     int    `json:"destination"`
 	Payload string `json:"payload"`
 }
 
@@ -111,7 +113,7 @@ func main() {
 			`, userID, convID, msg.Payload).Scan(&msgID)
 
 			message := fmt.Sprintf("Message ID is: %s", msgID)
-			jm, err := json.Marshal(messageBroad{Src: msg.Src, Dst: msg.Dst, Payload: msg.Payload})
+			jm, err := json.Marshal(messageBroad{Action: "msg_sender", MsgID: msgID, Src: userID, Dst: convID, Payload: msg.Payload})
 			nc.Publish("conv."+msg.Dst, []byte(jm))
 
 			response = messageResponse{

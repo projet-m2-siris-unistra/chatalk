@@ -3,6 +3,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Link, useParams } from 'react-router-dom';
 import { useWebsocket } from '../WebsocketProvider';
+import { useSelector } from 'react-redux';
+import { State } from '../../store/state';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
@@ -70,60 +72,33 @@ type Params = {
 
 const Conversation: React.FC = () => {
   const { id } = useParams<Params>();
+  const convid = parseInt(id);
   const classes = useStyles();
+  const { connection, isOpen } = useWebsocket();
   const isDesktop = useMediaQuery('(min-width:1000px)');
+  const auth = useSelector((state: State) => state.auth);
+  const conmsgs = useSelector((state: State) => state.messages);
 
   const me = {
-    id: 'dbf302b3-3abf-4a48-9ab3-2cc1b99f3f9f',
-  };
+      id: 0,
+    };
+  if (auth) {
+    me.id = auth.userId
+  }
 
-  const messages = [
-    {
-      id: '1bf302b3-3abf-4a48-9ab3-2cc1b99f3f9a',
-      timestamp: Date.now(),
-      from: {
-        id: 'dbf302b3-3abf-4a48-9ab3-2cc1b99f3f9d',
-        displayName: 'Someone',
-        username: 'someone',
-        avatar: `https://lorempixel.com/120/120/people/?r=${Math.random()}`,
-      },
-      message: 'Hello',
-    },
-    {
-      id: '2bf302b3-3abf-4a48-9ab3-2cc1b99f3f9b',
-      timestamp: Date.now(),
-      from: {
-        id: 'dbf302b3-3abf-4a48-9ab3-2cc1b99f3f9d',
-        displayName: 'Someone',
-        username: 'someone',
-        avatar: `https://lorempixel.com/120/120/people/?r=${Math.random()}`,
-      },
-      message: 'world',
-    },
-    {
-      id: '3bf302b3-3abf-4a48-9ab3-2cc1b99f3f9d',
-      timestamp: Date.now(),
-      from: {
-        id: 'dbf302b3-3abf-4a48-9ab3-2cc1b99f3f9f',
-        displayName: 'John Doe',
-        username: 'me',
-        avatar: `https://lorempixel.com/120/120/people/?r=${Math.random()}`,
-      },
-      message: 'Coucou ! :)',
-    },
-  ];
+  const messages = conmsgs.filter(m => m.convid === convid);
 
   const msg = messages.map(m => {
     let classToUse = classes.msgOther;
     const avatar = <></>;
-    if (m.from.id === me.id) {
+    if (m.senderid === me.id) {
       classToUse = classes.msgMe;
     }
     return (
-      <div key={`msg-${m.id}`} className={classes.msg}>
+      <div key={`msg-${m.msgid}`} className={classes.msg}>
         {avatar}
-        <div key={`msg-content-${m.id}`} className={classToUse}>
-          {m.message}
+        <div key={`msg-content-${m.msgid}`} className={classToUse}>
+          {m.content}
         </div>
       </div>
      

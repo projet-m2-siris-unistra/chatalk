@@ -10,16 +10,18 @@ export interface Alert {
   content: string;
 }
 
-export interface Msg {
-  userid: string;
-  content: string;
-}
-
 export interface Conversation {
   convid: string;
   convname: string;
   shared_key: string;
   members: string;
+}
+
+export interface Message {
+  msgid: number;
+  senderid: number;
+  convid: number;
+  content: string;
 }
 
 export interface User extends Auth {
@@ -31,6 +33,7 @@ export interface State {
   alert: Alert | false;
   conversations: Conversation[];
   users: User[];
+  messages: Message[];
 }
 
 export const initialState: State = {
@@ -38,4 +41,5 @@ export const initialState: State = {
   alert: false,
   conversations: [],
   users: [],
+  messages: [],
 };
