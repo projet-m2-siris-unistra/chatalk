@@ -126,6 +126,7 @@ build-service-conv_creation:
   only:
     changes:
       - ".gitlab-ci.yml"
+      - "services/Dockerfile"
       - "services/conv_creation/**/*"
 
 build-service-conv_manag:
@@ -135,6 +136,7 @@ build-service-conv_manag:
   only:
     changes:
       - ".gitlab-ci.yml"
+      - "services/Dockerfile"
       - "services/conv_manag/**/*"
 
 build-service-entrypoint:
@@ -144,6 +146,7 @@ build-service-entrypoint:
   only:
     changes:
       - ".gitlab-ci.yml"
+      - "services/Dockerfile"
       - "services/entrypoint/**/*"
 
 build-service-login:
@@ -153,6 +156,7 @@ build-service-login:
   only:
     changes:
       - ".gitlab-ci.yml"
+      - "services/Dockerfile"
       - "services/login/**/*"
 
 build-service-msg_sender:
@@ -162,6 +166,7 @@ build-service-msg_sender:
   only:
     changes:
       - ".gitlab-ci.yml"
+      - "services/Dockerfile"
       - "services/msg_sender/**/*"
 
 build-service-ping:
@@ -171,6 +176,7 @@ build-service-ping:
   only:
     changes:
       - ".gitlab-ci.yml"
+      - "services/Dockerfile"
       - "services/ping/**/*"
 
 build-service-register:
@@ -180,6 +186,7 @@ build-service-register:
   only:
     changes:
       - ".gitlab-ci.yml"
+      - "services/Dockerfile"
       - "services/register/**/*"
 
 build-service-send-info:
@@ -189,6 +196,7 @@ build-service-send-info:
   only:
     changes:
       - ".gitlab-ci.yml"
+      - "services/Dockerfile"
       - "services/send-info/**/*"
 
 deploy-service-entrypoint:
@@ -206,6 +214,7 @@ deploy-service-entrypoint:
   only:
     changes:
       - ".gitlab-ci.yml"
+      - "services/Dockerfile"
       - "services/entrypoint/**/*"
 
 # database migrations
@@ -217,19 +226,24 @@ build-db-migrations:
   tags:
     - docker
     - socket
+  artifacts:
+    paths:
+      - .build/
   script:
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
     - |
+      mkdir -p .build/
       if [ "$CI_COMMIT_REF_SLUG" == master ]; then
         ARGS="--destination $CI_REGISTRY/$IMAGE"
       fi
       /kaniko/executor $ARGS \
         --destination $CI_REGISTRY/$IMAGE:$CI_COMMIT_REF_SLUG \
-        --context $CI_PROJECT_DIR/$IMAGE \
-        --dockerfile $CI_PROJECT_DIR/$IMAGE/Dockerfile \
+        --context $CI_PROJECT_DIR/services/$IMAGE \
+        --dockerfile $CI_PROJECT_DIR/services/$IMAGE/Dockerfile \
         --build-arg "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
         --build-arg "COMMIT=$CI_COMMIT_SHA" \
-        --build-arg "VERSION=$CI_COMMIT_REF_SLUG"
+        --build-arg "VERSION=$CI_COMMIT_REF_SLUG" \
+        --digest-file "$CI_PROJECT_DIR/.build/$IMAGE.digest"
   variables:
     IMAGE: db-migrations
   only:

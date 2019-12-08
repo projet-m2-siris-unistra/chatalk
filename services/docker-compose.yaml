@@ -26,7 +26,10 @@ services:
       - 8222:8222
 
   entrypoint:
-    build: entrypoint/
+    build:
+      context: .
+      args:
+        service: entrypoint
     depends_on:
       - bus
       - db-migrations
@@ -54,7 +57,10 @@ services:
       - DB_MODE=disable
 
   ping:
-    build: ping/
+    build:
+      context: .
+      args:
+        service: ping
     depends_on:
       - bus
       - db-migrations
@@ -63,7 +69,10 @@ services:
       - NATS_CLUSTER_ID=chatalk
 
   conv_creation:
-    build: conv_creation/
+    build:
+      context: .
+      args:
+        service: conv_creation
     depends_on:
       - bus
       - db-migrations
@@ -77,7 +86,10 @@ services:
       - DB_MODE=disable
 
   conv_manag:
-    build: conv_manag/
+    build:
+      context: .
+      args:
+        service: conv_manag
     depends_on:
       - bus
       - db-migrations
@@ -108,7 +120,10 @@ services:
       - DB_MODE=disable
 
   send-info:
-    build: send-info/
+    build:
+      context: .
+      args:
+        service: send-info
     depends_on:
       - bus
       - db-migrations
@@ -122,7 +137,10 @@ services:
       - DB_MODE=disable
 
   msg_sender:
-    build: msg_sender
+    build:
+      context: .
+      args:
+        service: msg_sender
     depends_on:
       - bus
       - db-migrations
