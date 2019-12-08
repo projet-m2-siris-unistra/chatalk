@@ -36,6 +36,11 @@ export default (state: State = initialState, action: actions.Action): State => {
     case actions.SET_MESSAGES:
       return {
         ...state,
+        messages: [...state.messages, ...action.messages]
+      };
+    case actions.UPDATE_MESSAGES:
+      return {
+        ...state,
         messages: [...state.messages, action.message]
       };
   }

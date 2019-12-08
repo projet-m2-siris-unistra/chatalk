@@ -10,6 +10,7 @@ import {
   setConversations,
   setUsers,
   setMessages,
+  updateMessages,
 } from '../store/actions';
 import { DispatchProp, connect } from 'react-redux';
 
@@ -64,6 +65,9 @@ class WebsocketProvider extends React.Component<Props, State> {
     }
     if (data.users) {
       this.props.dispatch(setUsers(data.users));
+    }
+    if (data.messages) {
+      this.props.dispatch(setMessages(data.messages))
     }
   }
 
@@ -126,7 +130,7 @@ class WebsocketProvider extends React.Component<Props, State> {
     console.log('svc/msg_sender: ', data);
     
     this.props.dispatch(
-      setMessages({
+      updateMessages({
         msgid: data.msgid,
         senderid: data.source,
         convid: data.destination,

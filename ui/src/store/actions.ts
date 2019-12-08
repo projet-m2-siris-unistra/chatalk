@@ -7,6 +7,7 @@ export const CLEAR_ALERT = 'CLEAR_ALERT';
 export const SET_CONVERSATIONS = 'SET_CONVERSATIONS';
 export const SET_USERS = 'SET_USERS';
 export const SET_MESSAGES = 'SET_MESSAGES';
+export const UPDATE_MESSAGES = 'UPDATE_MESSAGES';
 
 interface SetAuthAction {
   type: typeof SET_AUTH;
@@ -38,12 +39,18 @@ interface SetUsersAction {
 
 interface SetMessagesAction {
   type: typeof SET_MESSAGES;
+  messages : Message[];
+}
+
+interface UpdateMessagesAction {
+  type: typeof UPDATE_MESSAGES;
   message : Message;
 }
 
 export type AuthAction = SetAuthAction | ClearAuthAction;
 export type AlertAction = SetAlertAction | ClearAlertAction;
-export type Action = AuthAction | AlertAction | SetConversationsAction | SetUsersAction | SetMessagesAction;
+export type Action = AuthAction | AlertAction | SetConversationsAction 
+                    | SetUsersAction | SetMessagesAction | UpdateMessagesAction;
 
 
 
@@ -106,10 +113,19 @@ export function setUsers(
 }
 
 export function setMessages(
-  message: Message
+  messages: Message[]
 ): SetMessagesAction {
   return {
     type: SET_MESSAGES,
+    messages,
+  };
+}
+
+export function updateMessages(
+  message: Message
+): UpdateMessagesAction {
+  return {
+    type: UPDATE_MESSAGES,
     message
   };
 }

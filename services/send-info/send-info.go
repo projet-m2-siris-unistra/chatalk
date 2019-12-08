@@ -40,12 +40,20 @@ type Conv struct {
 	Members   string `json:"members"`
 }
 
+type Message struct {
+	MsgID   int    `json:"msgid"`
+	Sender  int    `json:"senderid"`
+	ConvID  int    `json:"convid"`
+	Content string `json:"content"`
+}
+
 type sendInfoResponse struct {
-	Action  string `json:"action"`
-	Success bool   `json:"success"`
-	Error   string `json:"error,omitempty"`
-	Users   []User `json:"users,omitempty"`
-	Convs   []Conv `json:"convs,omitempty"`
+	Action   string    `json:"action"`
+	Success  bool      `json:"success"`
+	Error    string    `json:"error,omitempty"`
+	Users    []User    `json:"users,omitempty"`
+	Convs    []Conv    `json:"convs,omitempty"`
+	Messages []Message `json:"messages,omitempty"`
 }
 
 // get environment variable, if not found will be set to `fallback` value
@@ -110,6 +118,9 @@ func main() {
 		var usersArr []User
 		var cnv Conv
 		var convsArr []Conv
+		var content Message
+		var msgsArr []Message
+
 		userID := msg.UserID
 
 		rows, err := db.Query(`
@@ -197,11 +208,46 @@ func main() {
 		}
 		rows.Close()
 
+		rows, err = db.Query(`
+		SELECT m.msg_id,
+					 m.user_id,
+					 m.conv_id,
+					 m.content
+		FROM conv_keys k, messages m
+		WHERE k.user_id = $1
+		AND k.conv_id = m.conv_id`, userID)
+
+		if err != nil {
+			response = sendInfoResponse{
+				Action:  "send-info",
+				Success: false,
+				Error:   "Issue on Database, reload later",
+			}
+			goto send_msg
+		}
+
+		for rows.Next() {
+			err := rows.Scan(&content.MsgID, &content.Sender, &content.ConvID, &content.Content)
+			if err != nil {
+				log.Println("err:", err)
+				response = sendInfoResponse{
+					Action:  "send-info",
+					Success: false,
+					Error:   "Issue on Database, reload later",
+				}
+				goto send_msg
+			}
+
+			msgsArr = append(msgsArr, content)
+		}
+		rows.Close()
+
 		response = sendInfoResponse{
-			Action:  "send-info",
-			Success: true,
-			Users:   usersArr,
-			Convs:   convsArr,
+			Action:   "send-info",
+			Success:  true,
+			Users:    usersArr,
+			Convs:    convsArr,
+			Messages: msgsArr,
 		}
 
 	send_msg:
