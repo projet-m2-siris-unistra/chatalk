@@ -28,6 +28,11 @@ export default (state: State = initialState, action: actions.Action): State => {
         ...state,
         conversations: action.conversations,
       };
+    case actions.SET_USERS:
+      return {
+        ...state,
+        users: action.users,
+      };
   }
   return state;
 };

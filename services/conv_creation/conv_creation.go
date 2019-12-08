@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strings"
 	"strconv"
 	"syscall"
 
@@ -25,6 +26,7 @@ type registerRequest struct {
 		Convname string `json:"convname"`
 		Topic    string `json:"topic"`
 		Picture  string `json:"picture"`
+		Members  string `json:"members"`
 	} `json:"payload"`
 }
 
@@ -93,8 +95,19 @@ func main() {
 		var userID int
 		var convID int
 		var topicName string
+		var members []int
+		var spliMem []string
 
+		spliMem = strings.Split(msg.Payload.Members,"}")
+		spliMem = strings.Split(spliMem[0],"{")
+		spliMem = strings.Split(spliMem[1],",")
+
+		for _, v := range spliMem {
+			userID, _  = strconv.Atoi(v)
+			members = append(members, userID)
+		}
 		userID, err = strconv.Atoi(msg.Payload.UserID)
+
 
 		if err != nil {
 			response = registerResponse{
@@ -122,36 +135,21 @@ func main() {
 				_, err = db.Query(
 					`INSERT INTO conv_keys(user_id, conv_id, shared_key, timefrom, timeto, favorite, audio)
 					VALUES($1, $2, 0, current_timestamp, NULL, false, false);`, userID, convID)
-
-				if err == nil {
-					message := fmt.Sprintf("Creation OK.\n conv ID is: %s", convID)
-					response = registerResponse{
-						Action:  "conv_creation",
-						Success: true,
-						Error:   message,
-					}
-					topicName = "conv." + strconv.Itoa(convID)
-					nc.Publish("ws."+msg.WsID+".sub", []byte(topicName))
-				} else {
-					dberr := dberror.GetError(err)
-					switch e := dberr.(type) {
-					case *dberror.Error:
-						errmsg := e.Error()
-						response = registerResponse{
-							Action:  "conv_creation",
-							Success: false,
-							Error:   errmsg,
-						}
-					default:
-						response = registerResponse{
-							Action:  "conv_creation",
-							Success: false,
-						}
-					}
-
+				for _, v := range members {
 					_, err = db.Query(
-						`DELETE FROM conversations WHERE conv_id = $1;`, convID)
+						`INSERT INTO conv_keys(user_id, conv_id, shared_key, timefrom, timeto, favorite, audio)
+						VALUES($1, $2, 0, current_timestamp, NULL, false, false);`, v, convID)
 				}
+
+				message := fmt.Sprintf("Creation OK.\n conv ID is: %s", convID)
+				response = registerResponse{
+					Action:  "conv_creation",
+					Success: true,
+					Error:   message,
+				}
+				topicName = "conv." + strconv.Itoa(convID)
+				nc.Publish("ws."+msg.WsID+".sub", []byte(topicName))
+
 			} else {
 				dberr := dberror.GetError(err)
 				switch e := dberr.(type) {
