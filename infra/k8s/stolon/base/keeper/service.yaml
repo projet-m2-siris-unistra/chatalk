@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: stolon-proxy
+  name: db-read
 spec:
   ports:
     - port: 5432

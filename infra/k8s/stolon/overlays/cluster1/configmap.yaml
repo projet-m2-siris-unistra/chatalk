@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: stolon-config
+data:
+  init.json: |
+    {
+      "role": "standby",
+      "initMode": "pitr",
+      "pitrConfig": {
+        "dataRestoreCommand": "envdir /etc/wal-g.d/env wal-g backup-fetch %d LATEST",
+        "archiveRecoverySettings": {
+          "restoreCommand": "envdir /etc/wal-g.d/env wal-g wal-fetch \"%f\" \"%p\""
+        }
+      },
+      "standbyConfig": {
+        "standbySettings": {
+          "primaryConnInfo": "host=cluster2.chatalk.fr port=5432 user=replication password=quogh5UeLal9gookeiGie0Hahch6Gaju7Ee7caechooshau9nees0thuwuf8aa6u sslmode=disable"
+        }
+      }
+    }

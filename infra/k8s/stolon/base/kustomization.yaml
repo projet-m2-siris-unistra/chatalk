@@ -1,11 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: stolon
-
-commonLabels:
-  app.kubernetes.io/name: stolon
-
 bases:
 - init/
 - keeper/
@@ -23,3 +18,11 @@ secretGenerator:
   literals:
   - su-password=aix7eePeH9ooqui6ShaiT7eiphaeTee2isahg2ahwibiwoh8Ailequ2jeiceeSho
   - repl-password=quogh5UeLal9gookeiGie0Hahch6Gaju7Ee7caechooshau9nees0thuwuf8aa6u
+- name: wal-g
+  literals:
+  - AWS_ACCESS_KEY_ID=VWFMMF0IAU20NOYU49W5
+  - AWS_SECRET_ACCESS_KEY=pZivezDT92M57agFLYhbdOFXZNXi0bDjUbOMExK4
+  - WALE_S3_PREFIX=s3://wal-g
+  - AWS_ENDPOINT=https://s3.chatalk.fr
+  - AWS_S3_FORCE_PATH_STYLE=true
+  - AWS_REGION=minio

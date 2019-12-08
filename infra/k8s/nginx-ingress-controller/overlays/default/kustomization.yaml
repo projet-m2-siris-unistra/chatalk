@@ -10,3 +10,4 @@ patchesStrategicMerge:
 - deployment.yaml
 - namespace.yaml
 - config.yaml
+- service.yaml
