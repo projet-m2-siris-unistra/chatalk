@@ -12,6 +12,10 @@ spec:
       containers:
       - name: stolonctl
         image: sandhose/stolon:latest
+        volumeMounts:
+        - name: stolon-config-volume
+          mountPath: /etc/stolon/init.json
+          subPath: init.json
         imagePullPolicy: Always
         command:
         - "stolonctl"
@@ -20,6 +24,7 @@ spec:
         - "--store-backend=kubernetes"
         - "--kube-resource-kind=configmap"
         - "--yes"
+        - "--file=/etc/stolon/init.json"
         env:
         - name: STKEEPER_CLUSTER_NAME
           value: chatalk
@@ -28,3 +33,7 @@ spec:
         - name: STKEEPER_KUBE_RESOURCE_KIND
           value: "configmap"
       restartPolicy: OnFailure
+      volumes:
+      - name: stolon-config-volume
+        configMap:
+          name: stolon-config

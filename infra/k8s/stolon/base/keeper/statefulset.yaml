@@ -37,6 +37,8 @@ spec:
         volumeMounts:
         - name: data
           mountPath: /stolon-data
+        - name: wal-g-volume
+          mountPath: /etc/wal-g.d/env
         env:
         - name: POD_NAME
           valueFrom:
@@ -68,6 +70,10 @@ spec:
               key: su-password
         - name: STKEEPER_METRICS_LISTEN_ADDRESS
           value: "0.0.0.0:8080"
+      volumes:
+      - name: wal-g-volume
+        secret:
+          secretName: wal-g
   volumeClaimTemplates:
   - metadata:
       name: data

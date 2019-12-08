@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: stolon-config
+data:
+  init.json: |
+    {
+      "initMode": "new",
+      "pgParameters": {
+        "archive_mode": "on",
+        "archive_command": "envdir /etc/wal-g.d/env wal-g wal-push %p"
+      }
+    }
