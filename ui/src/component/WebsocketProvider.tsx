@@ -97,9 +97,9 @@ class WebsocketProvider extends React.Component<Props, State> {
     );
     this.props.dispatch(
       setAuth({
-        userId: data.userid,
+        userid: data.userid,
         username: data.username,
-        displayName: `${data.displayname}@${data['ws-id']}`,
+        displayname: `${data.displayname}@${data['ws-id']}`,
         avatar: data.picture,
       })
     );

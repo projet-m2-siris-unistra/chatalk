@@ -1,7 +1,7 @@
 export interface Auth {
-  userId: number;
+  userid: number;
   username: string;
-  displayName?: string;
+  displayname?: string;
   avatar?: string;
 }
 

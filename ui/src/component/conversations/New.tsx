@@ -213,7 +213,7 @@ const NewConversation: React.FC = () => {
       JSON.stringify({
         action: 'conv_creation',
         payload: {
-          userid: `${auth.userId}`,
+          userid: `${auth.userid}`,
           convname: name,
           topic,
           picture: '',
