@@ -126,9 +126,6 @@ class WebsocketProvider extends React.Component<Props, State> {
     console.log('svc/msg_sender: ', data);
     
     this.props.dispatch(
-      alertInfo(`Received ${data.payload || ''}!`)
-    );
-    this.props.dispatch(
       setMessages({
         msgid: data.msgid,
         senderid: data.source,

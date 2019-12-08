@@ -1,13 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Link, useParams } from 'react-router-dom';
 import { useWebsocket } from '../WebsocketProvider';
 import { useSelector } from 'react-redux';
 import { State } from '../../store/state';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormControl from '@material-ui/core/FormControl';
 import Input from '@material-ui/core/Input';
 import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
@@ -78,6 +75,7 @@ const Conversation: React.FC = () => {
   const isDesktop = useMediaQuery('(min-width:1000px)');
   const auth = useSelector((state: State) => state.auth);
   const conmsgs = useSelector((state: State) => state.messages);
+  const [ownmsg, setOwnMsg] = useState('');
 
   const me = {
       id: 0,
@@ -110,6 +108,30 @@ const Conversation: React.FC = () => {
     displayBackBtn = classes.hidden;
   }
 
+
+  const sendMessage = () => {
+    if (!isOpen || connection === null) {
+      console.error('ws is not open');
+      return;
+    }
+
+    if (!auth) {
+      console.error('user is not logged in');
+      return;
+    }
+    
+    console.log('send message:', auth.userId, ownmsg);
+    connection.send(
+      JSON.stringify({
+        action: 'msg_sender',
+        source: `${auth.userId}`,
+        destination: `${convid}`,
+        device: "1",
+        payload: ownmsg,
+      })
+    );
+  };
+
   return (
     <>
       <div className={classes.header}>
@@ -127,11 +149,13 @@ const Conversation: React.FC = () => {
         inputProps={{
           'aria-label': 'description',
         }}
+        onChange={e => setOwnMsg(e.target.value)}
       />
       <Button
         variant="contained"
         color="primary"
         endIcon={<Icon>send</Icon>}
+        onClick={sendMessage}
       >
         Send
       </Button>
