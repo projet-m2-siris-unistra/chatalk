@@ -41,6 +41,7 @@ interface State {
   socket: WebSocket | null;
   isOpen: boolean;
   ping: ReturnType<typeof setInterval> | null;
+  userid: number | null;
 }
 
 class WebsocketProvider extends React.Component<Props, State> {
@@ -48,6 +49,7 @@ class WebsocketProvider extends React.Component<Props, State> {
     socket: null,
     isOpen: false,
     ping: null,
+    userid: null,
   };
 
   componentDidMount() {
@@ -104,6 +106,7 @@ class WebsocketProvider extends React.Component<Props, State> {
         avatar: data.picture,
       })
     );
+    this.setState({userid: data.userid});
   }
 
   serviceResponseConvCreation(data: any) {
@@ -130,8 +133,9 @@ class WebsocketProvider extends React.Component<Props, State> {
           members: data.members,
         })
       );
-      console.log("dans la sauce");
-      this.props.history.push(`/conversation/${data.convid}`);
+      if(data.creator === this.state.userid) {
+        this.props.history.push(`/conversation/${data.convid}`);        
+      }
     }
   }
 

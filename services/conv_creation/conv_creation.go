@@ -34,6 +34,7 @@ type registerResponse struct {
 	Action  string `json:"action"`
 	Success bool   `json:"success"`
 	Error   string `json:"error,omitempty"`
+	Creator int    `json:"creator,omitempty"`
 	ConvID  string `json:"convid,omitempty"`
 	Convname 	string `json:"convname,omitempty"`
 	Sharedkey	string `json:"sharedkey,omitempty"`
@@ -153,6 +154,7 @@ func main() {
 				response = registerResponse{
 					Action:  "conv_creation",
 					Success: true,
+					Creator: userID,
 					ConvID: strconv.Itoa(convID),
 					Convname: msg.Payload.Convname,
 					Sharedkey: "0",
