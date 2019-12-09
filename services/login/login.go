@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"strconv"
 
 	"chatalk.fr/utils"
 	stan "github.com/nats-io/stan.go"
@@ -122,6 +123,9 @@ func main() {
 					response.Username = userUsername
 					response.Displayname = dispName
 					response.Picture = picURL
+
+					topicName := "user." + strconv.Itoa(userID)
+					nc.Publish("ws."+msg.WsID+".sub", []byte(topicName))
 
 					triggerSendInfos(sc, msg.WsID, userID)
 				}
