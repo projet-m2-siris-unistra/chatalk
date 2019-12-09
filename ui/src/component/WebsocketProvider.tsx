@@ -135,6 +135,21 @@ class WebsocketProvider extends React.Component<Props, State> {
       );
       if(data.creator === this.state.userid) {
         this.props.history.push(`/conversation/${data.convid}`);        
+      } else {
+        if (
+          this.state.isOpen &&
+          this.state.socket !== null
+        ) {
+          this.state.socket.send(
+            JSON.stringify({
+              action: 'conv-sub',
+              payload: {
+                userid: `${this.state.userid}`,
+                convid: `${data.convid}`,
+              },
+            })
+          );  
+        }      
       }
     }
   }
@@ -152,6 +167,15 @@ class WebsocketProvider extends React.Component<Props, State> {
     );
   }
 
+  serviceResponseConvSub(data: any) {
+    console.log('svc/conv-sub: ', data);
+    if(!data.success) {
+      this.props.dispatch(
+        alertError(data.error || 'Oups, try to reconnect Please.')
+      );
+      return;
+    }
+  }
 
   serviceResponsePing(data: any) {
     console.log('svc/ping: ', data);
@@ -236,7 +260,11 @@ class WebsocketProvider extends React.Component<Props, State> {
         break;
 
       case 'msg_sender':
-        this.serviceResponseMsgSender(data)
+        this.serviceResponseMsgSender(data);
+        break;
+
+      case 'conv-sub':
+        this.serviceResponseConvSub(data);
         break;
     }
   }
