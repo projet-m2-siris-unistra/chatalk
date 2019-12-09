@@ -37,7 +37,7 @@ func DBConnect() *rwdatabasepool.RWDatabasePool {
 	)
 	writeDB, err := sql.Open("postgres", writeConnStr)
 	if err != nil {
-		log.Fatal(err)
+		writeDB = nil
 	}
 
 	if dbHostRead, ok := os.LookupEnv("DB_HOST_READ"); ok {
@@ -52,12 +52,17 @@ func DBConnect() *rwdatabasepool.RWDatabasePool {
 		}
 	}
 
+	writeDBArray := []*sql.DB{writeDB}
+	if writeDB == nil {
+		writeDBArray = []*sql.DB{}
+	}
+
 	readDBArray := []*sql.DB{readDB}
 	if readDB == nil {
 		readDBArray = []*sql.DB{}
 	}
 
-	return rwdatabasepool.Init([]*sql.DB{writeDB}, readDBArray)
+	return rwdatabasepool.Init(writeDBArray, readDBArray)
 }
 
 // InitBus instantiates Nats and Nats Streaming
