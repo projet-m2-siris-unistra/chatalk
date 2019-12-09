@@ -8,6 +8,7 @@ spec:
       containers:
       - name: db-migrations
         image: registry.chatalk.fr/db-migrations:master
+        imagePullPolicy: Always
         args:
         - -database=postgres://$(DB_USER):$(DB_PASS)@$(DB_HOST)/$(DB_DB)?sslmode=$(DB_MODE)
         - up
