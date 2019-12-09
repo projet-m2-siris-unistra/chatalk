@@ -26,6 +26,11 @@ spec:
             configMapKeyRef:
               name: svc-config
               key: DB_HOST
+        - name: DB_HOST_READ
+          valueFrom:
+            configMapKeyRef:
+              name: svc-config
+              key: DB_HOST_READ
         - name: DB_DB
           valueFrom:
             configMapKeyRef:

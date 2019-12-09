@@ -24,6 +24,7 @@ g.edge('chatalk-vip.u-strasbg.fr', 'chatalk2.u-strasbg.fr')
 g.edge('chatalk-vip.u-strasbg.fr', 'chatalk3.u-strasbg.fr')
 
 # services
+g.edge('dbmaster', 'cluster2')
 g.edge('chatalk.fr', 'lb')
 g.edge('www', 'lb')
 g.edge('ws', 'lb')
