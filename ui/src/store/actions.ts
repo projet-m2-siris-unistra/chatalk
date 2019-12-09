@@ -8,6 +8,8 @@ export const SET_CONVERSATIONS = 'SET_CONVERSATIONS';
 export const SET_USERS = 'SET_USERS';
 export const SET_MESSAGES = 'SET_MESSAGES';
 export const UPDATE_MESSAGES = 'UPDATE_MESSAGES';
+export const UPDATE_CONVERSATIONS = 'UPDATE_CONVERSATIONS';
+
 
 interface SetAuthAction {
   type: typeof SET_AUTH;
@@ -47,10 +49,16 @@ interface UpdateMessagesAction {
   message : Message;
 }
 
+interface UpdateConversationsAction{
+  type: typeof UPDATE_CONVERSATIONS;
+  conversation: Conversation;
+}
+
+
 export type AuthAction = SetAuthAction | ClearAuthAction;
 export type AlertAction = SetAlertAction | ClearAlertAction;
-export type Action = AuthAction | AlertAction | SetConversationsAction 
-                    | SetUsersAction | SetMessagesAction | UpdateMessagesAction;
+export type Action = AuthAction | AlertAction | SetConversationsAction
+                    | SetUsersAction | SetMessagesAction | UpdateMessagesAction | UpdateConversationsAction;
 
 
 
@@ -126,6 +134,15 @@ export function updateMessages(
 ): UpdateMessagesAction {
   return {
     type: UPDATE_MESSAGES,
-    message
+    message,
+  };
+}
+
+export function updateConversations(
+  conversation: Conversation
+): UpdateConversationsAction {
+  return {
+    type: UPDATE_CONVERSATIONS,
+    conversation,
   };
 }

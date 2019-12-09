@@ -34,6 +34,10 @@ type registerResponse struct {
 	Action  string `json:"action"`
 	Success bool   `json:"success"`
 	Error   string `json:"error,omitempty"`
+	ConvID  string `json:"convid,omitempty"`
+	Convname 	string `json:"convname,omitempty"`
+	Sharedkey	string `json:"sharedkey,omitempty"`
+	Members		string `json:"members,omitempty"`
 }
 
 // get environment variable, if not found will be set to `fallback` value
@@ -94,11 +98,13 @@ func main() {
 		var response registerResponse
 		var userID int
 		var convID int
-		var topicName string
 		var members []int
+		var topicName string
 		var spliMem []string
+		var allmembers string
 
 		spliMem = strings.Split(msg.Payload.Members,"}")
+		allmembers= spliMem[0]
 		spliMem = strings.Split(spliMem[0],"{")
 		spliMem = strings.Split(spliMem[1],",")
 
@@ -107,6 +113,7 @@ func main() {
 			members = append(members, userID)
 		}
 		userID, err = strconv.Atoi(msg.Payload.UserID)
+		allmembers=allmembers + "," + msg.Payload.UserID + "}"
 
 
 		if err != nil {
@@ -141,15 +148,23 @@ func main() {
 						VALUES($1, $2, 0, current_timestamp, NULL, false, false);`, v, convID)
 				}
 
-				message := fmt.Sprintf("Creation OK.\n conv ID is: %s", convID)
+				members=append(members,userID);
+
 				response = registerResponse{
 					Action:  "conv_creation",
 					Success: true,
-					Error:   message,
+					ConvID: strconv.Itoa(convID),
+					Convname: msg.Payload.Convname,
+					Sharedkey: "0",
+					Members: allmembers,
+
+				}
+				jm, _ := json.Marshal(response)
+				for _, v := range members{
+					nc.Publish("user."+strconv.Itoa(v), []byte(jm))
 				}
 				topicName = "conv." + strconv.Itoa(convID)
 				nc.Publish("ws."+msg.WsID+".sub", []byte(topicName))
-
 			} else {
 				dberr := dberror.GetError(err)
 				switch e := dberr.(type) {

@@ -207,8 +207,8 @@ const NewConversation: React.FC = () => {
     }
 
     const members = value.map((user:any) => user.userid)
-    
-    console.log('create conv:', name, topic);
+
+    console.log('new:create conv:', name, topic);
     connection.send(
       JSON.stringify({
         action: 'conv_creation',

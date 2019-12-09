@@ -11,6 +11,7 @@ import {
   setUsers,
   setMessages,
   updateMessages,
+  updateConversations,
 } from '../store/actions';
 import { DispatchProp, connect } from 'react-redux';
 
@@ -117,18 +118,26 @@ class WebsocketProvider extends React.Component<Props, State> {
     }
 
     // if success (whaaaaaaat?!)
-    if (data.error) {
-      const convId = parseInt(data.error.match(/int=(\d*)/)[1]);
+    if (data.success) {
       this.props.dispatch(
-        alertInfo(data.error || 'The conversation was created.')
+        alertInfo('The conversation was created.')
       );
-      this.props.history.push(`/conversation/${convId}`);
+      this.props.dispatch(
+        updateConversations({
+          convid: data.convid,
+          convname: data.convname,
+          shared_key: data.sharedkey,
+          members: data.members,
+        })
+      );
+      console.log("dans la sauce");
+      this.props.history.push(`/conversation/${data.convid}`);
     }
   }
 
   serviceResponseMsgSender(data: any) {
     console.log('svc/msg_sender: ', data);
-    
+
     this.props.dispatch(
       updateMessages({
         msgid: data.msgid,
