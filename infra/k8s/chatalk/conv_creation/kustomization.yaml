@@ -3,6 +3,9 @@ kind: Kustomization
 
 commonLabels:
   app.kubernetes.io/name: conv-creation
+  app.kubernetes.io/part-of: chatalk
+
+namespace: chatalk
 
 resources:
 - deployment.yaml
