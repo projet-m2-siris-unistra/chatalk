@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: conv-sub
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: conv-sub
+        image: registry.chatalk.fr/conv-sub:master
+        imagePullPolicy: Always
+        env:
+        - name: NATS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: svc-config
+              key: NATS_URL
+        - name: NATS_CLUSTER_ID
+          valueFrom:
+            configMapKeyRef:
+              name: svc-config
+              key: NATS_CLUSTER_ID
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: svc-config
+              key: DB_HOST
+        - name: DB_DB
+          valueFrom:
+            configMapKeyRef:
+              name: svc-config
+              key: DB_DB
+        - name: DB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: svc-config
+              key: DB_USER
+        - name: DB_PASS
+          valueFrom:
+            configMapKeyRef:
+              name: svc-config
+              key: DB_PASS
+        - name: DB_MODE
+          valueFrom:
+            configMapKeyRef:
+              name: svc-config
+              key: DB_MODE

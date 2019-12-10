@@ -6,8 +6,8 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"syscall"
 	"strconv"
+	"syscall"
 
 	"chatalk.fr/utils"
 	stan "github.com/nats-io/stan.go"
@@ -65,7 +65,7 @@ func main() {
 
 		switch err {
 		case sql.ErrNoRows:
-			response.Error = "User "+msg.Payload.UserID+" is not in conversation "+msg.Payload.ConvID+"."
+			response.Error = "User " + msg.Payload.UserID + " is not in conversation " + msg.Payload.ConvID + "."
 		case nil:
 			response.Success = true
 			topicName := "conv." + msg.Payload.ConvID

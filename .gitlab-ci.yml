@@ -129,6 +129,16 @@ build-service-conv_creation:
       - "services/Dockerfile"
       - "services/conv_creation/**/*"
 
+build-service-conv-sub:
+  <<: *build-service-image
+  variables:
+    IMAGE: conv-sub
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/Dockerfile"
+      - "services/conv-sub/**/*"
+
 build-service-conv_manag:
   <<: *build-service-image
   variables:
