@@ -159,13 +159,17 @@ const ConversationsList: React.FC = () => {
             <AccountCircle />
           </Avatar>
           <div className={classes.headerTitle}>Conversations</div>
-          <IconButton
+          <Link to="/settings">
+            <IconButton
+
             aria-label="settings"
             size="small"
             className={classes.headerButton}
-          >
-            <SettingsIcon />
-          </IconButton>
+
+            >
+              <SettingsIcon />
+            </IconButton>
+          </Link>
           <Link to="/conversation/new">
             <IconButton
               aria-label="create conversation"

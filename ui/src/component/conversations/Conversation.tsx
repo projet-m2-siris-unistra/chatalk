@@ -10,6 +10,8 @@ import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
+import SettingsIcon from '@material-ui/icons/Settings';
+import IconButton from '@material-ui/core/IconButton';
 
 const useStyles = makeStyles(theme => ({
   msg: {
@@ -30,11 +32,27 @@ const useStyles = makeStyles(theme => ({
     },
   content: {
     minHeight: 'calc(100vh - 50px)',
-    maxHeight: 'calc(100vh - 50px)',
+    maxHeight: 'calc(100vh - 50px)',headerButton: {
+      backgroundColor: '#0b6374',
+      color: '#fff',
+      marginLeft: '8px',
+      '&:hover': {
+        backgroundColor: '#0b6374',
+        opacity: 0.8,
+      },
+    },
     overflow: 'auto',
     padding: '10px',
     display: 'flex',
     flexDirection: 'column',
+  },
+  headerButton: {
+    backgroundColor: '#0b6374',
+    color: '#fff',
+    '&:hover': {
+      backgroundColor: '#0b6374',
+      opacity: 0.8,
+    },
   },
   msgOther: {
     alignSelf: 'flex-start',
@@ -108,7 +126,7 @@ const Conversation: React.FC = () => {
           {m.content}
         </div>
       </div>
-     
+
     );
   });
 
@@ -128,7 +146,7 @@ const Conversation: React.FC = () => {
       console.error('user is not logged in');
       return;
     }
-    
+
     console.log('send message:', auth.userid, ownmsg);
     connection.send(
       JSON.stringify({
@@ -148,9 +166,18 @@ const Conversation: React.FC = () => {
           «
         </Link>
         Conversation name - config ({id})
+        <IconButton
+
+          aria-label="settings"
+          size="small"
+
+        >
+          <SettingsIcon />
+        </IconButton>
+
       </div>
       <div className={classes.content}>{msg}
-     
+
       </div>
       <div className={classes.footer}>
       <Input
