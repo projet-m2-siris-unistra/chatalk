@@ -150,17 +150,6 @@ const Settings: React.FC = () => {
                 variant="outlined"
                 required
                 fullWidth
-                name="Email"
-                label="Email"
-                id="Email"
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <CssTextField
-                variant="outlined"
-                required
-                fullWidth
                 name="password"
                 label="Password"
                 type="password"
@@ -235,7 +224,7 @@ const Settings: React.FC = () => {
               className={classes.submit}
 
             >
-              Sign Up
+              Save Changes
             </Button>
           </ThemeProvider>
           <Grid container direction="column" alignItems="center">
