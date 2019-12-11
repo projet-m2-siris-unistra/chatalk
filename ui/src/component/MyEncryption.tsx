@@ -22,19 +22,24 @@ const key = crypto.randomBytes(32);
 // encrypt une chaine de caractere en sha256
 function encrypt(message) {
   var encryptvar = crypto.createCipheriv('aes-256-cbc',key, myiv);
-  encryptvar.update(stringtest, 'utf8', 'base64');
-  var d = encryptvar.final('base64');
-  return d;
+  var e = new Buffer(message, 'base64').toString('binary');
+  e = encryptvar.update(stringtest, 'utf8', 'binary');
+  e += encryptvar.final('binary');
+  return e;
 }
 
 function decrypt(hash) {
   var decryptvar = crypto.createDecipheriv('aes-256-cbc', key, myiv);
-  decryptvar.update(hash, 'base64', 'utf8');
+  var d = decryptvar.update(hash, 'binary', 'utf8');
+  d += decryptvar.final('utf8');
+  return d;
 
 }
 
 var encrypted = encrypt(stringtest);
-console.log(encrypted+ ' ' + stringtest);
+var decrypted = decrypt(encrypted);
+console.log(encrypted);
+console.log(decrypted);
 
 
 
