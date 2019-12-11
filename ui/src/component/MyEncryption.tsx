@@ -1,34 +1,40 @@
 var crypto = require('crypto');
 var stringtest = "mon message secret";
-var nombreBits = 256;
+var nombreBits = 8;
+//var key = new Buffer('mykey').toString('binary');
 var fs = require('fs');
 
-//async
-crypto.randomBytes(256, function(ex, buf) {
-  if (ex) throw ex;
-  // handle error
-});
 
-
-function symetricGeneration(numBytes) {
+function randomGeneration(numBytes) {
   try {
-  var buf = crypto.randomBytes(numBytes);
+  var buf = new Buffer(crypto.randomBytes(numBytes));
   } catch (ex) {
   // handle error
   }
+  return buf.toString('hex');
 }
 
+
+// iv creation & key creation
+const myiv = crypto.randomBytes(16);
+const key = crypto.randomBytes(32);
+
 // encrypt une chaine de caractere en sha256
-// todo : forcer le string sur le message
 function encrypt(message) {
-  var shasum = crypto.createHash('sha256');
-  shasum.update(stringtest);
-  var d = shasum.digest('hex');
+  var encryptvar = crypto.createCipheriv('aes-256-cbc',key, myiv);
+  encryptvar.update(stringtest, 'utf8', 'base64');
+  var d = encryptvar.final('base64');
   return d;
 }
 
-var encrypted = encrypt(stringtest)
+function decrypt(hash) {
+  var decryptvar = crypto.createDecipheriv('aes-256-cbc', key, myiv);
+  decryptvar.update(hash, 'base64', 'utf8');
+
+}
+
+var encrypted = encrypt(stringtest);
 console.log(encrypted+ ' ' + stringtest);
-symetricGeneration(nombreBits);
+
 
 
