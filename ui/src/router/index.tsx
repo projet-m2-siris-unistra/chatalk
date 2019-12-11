@@ -11,6 +11,7 @@ import Terms from '../component/Terms';
 import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
 import Settings from '../component/conversations/Settings';
+import ConvSettings from '../component/conversations/ConvSettings';
 
 
 const AppRouter: React.FC = () => {
@@ -21,6 +22,7 @@ const AppRouter: React.FC = () => {
       <PublicRoute exact path="/register" component={SignUp} />
       <PrivateRoute path="/conversation" component={ConversationsList} />
       <PrivateRoute path="/settings" component={Settings} />
+      <PrivateRoute path="/convsettings" component={ConvSettings} />
       <Route exact path="/credits" component={Credits} />
       <Route exact path="/privacy" component={Privacy} />
       <Route exact path="/terms" component={Terms} />

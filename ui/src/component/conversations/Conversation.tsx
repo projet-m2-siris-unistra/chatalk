@@ -163,14 +163,15 @@ const Conversation: React.FC = () => {
           «
         </Link>
         Conversation name - config ({id})
-        <IconButton
+        <Link to="/convsettings">
+          <IconButton
 
-          aria-label="settings"
-          size="small"
-
-        >
-          <SettingsIcon />
-        </IconButton>
+            aria-label="settings"
+            size="small"
+          >
+            <SettingsIcon />
+          </IconButton>
+        </Link>
 
       </div>
       <div className={classes.content}>{msg}

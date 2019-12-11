@@ -26,6 +26,7 @@ const Terms: React.FC = () => {
       <Button
         color="default"
         type="button"
+        style={{ color: '#0b6374' }}
         className={classes.button}
         startIcon={<ArrowBackIosIcon />}
         href="/"

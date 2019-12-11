@@ -18,6 +18,11 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
+import Avatar from '@material-ui/core/Avatar';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+
+
 import {
   createMuiTheme,
   withStyles,
@@ -56,6 +61,18 @@ const useStyles = makeStyles(theme => ({
   title: {
     fontSize: '32px',
   },
+  bigAvatar: {
+    width: 120,
+    height: 120,
+    marginLeft: theme.spacing(16),
+  },
+  button: {
+    margin: theme.spacing(1),
+    left:0,
+    top:0,
+    position:'absolute'
+  },
+
 }));
 
 const theme = createMuiTheme({
@@ -116,39 +133,63 @@ const Settings: React.FC = () => {
     <div className={classes.paper}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
+          <Link to="/conversation">
+            <Button
+            type="button"
+            style={{ color: '#0b6374' }}
+            className={classes.button}
+            startIcon={<ArrowBackIosIcon />}
+            >
+            Back
+            </Button>
+          </Link>
         <Typography className={classes.title} align="center">
           Settings
         </Typography>
+
         <form className={classes.form} noValidate>
-          <Grid container spacing={2}>
+          <Grid container spacing={2} alignItems="center">
+            <Grid>
+              <Avatar className={classes.bigAvatar}>
+              </Avatar>
+            </Grid>
             <Grid item xs={12}>
               <ThemeProvider theme={theme}>
                 <CssTextField
                   autoComplete="fname"
-                  name="Displayname"
+                  name="avatar"
                   variant="outlined"
-                  required
                   fullWidth
-                  id="displayname"
-                  label="Display Name"
+                  id="avatar"
+                  label="Avatar URL"
                   autoFocus
                 />
               </ThemeProvider>
             </Grid>
+
             <Grid item xs={12}>
               <CssTextField
                 variant="outlined"
-                required
+                fullWidth
+                name="displayname"
+                label="Display Name"
+                id="displayname"
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <CssTextField
+                variant="outlined"
                 fullWidth
                 id="username"
                 label="Username"
-                name="Username"
+                name="username"
               />
             </Grid>
+
             <Grid item xs={12}>
               <CssTextField
                 variant="outlined"
-                required
                 fullWidth
                 name="password"
                 label="Password"
@@ -160,25 +201,25 @@ const Settings: React.FC = () => {
             <Grid item xs={12}>
               <CssTextField
                 variant="outlined"
-                required
                 fullWidth
-                name="password"
-                label="Password"
+                name="passwordconf"
+                label="Password Confirmation"
                 type="password"
-                id="password"
+                id="passwordconf"
               />
             </Grid>
-            <Grid container direction="column" alignItems="center">
+      {/* pour input et output mais pas maintenant
+      <Grid container direction="column" alignItems="center">
       <Grid item xs={12}>
         <ButtonGroup variant="contained" color="primary" ref={anchorRef} aria-label="split button">
           <Button onClick={handleClick}>{options[selectedIndex]}</Button>
           <Button
             color="primary"
-            size="small"
             aria-controls={open ? 'split-button-menu' : undefined}
             aria-expanded={open ? 'true' : undefined}
             aria-label="select merge strategy"
             aria-haspopup="menu"
+            fullWidth
             onClick={handleToggle}
           >
             <ArrowDropDownIcon />
@@ -213,7 +254,7 @@ const Settings: React.FC = () => {
         </Popper>
       </Grid>
     </Grid>
-
+                    */}
           </Grid>
           <ThemeProvider theme={theme}>
             <Button
@@ -224,14 +265,14 @@ const Settings: React.FC = () => {
               className={classes.submit}
 
             >
-              Save Changes
+              Save changes
             </Button>
           </ThemeProvider>
           <Grid container direction="column" alignItems="center">
             <Grid item>
-              <Link to="/login" style={{ color: '#0b6374' }}>
-                Already have an account? Sign in
-              </Link>
+              <a href="/login" style={{ color: '#0b6374' }}>
+                Logout
+              </a>
             </Grid>
           </Grid>
         </form>
