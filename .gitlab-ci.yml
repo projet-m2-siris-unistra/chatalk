@@ -219,8 +219,8 @@ deploy-service-entrypoint:
     - DIGEST="$(cat .build/$IMAGE.digest)"
     - DOCKER_IMG="$IMAGE@$DIGEST"
     - echo "$DOCKER_IMG"
-    - cd $CI_PROJECT_DIR/services/$IMAGE/
-    - kustomize edit set image $IMAGE=$DOCKER_IMG
+    - cd $CI_PROJECT_DIR/infra/k8s/chatalk/$IMAGE/
+    - kustomize edit set image $CI_REGISTRY/$IMAGE=$CI_REGISTRY/$DOCKER_IMG
   variables:
     IMAGE: entrypoint
   only:
