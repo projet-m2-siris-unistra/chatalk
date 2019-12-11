@@ -22,7 +22,7 @@ const key = crypto.randomBytes(32);
 // encrypt une chaine de caractere en sha256
 function encrypt(message) {
   var encryptvar = crypto.createCipheriv('aes-256-cbc',key, myiv);
-  var e = new Buffer(message, 'base64').toString('binary');
+  var e = new Buffer.from(message, 'base64').toString('binary');
   e = encryptvar.update(stringtest, 'utf8', 'binary');
   e += encryptvar.final('binary');
   return e;
