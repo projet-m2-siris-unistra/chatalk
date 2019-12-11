@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: 'auto',
     display: 'flex',
   },
-  
+
 }));
 
 const theme = createMuiTheme({
@@ -49,7 +49,7 @@ const Homepage: React.FC = () => {
     <div className={classes.paper}>
       <Typography variant="h2" align="center"style={{ color: '#0b6374' }}>Welcome to the best security chat application</Typography>
       <img src={Logo} alt="ChaTalK" className={classes.logo} />
-      
+
       <ThemeProvider theme={theme}>
         <ul>
         <Button href="/login"
@@ -64,7 +64,7 @@ const Homepage: React.FC = () => {
            Click here to Login !
         </Button>
         <Button href="/register"
-         variant="contained" 
+         variant="contained"
          color="primary"
          style={{marginRight: theme.spacing(5),
           marginTop: theme.spacing(10),
@@ -72,7 +72,7 @@ const Homepage: React.FC = () => {
           maxWidth:'350px',
           minHeight:'50px',
           maxHeight:'50px'}}>
-           You don't have an account ? Click on me 
+           You don't have an account ? Click on me
         </Button>
         </ul>
         </ThemeProvider>
@@ -84,10 +84,10 @@ const Homepage: React.FC = () => {
             justify="space-between"
             alignItems="center"
           >
-            <Grid item xs>
-              <Link to="/NotFound" style={{ color: '#0b6374' }}>
+            <Grid item>
+              <a href="https://status.chatalk.fr/" style={{ color: '#0b6374' }}>
                 Status
-              </Link>
+              </a>
             </Grid>
             <Grid item>
               <a href="https://blog.chatalk.fr" style={{ color: '#0b6374' }}>

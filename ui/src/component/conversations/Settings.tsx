@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Button from '@material-ui/core/Button';
 import { Link } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 
 import MenuItem from '@material-ui/core/MenuItem';
@@ -25,8 +23,6 @@ import {
   withStyles,
   ThemeProvider,
 } from '@material-ui/core/styles';
-
-import { useWebsocket } from '../WebsocketProvider';
 
 const options = ['input 1', 'input 3', 'input 3'];
 const useStyles = makeStyles(theme => ({
@@ -259,10 +255,10 @@ const Settings: React.FC = () => {
             justify="space-between"
             alignItems="center"
           >
-            <Grid item xs>
-              <Link to="/NotFound" style={{ color: '#0b6374' }}>
+            <Grid item>
+              <a href="https://status.chatalk.fr/" style={{ color: '#0b6374' }}>
                 Status
-              </Link>
+              </a>
             </Grid>
             <Grid item>
               <a href="https://blog.chatalk.fr" style={{ color: '#0b6374' }}>

@@ -8,8 +8,6 @@ import { State } from '../../store/state';
 import Input from '@material-ui/core/Input';
 import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
 import SettingsIcon from '@material-ui/icons/Settings';
 import IconButton from '@material-ui/core/IconButton';
 
@@ -95,7 +93,7 @@ const Conversation: React.FC = () => {
   const isDesktop = useMediaQuery('(min-width:1000px)');
   const auth = useSelector((state: State) => state.auth);
   const conmsgs = useSelector((state: State) => state.messages);
-  const conv = useSelector((state: State) => state.conversations).filter(c => c.convid == `${convid}`);
+  const conv = useSelector((state: State) => state.conversations).filter(c => parseInt(c.convid) === convid);
   const members = conv[0].members.replace('{','').replace('}','').split(',').map(n => parseInt(n));
   const users = useSelector((state: State) => state.users).filter(u => members.includes(u.userid));
   const [ownmsg, setOwnMsg] = useState('');
@@ -112,12 +110,12 @@ const Conversation: React.FC = () => {
   const msg = messages.map(m => {
     let classToUse = classes.msgOther;
     const user = users.filter(u => u.userid === m.senderid);
-    var avatar = user[0].avatar;
+    // var avatar = user[0].avatar;
     var username = user[0].username;
     if (m.senderid === me.id) {
       classToUse = classes.msgMe;
       username = '';
-      avatar = '';
+      // avatar = '';
     }
     return (
       <div key={`msg-${m.msgid}`} className={classes.msg}>
@@ -126,7 +124,6 @@ const Conversation: React.FC = () => {
           {m.content}
         </div>
       </div>
-
     );
   });
 

@@ -222,10 +222,10 @@ const SignUp: React.FC = () => {
             justify="space-between"
             alignItems="center"
           >
-            <Grid item xs>
-              <Link to="/NotFound" style={{ color: '#0b6374' }}>
+            <Grid item>
+              <a href="https://status.chatalk.fr/" style={{ color: '#0b6374' }}>
                 Status
-              </Link>
+              </a>
             </Grid>
             <Grid item>
               <a href="https://blog.chatalk.fr" style={{ color: '#0b6374' }}>
