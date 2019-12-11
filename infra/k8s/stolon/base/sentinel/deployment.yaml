@@ -26,7 +26,7 @@ spec:
         runAsGroup: 65534
       containers:
       - name: stolon-sentinel
-        image: sandhose/stolon:latest
+        image: ludovicm67/stolon:fix-pg12
         imagePullPolicy: Always
         command:
         - stolon-sentinel

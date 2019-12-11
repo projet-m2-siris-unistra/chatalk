@@ -11,7 +11,7 @@ spec:
         runAsGroup: 65534
       containers:
       - name: stolonctl
-        image: sandhose/stolon:latest
+        image: ludovicm67/stolon:fix-pg12
         volumeMounts:
         - name: stolon-config-volume
           mountPath: /etc/stolon/init.json

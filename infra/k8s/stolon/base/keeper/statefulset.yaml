@@ -23,7 +23,7 @@ spec:
         runAsGroup: 65534
       containers:
       - name: stolon-keeper
-        image: sandhose/stolon:latest
+        image: ludovicm67/stolon:fix-pg12
         command:
         - sh
         - "-ec"
