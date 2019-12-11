@@ -146,3 +146,24 @@ Use the following command:
 ```sh
 kubectl apply -k chatalk
 ```
+
+## Setup CD
+
+Create a new service account in the default namespace, then bind the clusterrole edit to it for the chatalk namespace using the following commands:
+
+```sh
+kubectl create sa -n default ci
+kubectl create rolebinding -n chatalk --serviceaccount default:ci --clusterrole edit ci
+```
+
+To get the token, use:
+
+```sh
+kubectl -n default get $(k -n default get secrets -o name | grep ci-token) -o jsonpath='{.data.token}' | base64 -d
+```
+
+To get the certificate, use:
+
+```sh
+kubectl -n default get $(k -n default get secrets -o name | grep ci-token) -o jsonpath='{.data.ca\.crt}' | base64 -d
+```

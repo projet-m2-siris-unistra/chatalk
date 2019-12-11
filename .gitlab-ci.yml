@@ -214,11 +214,13 @@ deploy-service-entrypoint:
   tags:
     - docker
     - socket
-  image: alpine:latest
+  image: ludovicm67/k8s-tools:latest
   script:
-    - ls -al .
-    - ls -al .build/
-    - cat .build/*
+    - DIGEST="$(cat .build/$IMAGE.digest)"
+    - DOCKER_IMG="$IMAGE@$DIGEST"
+    - echo "$DOCKER_IMG"
+    - cd $CI_PROJECT_DIR/services/$IMAGE/
+    - kustomize edit set image $IMAGE=$DOCKER_IMG
   variables:
     IMAGE: entrypoint
   only:
