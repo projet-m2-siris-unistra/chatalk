@@ -223,8 +223,7 @@ build-service-send-info:
     - kustomize edit set image $CI_REGISTRY/$IMAGE=$CI_REGISTRY/$DOCKER_IMG
     - kustomize build > manifest.yaml
     - cat manifest.yaml
-    - cat manifest.yaml | kubectl --server="$CLUSTER1_K8S_ENDPOINT" --token="$CLUSTER1_K8S_TOKEN" --certificate-authority="$CLUSTER1_K8S_CERT"
-
+    - cat manifest.yaml | kubectl --server="$CLUSTER1_K8S_ENDPOINT" --token="$CLUSTER1_K8S_TOKEN" --certificate-authority="$CLUSTER1_K8S_CERT" apply -f -
 
 deploy-service-conv_creation:
   <<: *deploy-service-image
@@ -368,7 +367,9 @@ deploy-db-migrations:
     - cd $CI_PROJECT_DIR/infra/k8s/chatalk/$IMAGE/
     - kustomize edit set image $CI_REGISTRY/$IMAGE=$CI_REGISTRY/$DOCKER_IMG
     - kustomize edit set namesuffix -- "-$LAST_MIGRATION"
-    - kustomize build
+    - kustomize build > manifest.yaml
+    - cat manifest.yaml
+    - cat manifest.yaml | kubectl --server="$CLUSTER1_K8S_ENDPOINT" --token="$CLUSTER1_K8S_TOKEN" --certificate-authority="$CLUSTER1_K8S_CERT" apply -f -
   variables:
     IMAGE: db-migrations
   only:
