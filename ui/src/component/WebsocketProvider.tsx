@@ -12,8 +12,9 @@ import {
   setMessages,
   updateMessages,
   updateConversations,
+  changeConversations,
 } from '../store/actions';
-import { DispatchProp, connect } from 'react-redux';
+import { DispatchProp, connect, useSelector } from 'react-redux';
 
 interface WebsocketContextValue {
   isOpen: boolean;
@@ -134,7 +135,7 @@ class WebsocketProvider extends React.Component<Props, State> {
         })
       );
       if(data.creator === this.state.userid) {
-        this.props.history.push(`/conversation/${data.convid}`);        
+        this.props.history.push(`/conversation/${data.convid}`);
       } else {
         if (
           this.state.isOpen &&
@@ -148,11 +149,35 @@ class WebsocketProvider extends React.Component<Props, State> {
                 convid: `${data.convid}`,
               },
             })
-          );  
-        }      
+          );
+        }
       }
     }
   }
+  serviceResponseConvChange(data:any) {
+    if (!data.success) {
+      this.props.dispatch(
+        alertError(
+          data.error || 'The creation of the conversation failed. Retry later…'
+        )
+      );
+      return;
+    }
+    if (data.success) {
+      this.props.dispatch(
+        alertInfo('The conversation was created.')
+      );
+      this.props.dispatch(
+        changeConversations({
+          convid: data.convid,
+          convname: data.convname,
+          shared_key: data.sharedkey,
+          members: data.members,
+        })
+      );
+
+  }
+}
 
   serviceResponseMsgSender(data: any) {
     console.log('svc/msg_sender: ', data);
@@ -262,7 +287,9 @@ class WebsocketProvider extends React.Component<Props, State> {
       case 'msg_sender':
         this.serviceResponseMsgSender(data);
         break;
+      case 'conv_change':
 
+        break;
       case 'conv-sub':
         this.serviceResponseConvSub(data);
         break;

@@ -1,4 +1,4 @@
-import { initialState, State } from './state';
+import { initialState, State, Conversation } from './state';
 import * as actions from './actions';
 
 export default (state: State = initialState, action: actions.Action): State => {
@@ -47,6 +47,14 @@ export default (state: State = initialState, action: actions.Action): State => {
       return {
         ...state,
         conversations: [...state.conversations, action.conversation],
+      }
+    case actions.CHANGE_CONVERSATIONS:
+      var array =[...state.conversations]
+      var index =  array.filter(c => c.convid === action.convchange.convid)
+      array.splice(index, 1);
+      return {
+        ...state,
+        conversations: [...array,action.convchange]
       }
   }
   return state;
