@@ -149,8 +149,6 @@ func main() {
 						VALUES($1, $2, 0, current_timestamp, NULL, false, false);`, v, convID)
 				}
 
-				members=append(members,userID);
-
 				response = registerResponse{
 					Action:  "conv_creation",
 					Success: true,
@@ -159,7 +157,6 @@ func main() {
 					Convname: msg.Payload.Convname,
 					Sharedkey: "0",
 					Members: allmembers,
-
 				}
 				jm, _ := json.Marshal(response)
 				for _, v := range members{
