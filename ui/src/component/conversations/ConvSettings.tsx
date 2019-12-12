@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
@@ -207,10 +207,22 @@ const Listbox = styled('ul')`
   }
 `;
 
+type Params = {
+  id: string;
+};
+
 const ConvSettings: React.FC = () => {
+  const { id } = useParams<Params>();
+  const convid = parseInt(id);
   const classes = useStyles();
-  const users = useSelector((state: State) => state.users);
-  const users_conv = ['user1','user2'];
+  const { connection, isOpen } = useWebsocket();
+  const auth = useSelector((state: State) => state.auth);
+  const [convname, setName] = useState('');
+  const [convtopic, setTopic] = useState('');
+  const conv = useSelector((state: State) => state.conversations).filter(c => parseInt(c.convid) === convid);
+  const members = conv[0].members.replace('{','').replace('}','').split(',').map(n => parseInt(n));
+  const users = useSelector((state: State) => state.users).filter(u => !members.includes(u.userid));
+ 
   const {
     getRootProps,
     getInputLabelProps,
@@ -229,6 +241,33 @@ const ConvSettings: React.FC = () => {
     options: users,
     getOptionLabel: option => option.username,
   });
+
+  const createConversation = () => {
+    if (!isOpen || connection === null) {
+      console.error('ws is not open');
+      return;
+    }
+
+    if (!auth) {
+      console.error('user is not logged in');
+      return;
+    }
+
+    const newmembers = value.map((user:any) => user.userid)
+
+    console.log('new:create conv:', convname, convtopic);
+    connection.send(
+      JSON.stringify({
+        action: 'conv_creation',
+        payload: {
+          convid: id,
+          convname,
+          convtopic,
+          newmembers: `{${newmembers}}`,
+        },
+      })
+    );
+  };
 
   return (
     <div className={classes.paper}>
@@ -258,6 +297,7 @@ const ConvSettings: React.FC = () => {
                 name="convname"
                 label="Conversation Name"
                 id="convname"
+                onChange={e => setName(e.target.value)}
               />
             </Grid>
 
@@ -268,6 +308,7 @@ const ConvSettings: React.FC = () => {
                 id="topic"
                 label="Topic"
                 name="topic"
+                onChange={e => setTopic(e.target.value)}
               />
             </Grid>
           </Grid>

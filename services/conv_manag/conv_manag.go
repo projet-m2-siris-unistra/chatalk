@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"strconv"
 	"syscall"
+	"strings"
 
 	dberror "github.com/Shyp/go-dberror"
 	"github.com/google/uuid"
@@ -21,16 +22,20 @@ type registerRequest struct {
 	Action  string `json:"action"`
 	WsID    string `json:"ws-id"`
 	Payload struct {
-		TypeManag string `json:"type"`
-		UserID    string `json:"userid"`
-		ConvID    string `json:"convid"`
+		ConvID     string `json:"convid"`
+		Convname   string `json:"convname,omitempty"`
+		Convtopic  string `json:"convtopic,omitempty"`
+		Newmembers string `json:"newmembers,omitempty"`
 	} `json:"payload"`
 }
 
 type registerResponse struct {
-	Action  string `json:"action"`
-	Success bool   `json:"success"`
-	Error   string `json:"error,omitempty"`
+	Action   string `json:"action"`
+	Success  bool   `json:"success"`
+	Error    string `json:"error,omitempty"`
+	ConvID   string `json:"convid"`
+	Convname string `json:"convname,omitempty"`
+	Members  string `json:"members,omitempty"`
 }
 
 // get environment variable, if not found will be set to `fallback` value
@@ -89,23 +94,19 @@ func main() {
 		}
 
 		var response registerResponse
-		var userID int
 		var convID int
-		var typeManag int
-		var topicName string
+		var userID int
+		var members []int
+		var spliMem []string
+		var allmembers string
 
-		userID, err = strconv.Atoi(msg.Payload.UserID)
+		spliMem = strings.Split(msg.Payload.Newmembers,"}")
+		spliMem = strings.Split(spliMem[0],"{")
+		spliMem = strings.Split(spliMem[1],",")
 
-		if err != nil {
-			if userID != 0 {
-				log.Println("conv management: userid = %s", userID)
-			}
-			response = registerResponse{
-				Action:  "conv_manag",
-				Success: false,
-				Error:   "User ID is not valid",
-			}
-			goto send_msg
+		for _, v := range spliMem {
+			userID, _  = strconv.Atoi(v)
+			members = append(members, userID)
 		}
 
 		convID, err = strconv.Atoi(msg.Payload.ConvID)
@@ -119,68 +120,20 @@ func main() {
 			goto send_msg
 		}
 
-		typeManag, err = strconv.Atoi(msg.Payload.TypeManag)
-		if err != nil {
-			response = registerResponse{
-				Action:  "conv_manag",
-				Success: false,
-				Error:   "Management Type is not valid",
-			}
-			goto send_msg
+		if msg.Payload.Convname != "" {
+
 		}
 
-		if typeManag == 1 { // add participant
-			topicName = "conv." + strconv.Itoa(convID)
-			_, err = db.Query(`
-				INSERT INTO conv_keys(user_id, conv_id, shared_key, timefrom, timeto, favorite, audio)
-				VALUES($1, $2, 0, current_timestamp, NULL, false, false);
-			`, userID, convID)
+		if msg.Payload.Convtopic != "" {
 
-			if err == nil {
-				response = registerResponse{
-					Action:  "conv_manag",
-					Success: true,
-				}
-				nc.Publish("ws."+msg.WsID+".sub", []byte(topicName))
-			} else {
-				dberr := dberror.GetError(err)
-				switch e := dberr.(type) {
-				case *dberror.Error:
-					errmsg := e.Error()
-					response = registerResponse{
-						Action:  "conv_manag",
-						Success: false,
-						Error:   errmsg,
-					}
-				}
-			}
-			goto send_msg
 		}
 
-		if typeManag == 2 { //delete participant
-			_, err = db.Query(`
-				DELETE FROM conv_keys
-				WHERE user_id = $1 AND conv_id = $2
-			`, userID, convID)
+		if len(members) > 0 {
 
-			if err == nil {
-				response = registerResponse{
-					Action:  "conv_manag",
-					Success: true,
-				}
-			} else {
-				dberr := dberror.GetError(err)
-				switch e := dberr.(type) {
-				case *dberror.Error:
-					errmsg := e.Error()
-					response = registerResponse{
-						Action:  "conv_manag",
-						Success: false,
-						Error:   errmsg,
-					}
-				}
-			}
 		}
+	// to old members send a conv-mana msg
+	// to new members send a conv-creation msg with creator 0
+
 	send_msg:
 		j, err := json.Marshal(response)
 		nc.Publish("ws."+msg.WsID+".send", j)
