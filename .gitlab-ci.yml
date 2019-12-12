@@ -209,7 +209,7 @@ build-service-send-info:
       - "services/Dockerfile"
       - "services/send-info/**/*"
 
-deploy-service-entrypoint:
+.deploy-service-image: &deploy-service-image
   stage: deploy
   tags:
     - docker
@@ -221,6 +221,40 @@ deploy-service-entrypoint:
     - echo "$DOCKER_IMG"
     - cd $CI_PROJECT_DIR/infra/k8s/chatalk/$IMAGE/
     - kustomize edit set image $CI_REGISTRY/$IMAGE=$CI_REGISTRY/$DOCKER_IMG
+    - kustomize build
+
+deploy-service-conv_creation:
+  <<: *deploy-service-image
+  variables:
+    IMAGE: conv_creation
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/Dockerfile"
+      - "services/conv_creation/**/*"
+
+deploy-service-conv-sub:
+  <<: *deploy-service-image
+  variables:
+    IMAGE: conv-sub
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/Dockerfile"
+      - "services/conv-sub/**/*"
+
+deploy-service-conv_manag:
+  <<: *deploy-service-image
+  variables:
+    IMAGE: conv_manag
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/Dockerfile"
+      - "services/conv_manag/**/*"
+
+deploy-service-entrypoint:
+  <<: *deploy-service-image
   variables:
     IMAGE: entrypoint
   only:
@@ -228,6 +262,56 @@ deploy-service-entrypoint:
       - ".gitlab-ci.yml"
       - "services/Dockerfile"
       - "services/entrypoint/**/*"
+
+deploy-service-login:
+  <<: *deploy-service-image
+  variables:
+    IMAGE: login
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/Dockerfile"
+      - "services/login/**/*"
+
+deploy-service-msg_sender:
+  <<: *deploy-service-image
+  variables:
+    IMAGE: msg_sender
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/Dockerfile"
+      - "services/msg_sender/**/*"
+
+deploy-service-ping:
+  <<: *deploy-service-image
+  variables:
+    IMAGE: ping
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/Dockerfile"
+      - "services/ping/**/*"
+
+deploy-service-register:
+  <<: *deploy-service-image
+  variables:
+    IMAGE: register
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/Dockerfile"
+      - "services/register/**/*"
+
+deploy-service-send-info:
+  <<: *deploy-service-image
+  variables:
+    IMAGE: send-info
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/Dockerfile"
+      - "services/send-info/**/*"
 
 # database migrations
 build-db-migrations:
@@ -242,6 +326,8 @@ build-db-migrations:
     paths:
       - .build/
   script:
+    - cd $CI_PROJECT_DIR/services/$IMAGE
+    - LAST_MIGRATION=$(ls *.up.sql | sed 's/_.*//' | sort -rnu | head -n1)
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
     - |
       mkdir -p .build/
@@ -250,12 +336,35 @@ build-db-migrations:
       fi
       /kaniko/executor $ARGS \
         --destination $CI_REGISTRY/$IMAGE:$CI_COMMIT_REF_SLUG \
+        --destination $CI_REGISTRY/$IMAGE:$LAST_MIGRATION \
         --context $CI_PROJECT_DIR/services/$IMAGE \
         --dockerfile $CI_PROJECT_DIR/services/$IMAGE/Dockerfile \
         --build-arg "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
         --build-arg "COMMIT=$CI_COMMIT_SHA" \
         --build-arg "VERSION=$CI_COMMIT_REF_SLUG" \
         --digest-file "$CI_PROJECT_DIR/.build/$IMAGE.digest"
+  variables:
+    IMAGE: db-migrations
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/db-migrations/**/*"
+
+deploy-db-migrations:
+  stage: deploy
+  tags:
+    - docker
+    - socket
+  image: ludovicm67/k8s-tools:latest
+  script:
+    - cd $CI_PROJECT_DIR/services/$IMAGE
+    - LAST_MIGRATION=$(ls *.up.sql | sed 's/_.*//' | sort -rnu | head -n1)
+    - DOCKER_IMG="$IMAGE:$LAST_MIGRATION"
+    - echo "$DOCKER_IMG"
+    - cd $CI_PROJECT_DIR/infra/k8s/chatalk/$IMAGE/
+    - kustomize edit set image $CI_REGISTRY/$IMAGE=$CI_REGISTRY/$DOCKER_IMG
+    - kustomize edit set namesuffix -- "-$LAST_MIGRATION"
+    - kustomize build
   variables:
     IMAGE: db-migrations
   only:

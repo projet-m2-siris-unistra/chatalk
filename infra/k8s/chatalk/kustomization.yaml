@@ -11,7 +11,6 @@ bases:
 - conv_manag
 - db-migrations
 - entrypoint
-- fake-ui
 - login
 - msg_sender
 - ping
