@@ -18,6 +18,9 @@ bases:
 - send-info
 - ui
 
+generatorOptions:
+  disableNameSuffixHash: true
+
 configMapGenerator:
 - name: svc-config
   literals:
