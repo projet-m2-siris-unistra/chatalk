@@ -326,6 +326,7 @@ build-db-migrations:
     paths:
       - .build/
   script:
+    - mkdir -p .build/
     - cd $CI_PROJECT_DIR/services/$IMAGE
     - LAST_MIGRATION=$(ls *.up.sql | sed 's/_.*//' | sort -rnu | head -n1)
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
