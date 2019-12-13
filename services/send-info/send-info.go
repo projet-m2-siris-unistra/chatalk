@@ -30,6 +30,7 @@ type User struct {
 	Username    string      `json:"username"`
 	DisplayName null.String `json:"displayname"`
 	PictureURL  null.String `json:"picture"`
+	PubKey      string      `json:"pubkey"`
 }
 
 // Conv is the representation of a conversation
@@ -123,8 +124,10 @@ func main() {
 
 		userID := msg.UserID
 
+		// TODO: Get public key with other informations
+		// TODO: And don't forget to send it
 		rows, err := db.Query(`
-		SELECT user_id, username, display_name, pic_url
+		SELECT user_id, username, display_name, pic_url,
 		FROM users`)
 
 		if err != nil {

@@ -9,6 +9,7 @@ export const SET_USERS = 'SET_USERS';
 export const SET_MESSAGES = 'SET_MESSAGES';
 export const UPDATE_MESSAGES = 'UPDATE_MESSAGES';
 export const UPDATE_CONVERSATIONS = 'UPDATE_CONVERSATIONS';
+export const SET_SHARED_KEY = "SET_SHARED_KEY";
 
 
 interface SetAuthAction {
@@ -54,11 +55,17 @@ interface UpdateConversationsAction{
   conversation: Conversation;
 }
 
+interface SetSharedKeyAction {
+  type: typeof SET_SHARED_KEY;
+  convid: string;
+  shared_key: string;
+}
 
 export type AuthAction = SetAuthAction | ClearAuthAction;
 export type AlertAction = SetAlertAction | ClearAlertAction;
 export type Action = AuthAction | AlertAction | SetConversationsAction
-                    | SetUsersAction | SetMessagesAction | UpdateMessagesAction | UpdateConversationsAction;
+                    | SetUsersAction | SetMessagesAction | UpdateMessagesAction
+                    | UpdateConversationsAction | SetSharedKeyAction;
 
 
 
@@ -145,4 +152,15 @@ export function updateConversations(
     type: UPDATE_CONVERSATIONS,
     conversation,
   };
+}
+
+export function setSharedKey(
+  convid: string,
+  shared_key: string
+): SetSharedKeyAction {
+  return {
+    type: SET_SHARED_KEY,
+    convid,
+    shared_key,
+  }
 }

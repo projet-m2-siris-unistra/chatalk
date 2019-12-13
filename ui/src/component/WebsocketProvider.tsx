@@ -12,8 +12,11 @@ import {
   setMessages,
   updateMessages,
   updateConversations,
+  setSharedKey,
 } from '../store/actions';
 import { DispatchProp, connect } from 'react-redux';
+import crypto from 'crypto';
+import Buffer from 'buffer';
 
 interface WebsocketContextValue {
   isOpen: boolean;
@@ -136,8 +139,16 @@ class WebsocketProvider extends React.Component<Props, State> {
       if(data.creator === this.state.userid) {
         this.props.history.push(`/conversation/${data.convid}`);
         // Generate shared key
-        // Get public keys of conv members
-        // Encrypt shared key for each conv member
+        const init_vect = crypto.randomBytes(16);
+        const random_key = crypto.randomBytes(32);
+        const shared_key = Buffer.concat([random_key, init_vect])
+        // Make a loop which :
+        //// for each conv member
+        //// Get public keys of conv members
+        //const pubkey; // get public key
+        //// Encrypt shared key for each conv member
+        //const encrypted_sk = crypto.publicEncrypt(pubkey, shared_key)
+        // End loop
         // Send key to server
         // Server handles sending keys to conv members
       } else {
@@ -153,8 +164,8 @@ class WebsocketProvider extends React.Component<Props, State> {
                 convid: `${data.convid}`,
               },
             })
-          );  
-        }      
+          );
+        }
       }
     }
   }
@@ -184,6 +195,22 @@ class WebsocketProvider extends React.Component<Props, State> {
 
   serviceResponsePing(data: any) {
     console.log('svc/ping: ', data);
+  }
+
+  serviceSharedKey(data: any) {
+    console.log('svc/shared-key: ', data);
+    if(!data.success) {
+      this.props.dispatch(
+        alertError(data.error || 'ALL YOUR KEYS ARE BELONG TO US!')
+      );
+      return;
+    }
+    this.props.dispatch(
+      setSharedKey(
+        data.convid,
+        data.key.shared_key,
+      )
+    )
   }
 
   sendPing() {
@@ -270,6 +297,10 @@ class WebsocketProvider extends React.Component<Props, State> {
 
       case 'conv-sub':
         this.serviceResponseConvSub(data);
+        break;
+
+      case 'shared-key-mngr':
+        this.serviceResponseSharedKey(data);
         break;
     }
   }

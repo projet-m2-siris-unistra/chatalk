@@ -47,6 +47,15 @@ export default (state: State = initialState, action: actions.Action): State => {
       return {
         ...state,
         conversations: [...state.conversations, action.conversation],
+      };
+    case actions.SET_SHARED_KEY:
+      const conversations = state.conversations.map(c=> (c.convid === action.convid) ? {
+        ...c,
+        shared_key: action.shared_key,
+      }: c);
+      return {
+        ...state,
+        conversations,
       }
   }
   return state;

@@ -17,91 +17,75 @@ import (
 	"gopkg.in/guregu/null.v3"
 )
 
-// Message with
-// - Conv ID
-// - Tuple (
-//   - User ID
-//   - Shared key
-//   )
+/*
+	A shared key encrypted with a user public key
+ */
+type userSharedKey struct {
+	UserID    int32  `json:"userid"`
+	SharedKey string `json:"sharedkey"`
+}
 
+type sharedKeyRequest struct {
+	Action string            `json:"action"`
+	WsID   string            `json:"ws-id"`
+	Payload struct {
+		ConvID int32           `json:"convid"`
+		Keys   UserSharedKey[] `json:"keys"`
+	} `json:"payload"`
+}
+
+type sharedKeyResponse struct {
+	Action  string        `json:"action"`
+	Success bool          `json:"success"`
+	Error   string        `json:"error,omitempty"`
+	ConvID  int32         `json:"convid,omitempty"`
+	Key     UserSharedKey `json:"key,omitempty"`
+}
+
+// Receives shared keys from "WebsocketProvider.serviceResponseConvCreation"
+// Stores shared keys in database
+// Sends shared keys to corresponding users on its user channel
 func main() {
-	log.Println("login service started…")
-	channelName := "service.login"
+	log.Println("Shared key management service started…")
+	channelName := "service.shared-key-mngr"
 
 	db := utils.DBConnect()
 	nc, sc := utils.InitBus()
-
-	// Receives shared keys from "WebsocketProvider.serviceResponseConvCreation"
-	// Stores shared keys in database
-	// Sends shared keys to corresponding users
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 
 	sub, _ := sc.Subscribe(channelName, func(m *stan.Msg) {
-		log.Println("login service is handling a new request")
+		log.Println("New key to dispatch")
 
-		var msg loginRequest
+		var msg sharedKeyRequest
 		err := json.Unmarshal(m.Data, &msg)
 		if err != nil {
 			log.Print("failed to parse JSON", err)
 			return
 		}
 
-		response := loginResponse{
-			Action:  "login",
+		response := sharedKeyResponse {
+			Action:  "shared-key-mngr",
 			Success: false,
 		}
 
-		err = verifyPayload(msg)
-		if err != nil {
-			response.Error = err.Error()
-		} else {
-			row := db.Read().QueryRow(`
-				SELECT user_id, pw_hash, display_name, pic_url, username
-				FROM users
-				WHERE username = $1 OR email = $1;
-			`, msg.Payload.Username)
+		for _, key := range msg.Payload.Keys {
+			// Write keys to database
+			err = db.Write().QueryRow(`
+				UPDATE conv_keys
+				SET shared_key = $1
+				WHERE conv_id = $2 AND user_id = $3;
+			`, key.SharedKey, msg.Payload.ConvID, key.UserID)
 
-			var userID int
-			var hash []byte
-			var dispName, picURL null.String
-			var userUsername string
-			err = row.Scan(&userID, &hash, &dispName, &picURL, &userUsername)
+			response.Success = true
+			response.Key     = key
+			response.ConvID  = msg.Payload.ConvID
 
-			switch err {
-			case sql.ErrNoRows:
-				log.Println("No rows were returned!")
-				message := fmt.Sprintf("User not registered")
-
-				response = loginResponse{
-					Success: false,
-					Action:  "login",
-					Error:   message,
-				}
-			case nil:
-				err := bcrypt.CompareHashAndPassword(hash, []byte(msg.Payload.Password))
-				if err != nil {
-					response.Error = "bad password"
-				} else {
-					response.Success = true
-					response.UserID = userID
-					response.Username = userUsername
-					response.Displayname = dispName
-					response.Picture = picURL
-
-					topicName := "user." + strconv.Itoa(userID)
-					nc.Publish("ws."+msg.WsID+".sub", []byte(topicName))
-
-					triggerSendInfos(sc, msg.WsID, userID)
-				}
-			default:
-				response.Error = err.Error()
-			}
+			// Send key to user
+			j, err := json.Marshal(response)
+			nc.Publish("user."+strconv.ItoA(key.UserID), j)
 		}
-
-		j, err := json.Marshal(response)
-		nc.Publish("ws."+msg.WsID+".send", j)
 	})
 
 	<-c

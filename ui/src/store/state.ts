@@ -26,6 +26,7 @@ export interface Message {
 
 export interface User extends Auth {
   online?: boolean;
+  pubkey?: string;
 }
 
 export interface State {
