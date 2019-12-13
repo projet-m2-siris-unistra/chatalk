@@ -134,7 +134,12 @@ class WebsocketProvider extends React.Component<Props, State> {
         })
       );
       if(data.creator === this.state.userid) {
-        this.props.history.push(`/conversation/${data.convid}`);        
+        this.props.history.push(`/conversation/${data.convid}`);
+        // Generate shared key
+        // Get public keys of conv members
+        // Encrypt shared key for each conv member
+        // Send key to server
+        // Server handles sending keys to conv members
       } else {
         if (
           this.state.isOpen &&
