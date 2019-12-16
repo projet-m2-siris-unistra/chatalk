@@ -5,10 +5,10 @@
 
 Make sure you created the `chatalk` namespace.
 
-Then, simply run the following command:
+Then, simply run the following command (replace `X` with the cluster number):
 
 ```sh
-kubectl apply -k overlays/unistra
+kubectl apply -k overlays/clusterX
 ```
 
 ## Upgrade

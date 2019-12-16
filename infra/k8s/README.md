@@ -167,3 +167,35 @@ To get the certificate, use:
 ```sh
 kubectl -n default get $(k -n default get secrets -o name | grep ci-token) -o jsonpath='{.data.ca\.crt}' | base64 -d
 ```
+
+## Configure nodes to enable nats federation
+
+Verify that port 32328 is open on all nodes.
+
+In one shell, run the following command:
+
+```sh
+kubectl proxy
+```
+
+Then run the following command in another shell:
+
+```sh
+for n in $(kubectl get nodes -o name); do
+  NODE=$(echo $n | sed 's/.*\///')
+  echo "Working on node $NODE…"
+
+  InternalIP=$(kubectl get node "$NODE" -o jsonpath='{.status.addresses[?(@.type=="InternalIP")].address}')
+  echo "Node IP is: $InternalIP"
+
+  # set external IP for node
+  echo -n "$InternalIP" \
+  | jq --raw-input \
+    '[{"op": "add", "path": "/status/addresses/-", "value": {"type": "ExternalIP", "address": .}}]' \
+  | curl -X PATCH -H "Content-Type: application/json-patch+json" \
+    -d @- http://localhost:8001/api/v1/nodes/$NODE/status
+
+  # annotate node to set external IP for nats
+  kubectl annotate node "$NODE" "nats.io/node-external-ip=$InternalIP"
+done
+```
