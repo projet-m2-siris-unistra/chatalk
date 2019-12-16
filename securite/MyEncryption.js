@@ -1,6 +1,8 @@
 var crypto = require('crypto');
+//var rsa = require('ursa');
 var stringtest = "mon message secret";
 var nombreBits = 8;
+var mygroup = 'modp1';
 //var key = new Buffer('mykey').toString('binary');
 var fs = require('fs');
 
@@ -12,6 +14,21 @@ function randomGeneration(numBytes) {
   // handle error
   }
   return buf.toString('hex');
+}
+
+//key pair generation (usage : produce a secret)
+function keyGeneration(group) {
+  const diffie = crypto.getDiffieHellman(group);
+  const keypair = diffie.generateKeys();
+
+  console.log(diffie.getPublicKey());
+  console.log(diffie.getPrivateKey());
+  return diffie;
+}
+
+function createSecret(foreignKey, environment) {
+  var secret = environment.computeSecret(foreignKey);
+  return secret;
 }
 
 
@@ -40,6 +57,11 @@ var encrypted = encrypt(stringtest);
 var decrypted = decrypt(encrypted);
 console.log(encrypted);
 console.log(decrypted);
+var bob = keyGeneration(mygroup);
+var alice = keyGeneration(mygroup);
+var mysecret = createSecret(bob.getPublicKey(),alice);
+console.log(mysecret);
+
 
 
 
