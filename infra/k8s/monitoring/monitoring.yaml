@@ -351,10 +351,10 @@ spec:
     spec:
       containers:
       - name: alertmanager
-        image: quay.io/prometheus/alertmanager:v0.7.1
+        image: quay.io/prometheus/alertmanager:v0.20.0
         args:
-          - '-config.file=/etc/alertmanager/config.yml'
-          - '-storage.path=/alertmanager'
+          - '--config.file=/etc/alertmanager/config.yml'
+          - '--storage.path=/alertmanager'
         ports:
         - name: alertmanager
           containerPort: 9093
@@ -412,7 +412,7 @@ spec:
         component: core
     spec:
       containers:
-      - image: grafana/grafana:4.2.0
+      - image: grafana/grafana:6.5.2
         name: grafana-core
         imagePullPolicy: IfNotPresent
         # env:
@@ -1925,10 +1925,10 @@ data:
           "stack": false,
           "steppedLine": false,
           "targets": [{
-            "expr": "sum(rate(container_cpu_usage_seconds_total{image!=\"\",name=~\"^k8s_.*\",instance=~\"^$instance$\",namespace=~\"^$namespace$\"}[1m])) by (pod_name)",
+            "expr": "sum(rate(container_cpu_usage_seconds_total{image!=\"\",instance=~\"^$instance$\",namespace=~\"^$namespace$\"}[1m])) by (pod)",
             "interval": "",
             "intervalFactor": 2,
-            "legendFormat": "{{ pod_name }}",
+            "legendFormat": "{{ pod }}",
             "metric": "container_cpu",
             "refId": "A",
             "step": 240
@@ -2007,10 +2007,10 @@ data:
           "stack": false,
           "steppedLine": false,
           "targets": [{
-            "expr": "sum (container_memory_working_set_bytes{image!=\"\",name=~\"^k8s_.*\",instance=~\"^$instance$\",namespace=~\"^$namespace$\"}) by (pod_name)",
+            "expr": "sum (container_memory_working_set_bytes{image!=\"\",instance=~\"^$instance$\",namespace=~\"^$namespace$\"}) by (pod)",
             "interval": "",
             "intervalFactor": 2,
-            "legendFormat": "{{ pod_name }}",
+            "legendFormat": "{{ pod }}",
             "metric": "",
             "refId": "A",
             "step": 240
@@ -2088,18 +2088,18 @@ data:
           "stack": false,
           "steppedLine": false,
           "targets": [{
-            "expr": "sum (rate (container_network_receive_bytes_total{image!=\"\",name=~\"^k8s_.*\",instance=~\"^$instance$\",namespace=~\"^$namespace$\"}[1m])) by (pod_name)",
+            "expr": "sum (rate (container_network_receive_bytes_total{image!=\"\",instance=~\"^$instance$\",namespace=~\"^$namespace$\"}[1m])) by (pod)",
             "interval": "",
             "intervalFactor": 2,
-            "legendFormat": "{{ pod_name }} < in",
+            "legendFormat": "{{ pod }} < in",
             "metric": "network",
             "refId": "A",
             "step": 240
           }, {
-            "expr": "- sum (rate (container_network_transmit_bytes_total{image!=\"\",name=~\"^k8s_.*\",instance=~\"^$instance$\",namespace=~\"^$namespace$\"}[1m])) by (pod_name)",
+            "expr": "- sum (rate (container_network_transmit_bytes_total{image!=\"\",instance=~\"^$instance$\",namespace=~\"^$namespace$\"}[1m])) by (pod)",
             "interval": "",
             "intervalFactor": 2,
-            "legendFormat": "{{ pod_name }} > out",
+            "legendFormat": "{{ pod }} > out",
             "metric": "network",
             "refId": "B",
             "step": 240
@@ -2132,93 +2132,12 @@ data:
             "min": null,
             "show": false
           }]
-        }, {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": "${DS_PROMETHEUS}",
-          "decimals": 2,
-          "editable": true,
-          "error": false,
-          "fill": 1,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 34,
-          "isNew": true,
-          "legend": {
-            "alignAsTable": true,
-            "avg": true,
-            "current": true,
-            "hideEmpty": true,
-            "hideZero": true,
-            "max": false,
-            "min": false,
-            "rightSide": true,
-            "show": true,
-            "sideWidth": 200,
-            "sort": "current",
-            "sortDesc": true,
-            "total": false,
-            "values": true
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "null",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 12,
-          "stack": false,
-          "steppedLine": false,
-          "targets": [{
-            "expr": "sum(container_fs_usage_bytes{image!=\"\",name=~\"^k8s_.*\",instance=~\"^$instance$\",namespace=~\"^$namespace$\"}) by (pod_name)",
-            "interval": "",
-            "intervalFactor": 2,
-            "legendFormat": "{{ pod_name }}",
-            "metric": "network",
-            "refId": "A",
-            "step": 240
-          }],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Filesystem",
-          "tooltip": {
-            "msResolution": false,
-            "shared": false,
-            "sort": 2,
-            "value_type": "cumulative"
-          },
-          "type": "graph",
-          "xaxis": {
-            "show": true
-          },
-          "yaxes": [{
-            "format": "bytes",
-            "label": "used",
-            "logBase": 1,
-            "max": null,
-            "min": null,
-            "show": true
-          }, {
-            "format": "short",
-            "label": null,
-            "logBase": 1,
-            "max": null,
-            "min": null,
-            "show": false
-          }]
         }],
         "showTitle": true,
         "title": "each pod"
       }],
       "time": {
-        "from": "now-3d",
+        "from": "now-1h",
         "to": "now"
       },
       "timepicker": {
@@ -2380,26 +2299,11 @@ spec:
         configMap:
           name: grafana-import-dashboards
 ---
-# apiVersion: extensions/v1beta1
-# kind: Ingress
-# metadata:
-#   name: grafana
-#   namespace: monitoring
-# spec:
-#   rules:
-#   - host: <yourchoice>.<cluster-id>.k8s.gigantic.io
-#     http:
-#       paths:
-#       - path: /
-#         backend:
-#          serviceName: grafana
-#          servicePort: 3000
----
 apiVersion: v1
 kind: Secret
-data:
-  admin-password: YWRtaW4=
-  admin-username: YWRtaW4=
+data: # chatalk/chatalk
+  admin-password: Y2hhdGFsaw==
+  admin-username: Y2hhdGFsaw==
 metadata:
   name: grafana
   namespace: monitoring
@@ -2428,6 +2332,10 @@ data:
       scrape_interval: 10s
       scrape_timeout: 10s
       evaluation_interval: 10s
+    alerting:
+      alertmanagers:
+        - static_configs:
+          - targets: ["alertmanager:9093"]
     rule_files:
       - "/etc/prometheus-rules/*.rules"
     scrape_configs:
@@ -2572,12 +2480,9 @@ spec:
       serviceAccountName: prometheus-k8s
       containers:
       - name: prometheus
-        image: prom/prometheus:v1.7.0
+        image: prom/prometheus:v2.14.0
         args:
-          - '-storage.local.retention=12h'
-          - '-storage.local.memory-chunks=500000'
-          - '-config.file=/etc/prometheus/prometheus.yaml'
-          - '-alertmanager.url=http://alertmanager:9093/'
+          - '--config.file=/etc/prometheus/prometheus.yaml'
         ports:
         - name: webui
           containerPort: 9090
@@ -2616,7 +2521,7 @@ spec:
       serviceAccountName: kube-state-metrics
       containers:
       - name: kube-state-metrics
-        image: gcr.io/google_containers/kube-state-metrics:v0.5.0
+        image: gcr.io/google_containers/kube-state-metrics:v1.8.0
         ports:
         - containerPort: 8080
 ---
@@ -2768,7 +2673,7 @@ spec:
         component: node-exporter
     spec:
       containers:
-      - image: prom/node-exporter:v0.14.0
+      - image: prom/node-exporter:v0.18.1
         name: prometheus-node-exporter
         ports:
         - name: prom-node-exp
@@ -2801,70 +2706,70 @@ spec:
 ---
 apiVersion: v1
 data:
-  cpu-usage.rules: |
-    ALERT NodeCPUUsage
-      IF (100 - (avg by (instance) (irate(node_cpu{name="node-exporter",mode="idle"}[5m])) * 100)) > 75
-      FOR 2m
-      LABELS {
-        severity="page"
-      }
-      ANNOTATIONS {
-        SUMMARY = "{{$labels.instance}}: High CPU usage detected",
-        DESCRIPTION = "{{$labels.instance}}: CPU usage is above 75% (current value is: {{ $value }})"
-      }
-  instance-availability.rules: |
-    ALERT InstanceDown
-      IF up == 0
-      FOR 1m
-      LABELS { severity = "page" }
-      ANNOTATIONS {
-        summary = "Instance {{ $labels.instance }} down",
-        description = "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 1 minute.",
-      }
-  low-disk-space.rules: |
-    ALERT NodeLowRootDisk
-      IF ((node_filesystem_size{mountpoint="/root-disk"} - node_filesystem_free{mountpoint="/root-disk"} ) / node_filesystem_size{mountpoint="/root-disk"} * 100) > 75
-      FOR 2m
-      LABELS {
-        severity="page"
-      }
-      ANNOTATIONS {
-        SUMMARY = "{{$labels.instance}}: Low root disk space",
-        DESCRIPTION = "{{$labels.instance}}: Root disk usage is above 75% (current value is: {{ $value }})"
-      }
+  # cpu-usage.rules: |
+  #   ALERT NodeCPUUsage
+  #     IF (100 - (avg by (instance) (irate(node_cpu{name="node-exporter",mode="idle"}[5m])) * 100)) > 75
+  #     FOR 2m
+  #     LABELS {
+  #       severity="page"
+  #     }
+  #     ANNOTATIONS {
+  #       SUMMARY = "{{$labels.instance}}: High CPU usage detected",
+  #       DESCRIPTION = "{{$labels.instance}}: CPU usage is above 75% (current value is: {{ $value }})"
+  #     }
+  # instance-availability.rules: |
+  #   ALERT InstanceDown
+  #     IF up == 0
+  #     FOR 1m
+  #     LABELS { severity = "page" }
+  #     ANNOTATIONS {
+  #       summary = "Instance {{ $labels.instance }} down",
+  #       description = "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 1 minute.",
+  #     }
+  # low-disk-space.rules: |
+  #   ALERT NodeLowRootDisk
+  #     IF ((node_filesystem_size{mountpoint="/root-disk"} - node_filesystem_free{mountpoint="/root-disk"} ) / node_filesystem_size{mountpoint="/root-disk"} * 100) > 75
+  #     FOR 2m
+  #     LABELS {
+  #       severity="page"
+  #     }
+  #     ANNOTATIONS {
+  #       SUMMARY = "{{$labels.instance}}: Low root disk space",
+  #       DESCRIPTION = "{{$labels.instance}}: Root disk usage is above 75% (current value is: {{ $value }})"
+  #     }
 
-    ALERT NodeLowDataDisk
-      IF ((node_filesystem_size{mountpoint="/data-disk"} - node_filesystem_free{mountpoint="/data-disk"} ) / node_filesystem_size{mountpoint="/data-disk"} * 100) > 75
-      FOR 2m
-      LABELS {
-        severity="page"
-      }
-      ANNOTATIONS {
-        SUMMARY = "{{$labels.instance}}: Low data disk space",
-        DESCRIPTION = "{{$labels.instance}}: Data disk usage is above 75% (current value is: {{ $value }})"
-      }
-  mem-usage.rules: |
-    ALERT NodeSwapUsage
-      IF (((node_memory_SwapTotal-node_memory_SwapFree)/node_memory_SwapTotal)*100) > 75
-      FOR 2m
-      LABELS {
-        severity="page"
-      }
-      ANNOTATIONS {
-        SUMMARY = "{{$labels.instance}}: Swap usage detected",
-        DESCRIPTION = "{{$labels.instance}}: Swap usage usage is above 75% (current value is: {{ $value }})"
-      }
+  #   ALERT NodeLowDataDisk
+  #     IF ((node_filesystem_size{mountpoint="/data-disk"} - node_filesystem_free{mountpoint="/data-disk"} ) / node_filesystem_size{mountpoint="/data-disk"} * 100) > 75
+  #     FOR 2m
+  #     LABELS {
+  #       severity="page"
+  #     }
+  #     ANNOTATIONS {
+  #       SUMMARY = "{{$labels.instance}}: Low data disk space",
+  #       DESCRIPTION = "{{$labels.instance}}: Data disk usage is above 75% (current value is: {{ $value }})"
+  #     }
+  # mem-usage.rules: |
+  #   ALERT NodeSwapUsage
+  #     IF (((node_memory_SwapTotal-node_memory_SwapFree)/node_memory_SwapTotal)*100) > 75
+  #     FOR 2m
+  #     LABELS {
+  #       severity="page"
+  #     }
+  #     ANNOTATIONS {
+  #       SUMMARY = "{{$labels.instance}}: Swap usage detected",
+  #       DESCRIPTION = "{{$labels.instance}}: Swap usage usage is above 75% (current value is: {{ $value }})"
+  #     }
 
-    ALERT NodeMemoryUsage
-      IF (((node_memory_MemTotal-node_memory_MemFree-node_memory_Cached)/(node_memory_MemTotal)*100)) > 75
-      FOR 2m
-      LABELS {
-        severity="page"
-      }
-      ANNOTATIONS {
-        SUMMARY = "{{$labels.instance}}: High memory usage detected",
-        DESCRIPTION = "{{$labels.instance}}: Memory usage is above 75% (current value is: {{ $value }})"
-      }
+  #   ALERT NodeMemoryUsage
+  #     IF (((node_memory_MemTotal-node_memory_MemFree-node_memory_Cached)/(node_memory_MemTotal)*100)) > 75
+  #     FOR 2m
+  #     LABELS {
+  #       severity="page"
+  #     }
+  #     ANNOTATIONS {
+  #       SUMMARY = "{{$labels.instance}}: High memory usage detected",
+  #       DESCRIPTION = "{{$labels.instance}}: Memory usage is above 75% (current value is: {{ $value }})"
+  #     }
 kind: ConfigMap
 metadata:
   creationTimestamp: null

@@ -4,7 +4,9 @@ kind: Kustomization
 commonLabels:
   app.kubernetes.io/part-of: chatalk
 
-namespace: monitoring
+namespace: chatalk
 
 resources:
 - monitoring.yaml
+- prometheus-ingress.yaml
+- grafana-ingress.yaml

@@ -195,7 +195,7 @@ for n in $(kubectl get nodes -o name); do
   | curl -X PATCH -H "Content-Type: application/json-patch+json" \
     -d @- http://localhost:8001/api/v1/nodes/$NODE/status
 
-  # annotate node to set external IP for nats
-  kubectl annotate node "$NODE" "nats.io/node-external-ip=$InternalIP"
+  # add label node to set external IP for nats
+  kubectl label node "$NODE" "nats.io/node-external-ip=$InternalIP"
 done
 ```
