@@ -74,6 +74,8 @@ deploy-ui:
   variables:
     IMAGE: ui
   only:
+    refs:
+      - master
     changes:
       - ".gitlab-ci.yml"
       - "ui/**/*"
@@ -256,6 +258,8 @@ deploy-service-conv_creation:
   variables:
     IMAGE: conv_creation
   only:
+    refs:
+      - master
     changes:
       - ".gitlab-ci.yml"
       - "services/Dockerfile"
@@ -266,6 +270,8 @@ deploy-service-conv-sub:
   variables:
     IMAGE: conv-sub
   only:
+    refs:
+      - master
     changes:
       - ".gitlab-ci.yml"
       - "services/Dockerfile"
@@ -276,6 +282,8 @@ deploy-service-conv_manag:
   variables:
     IMAGE: conv_manag
   only:
+    refs:
+      - master
     changes:
       - ".gitlab-ci.yml"
       - "services/Dockerfile"
@@ -286,6 +294,8 @@ deploy-service-entrypoint:
   variables:
     IMAGE: entrypoint
   only:
+    refs:
+      - master
     changes:
       - ".gitlab-ci.yml"
       - "services/Dockerfile"
@@ -296,6 +306,8 @@ deploy-service-login:
   variables:
     IMAGE: login
   only:
+    refs:
+      - master
     changes:
       - ".gitlab-ci.yml"
       - "services/Dockerfile"
@@ -306,6 +318,8 @@ deploy-service-msg_sender:
   variables:
     IMAGE: msg_sender
   only:
+    refs:
+      - master
     changes:
       - ".gitlab-ci.yml"
       - "services/Dockerfile"
@@ -316,6 +330,8 @@ deploy-service-ping:
   variables:
     IMAGE: ping
   only:
+    refs:
+      - master
     changes:
       - ".gitlab-ci.yml"
       - "services/Dockerfile"
@@ -326,6 +342,8 @@ deploy-service-register:
   variables:
     IMAGE: register
   only:
+    refs:
+      - master
     changes:
       - ".gitlab-ci.yml"
       - "services/Dockerfile"
@@ -336,6 +354,8 @@ deploy-service-send-info:
   variables:
     IMAGE: send-info
   only:
+    refs:
+      - master
     changes:
       - ".gitlab-ci.yml"
       - "services/Dockerfile"
@@ -400,6 +420,8 @@ deploy-db-migrations:
   variables:
     IMAGE: db-migrations
   only:
+    refs:
+      - master
     changes:
       - ".gitlab-ci.yml"
       - "services/db-migrations/**/*"
