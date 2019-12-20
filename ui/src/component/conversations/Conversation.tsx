@@ -21,16 +21,17 @@ const useStyles = makeStyles(theme => ({
     padding: '24.5px',
     lineHeight: '2px',
     fontSize: '18px',
-    display:'flex',
+    display: 'flex',
     height: '60px',
     overflow: 'hidden',
     borderBottomStyle: 'solid',
     borderBottomWidth: '1px',
     borderBottomColor: theme.palette.grey[200],
-    },
+  },
   content: {
     minHeight: 'calc(100vh - 50px)',
-    maxHeight: 'calc(100vh - 50px)',headerButton: {
+    maxHeight: 'calc(100vh - 50px)',
+    headerButton: {
       backgroundColor: '#0b6374',
       color: '#fff',
       marginLeft: '8px',
@@ -78,7 +79,8 @@ const useStyles = makeStyles(theme => ({
     overflow: 'hidden',
     borderTopStyle: 'solid',
     borderTopWidth: '1px',
-    borderTopColor: theme.palette.grey[200],  },
+    borderTopColor: theme.palette.grey[200],
+  },
 }));
 
 type Params = {
@@ -93,16 +95,24 @@ const Conversation: React.FC = () => {
   const isDesktop = useMediaQuery('(min-width:1000px)');
   const auth = useSelector((state: State) => state.auth);
   const conmsgs = useSelector((state: State) => state.messages);
-  const conv = useSelector((state: State) => state.conversations).filter(c => parseInt(c.convid) === convid);
-  const members = conv[0].members.replace('{','').replace('}','').split(',').map(n => parseInt(n));
-  const users = useSelector((state: State) => state.users).filter(u => members.includes(u.userid));
+  const conv = useSelector((state: State) => state.conversations).filter(
+    c => parseInt(c.convid) === convid
+  );
+  const members = conv[0].members
+    .replace('{', '')
+    .replace('}', '')
+    .split(',')
+    .map(n => parseInt(n));
+  const users = useSelector((state: State) => state.users).filter(u =>
+    members.includes(u.userid)
+  );
   const [ownmsg, setOwnMsg] = useState('');
 
   const me = {
-      id: 0,
-    };
+    id: 0,
+  };
   if (auth) {
-    me.id = auth.userid
+    me.id = auth.userid;
   }
 
   const messages = conmsgs.filter(m => m.convid === convid);
@@ -111,7 +121,7 @@ const Conversation: React.FC = () => {
     let classToUse = classes.msgOther;
     const user = users.filter(u => u.userid === m.senderid);
     // var avatar = user[0].avatar;
-    var username = user[0].username;
+    let username = user[0].username;
     if (m.senderid === me.id) {
       classToUse = classes.msgMe;
       username = '';
@@ -132,7 +142,6 @@ const Conversation: React.FC = () => {
     displayBackBtn = classes.hidden;
   }
 
-
   const sendMessage = () => {
     if (!isOpen || connection === null) {
       console.error('ws is not open');
@@ -150,7 +159,7 @@ const Conversation: React.FC = () => {
         action: 'msg_sender',
         source: `${auth.userid}`,
         destination: `${convid}`,
-        device: "1",
+        device: '1',
         payload: ownmsg,
       })
     );
@@ -163,38 +172,28 @@ const Conversation: React.FC = () => {
           «
         </Link>
         Conversation name - config ({id})
-        <IconButton
-
-          aria-label="settings"
-          size="small"
-
-        >
+        <IconButton aria-label="settings" size="small">
           <SettingsIcon />
         </IconButton>
-
       </div>
-      <div className={classes.content}>{msg}
-
-      </div>
+      <div className={classes.content}>{msg}</div>
       <div className={classes.footer}>
-      <Input
-        placeholder="Your text"
-        inputProps={{
-          'aria-label': 'description',
-        }}
-        onChange={e => setOwnMsg(e.target.value)}
-      />
-      <Button
-        variant="contained"
-        color="primary"
-        endIcon={<Icon>send</Icon>}
-        onClick={sendMessage}
-      >
-        Send
-      </Button>
-
-
-   </div>
+        <Input
+          placeholder="Your text"
+          inputProps={{
+            'aria-label': 'description',
+          }}
+          onChange={e => setOwnMsg(e.target.value)}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          endIcon={<Icon>send</Icon>}
+          onClick={sendMessage}
+        >
+          Send
+        </Button>
+      </div>
     </>
   );
 };

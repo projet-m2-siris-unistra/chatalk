@@ -12,7 +12,6 @@ import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
 import Settings from '../component/conversations/Settings';
 
-
 const AppRouter: React.FC = () => {
   return (
     <Switch>

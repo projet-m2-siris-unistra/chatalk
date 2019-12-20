@@ -47,7 +47,7 @@ export default (state: State = initialState, action: actions.Action): State => {
       return {
         ...state,
         conversations: [...state.conversations, action.conversation],
-      }
+      };
   }
   return state;
 };
