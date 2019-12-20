@@ -36,6 +36,7 @@ build-ui:
   script:
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
     - |
+      mkdir -p .build/
       if [ "$CI_COMMIT_REF_SLUG" == master ]; then
         ARGS="--destination $CI_REGISTRY/$IMAGE"
       fi
@@ -45,7 +46,31 @@ build-ui:
         --dockerfile $CI_PROJECT_DIR/$IMAGE/Dockerfile \
         --build-arg "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
         --build-arg "COMMIT=$CI_COMMIT_SHA" \
-        --build-arg "VERSION=$CI_COMMIT_REF_SLUG"
+        --build-arg "VERSION=$CI_COMMIT_REF_SLUG" \
+        --digest-file "$CI_PROJECT_DIR/.build/$IMAGE.digest"
+  variables:
+    IMAGE: ui
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "ui/**/*"
+
+deploy-ui:
+  stage: deploy
+  tags:
+    - docker
+    - socket
+  image: ludovicm67/k8s-tools:latest
+  script:
+    - DIGEST="$(cat .build/$IMAGE.digest)"
+    - DOCKER_IMG="$IMAGE@$DIGEST"
+    - echo "$DOCKER_IMG"
+    - cd $CI_PROJECT_DIR/infra/k8s/chatalk/$IMAGE/
+    - kustomize edit set image $CI_REGISTRY/$IMAGE=$CI_REGISTRY/$DOCKER_IMG
+    - kustomize build > manifest.yaml
+    - cat manifest.yaml
+    - cat manifest.yaml | kubectl --server="$CLUSTER1_K8S_ENDPOINT" --token="$CLUSTER1_K8S_TOKEN" --certificate-authority="$CLUSTER1_K8S_CERT" apply -f -
+    - cat manifest.yaml | kubectl --server="$CLUSTER2_K8S_ENDPOINT" --token="$CLUSTER2_K8S_TOKEN" --certificate-authority="$CLUSTER2_K8S_CERT" apply -f -
   variables:
     IMAGE: ui
   only:
