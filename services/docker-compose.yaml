@@ -135,6 +135,7 @@ services:
       - DB_USER=chatalk
       - DB_PASS=chatalk
       - DB_MODE=disable
+      - JWT_SECRET=ieRe9Pohyah3uacheJaeTho8
 
   send-info:
     build:

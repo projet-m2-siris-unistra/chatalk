@@ -9,13 +9,20 @@ import (
 	"os/signal"
 	"strconv"
 	"syscall"
+	"time"
 
 	"chatalk.fr/utils"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/ludovicm67/go-rwdatabasepool"
 	stan "github.com/nats-io/stan.go"
 	"golang.org/x/crypto/bcrypt"
 	"gopkg.in/guregu/null.v3"
 )
+
+type claim struct {
+	UserID int `json:"user-id"`
+	jwt.StandardClaims
+}
 
 type loginRequest struct {
 	Action  string `json:"action"`
@@ -71,6 +78,19 @@ func verifyTokenPayload(request loginRequest) error {
 	return nil
 }
 
+func generateToken(userID int) (string, error) {
+	expirationTime := time.Now().Add(5 * time.Minute) // token expires in 5 minutes
+	userClaim := &claim{
+		UserID: userID,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: expirationTime.Unix(),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, userClaim)
+	jwtKey := []byte(utils.GetEnv("JWT_SECRET", "jwt-secret-key"))
+	return token.SignedString(jwtKey)
+}
+
 func standardLoginPayloadHandler(request loginRequest, db *rwdatabasepool.RWDatabasePool) loginResponse {
 	response := initResponse()
 	payload := request.Payload
@@ -105,12 +125,19 @@ func standardLoginPayloadHandler(request loginRequest, db *rwdatabasepool.RWData
 			return response
 		}
 
+		// generate JWT token (expires in 5min)
+		token, err := generateToken(userID)
+		if err != nil {
+			response.Error = "could not generate token"
+			return response
+		}
+
 		response.Success = true
 		response.UserID = userID
 		response.Username = userUsername
 		response.Displayname = dispName
 		response.Picture = picURL
-		response.Token = null.StringFrom("to be done")
+		response.Token = null.StringFrom(token)
 	default:
 		response.Error = err.Error()
 	}
