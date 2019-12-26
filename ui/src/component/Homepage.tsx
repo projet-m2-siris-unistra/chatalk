@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from '@material-ui/core/Link';
 import Button from '@material-ui/core/Button';
 import Logo from './logo.png';
 import { makeStyles } from '@material-ui/core/styles';
@@ -35,6 +35,7 @@ const useStyles = makeStyles({
     width: '110px',
   },
   h1: {
+    textAlign: 'left',
     fontSize: '42px',
     lineHeight: '50px',
     marginBottom: '42px',
@@ -90,6 +91,20 @@ const useStyles = makeStyles({
     primaryContent: {
       marginTop: '50px',
     },
+    logo: {
+      width: '90px',
+    },
+    navA: {
+      textDecoration: 'none',
+      display: 'inline-block',
+      padding: '12px',
+      color: '#212121',
+      fontSize: '14px',
+      fontWeight: 'bold',
+      '&:hover': {
+        color: '#0b6374',
+      },
+    },
   },
 });
 
@@ -101,11 +116,11 @@ const Homepage: React.FC = () => {
       <header className={classes.header}>
         <img className={classes.logo} src={Logo} alt="ChaTalK's logo" />
         <nav>
-          <Link className={classes.navA} to="/login">
+          <Link className={classes.navA} href="/login">
             Log In
           </Link>
            | 
-          <Link className={classes.navA} to="/register">
+          <Link className={classes.navA} href="/register">
             Sign Up
           </Link>
         </nav>
@@ -130,14 +145,16 @@ const Homepage: React.FC = () => {
           communications can never be decoded from our infrastructure.
         </p>
         <p className={classes.actionBtnWrapper}>
-          <Button
-            size="large"
-            className={classes.actionBtn}
-            variant="contained"
-            color="primary"
-          >
-            Launch web application
-          </Button>
+          <Link href="/conversation" underline="none">
+            <Button
+              size="large"
+              className={classes.actionBtn}
+              variant="contained"
+              color="primary"
+            >
+              Launch application
+            </Button>
+          </Link>
         </p>
       </div>
       <footer className={classes.footer}>
@@ -150,7 +167,7 @@ const Homepage: React.FC = () => {
             Blog
           </a>
           -
-          <Link className={classes.navA} to="/credits">
+          <Link className={classes.navA} href="/credits">
             Credits
           </Link>
         </nav>

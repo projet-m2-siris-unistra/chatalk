@@ -15,7 +15,7 @@ import Settings from '../component/conversations/Settings';
 const AppRouter: React.FC = () => {
   return (
     <Switch>
-      <Route exact path="/" component={Homepage} />
+      <PublicRoute exact path="/" component={Homepage} />
       <PublicRoute exact path="/login" component={Login} />
       <PublicRoute exact path="/register" component={SignUp} />
       <PrivateRoute path="/conversation" component={ConversationsList} />
