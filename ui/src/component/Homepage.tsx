@@ -105,6 +105,9 @@ const useStyles = makeStyles({
         color: '#0b6374',
       },
     },
+    actionBtnWrapper: {
+      margin: '50px 0',
+    },
   },
 });
 
