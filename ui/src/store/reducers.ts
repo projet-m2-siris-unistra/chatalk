@@ -34,9 +34,14 @@ export default (state: State = initialState, action: actions.Action): State => {
         users: action.users,
       };
     case actions.SET_MESSAGES:
+      // const conversations = state.conversations.map(c => (c.convid === actions.convid) ? {
+      //   ...c,
+      //   messages: [...c.messages, ...action.messages]
+      // } : c);
+      //sort + dedupli 
       return {
         ...state,
-        messages: [...state.messages, ...action.messages],
+        messages: [...state.messages, ...action.messages]
       };
     case actions.UPDATE_MESSAGES:
       return {
@@ -49,12 +54,10 @@ export default (state: State = initialState, action: actions.Action): State => {
         conversations: [...state.conversations, action.conversation],
       }
     case actions.CHANGE_CONVERSATIONS:
-      var array =[...state.conversations]
-      var index =  array.filter(c => c.convid === action.convchange.convid)
-      array.splice(index, 1);
+      var conversations = state.conversations.map(c => (c.convid === action.convchange.convid) ? action.convchange : c);
       return {
         ...state,
-        conversations: [...array,action.convchange]
+        conversations
       }
   }
   return state;

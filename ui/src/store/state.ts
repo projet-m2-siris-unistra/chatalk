@@ -10,18 +10,19 @@ export interface Alert {
   content: string;
 }
 
-export interface Conversation {
-  convid: string;
-  convname: string;
-  shared_key: string;
-  members: string;
-}
-
 export interface Message {
   msgid: number;
   senderid: number;
   convid: number;
   content: string;
+}
+
+export interface Conversation {
+  convid: string;
+  convname: string;
+  shared_key: string;
+  members: string;
+  // messages: Message[];
 }
 
 export interface User extends Auth {

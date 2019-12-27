@@ -42,7 +42,8 @@ interface SetUsersAction {
 
 interface SetMessagesAction {
   type: typeof SET_MESSAGES;
-  messages: Message[];
+  // conv_id: string;
+  messages : Message[];
 }
 
 interface UpdateMessagesAction {
@@ -128,9 +129,14 @@ export function setUsers(users: User[]): SetUsersAction {
   };
 }
 
-export function setMessages(messages: Message[]): SetMessagesAction {
+
+export function setMessages(
+  // conv_id: string,
+  messages: Message[]
+): SetMessagesAction {
   return {
     type: SET_MESSAGES,
+    // conv_id,
     messages,
   };
 }

@@ -1,24 +1,20 @@
 package main
 
 import (
-	"database/sql"
 	"encoding/json"
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"strconv"
-	"syscall"
 	"strings"
+	"syscall"
 
-	dberror "github.com/Shyp/go-dberror"
-	"github.com/google/uuid"
+	"chatalk.fr/utils"
 	_ "github.com/lib/pq"
-	nats "github.com/nats-io/nats.go"
 	stan "github.com/nats-io/stan.go"
 )
 
-type registerRequest struct {
+type convManagRequest struct {
 	Action  string `json:"action"`
 	WsID    string `json:"ws-id"`
 	Payload struct {
@@ -29,114 +25,125 @@ type registerRequest struct {
 	} `json:"payload"`
 }
 
-type registerResponse struct {
-	Action   string `json:"action"`
-	Success  bool   `json:"success"`
-	Error    string `json:"error,omitempty"`
-	ConvID   string `json:"convid"`
-	Convname string `json:"convname,omitempty"`
-	Members  string `json:"members,omitempty"`
-}
-
-// get environment variable, if not found will be set to `fallback` value
-func getEnv(key, fallback string) string {
-	if value, ok := os.LookupEnv(key); ok {
-		return value
-	}
-	return fallback
-}
-
-// connect to a PostgreSQL database
-func dbConnect() *sql.DB {
-	dbHost := getEnv("DB_HOST", "localhost")
-	dbDb := getEnv("DB_DB", "app")
-	dbUser := getEnv("DB_USER", "root")
-	dbPass := getEnv("DB_PASS", "root")
-	dbMode := getEnv("DB_MODE", "disable")
-
-	connStr := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=%s", dbUser, dbPass, dbHost, dbDb, dbMode)
-	db, err := sql.Open("postgres", connStr)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return db
+type convManagResponse struct {
+	Action    string `json:"action"`
+	Success   bool   `json:"success"`
+	Error     string `json:"error,omitempty"`
+	Creator   int    `json:"creator,omitempty"`
+	ConvID    string `json:"convid,omitempty"`
+	Convname  string `json:"convname,omitempty"`
+	Sharedkey string `json:"sharedkey,omitempty"`
+	Members   string `json:"members,omitempty"`
 }
 
 func main() {
 	log.Println("Conversation management service started…")
 	channelName := "service.conv_manag"
-	db := dbConnect()
 
-	natsURL := getEnv("NATS_URL", "nats://localhost:4222")
-	clusterID := getEnv("NATS_CLUSTER_ID", "nats-cluster")
-	clientID := uuid.New().String()
-	nc, err := nats.Connect(natsURL)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	sc, err := stan.Connect(clusterID, clientID, stan.NatsConn(nc))
-	if err != nil {
-		log.Fatal(err)
-	}
+	db := utils.DBConnect()
+	nc, sc := utils.InitBus()
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 
 	sub, _ := sc.Subscribe(channelName, func(m *stan.Msg) {
 		log.Println("conversation management service is handling a new request")
-		var msg registerRequest
+
+		var msg convManagRequest
 		err := json.Unmarshal(m.Data, &msg)
 		if err != nil {
 			log.Print("failed to parse JSON", err)
 			return
 		}
 
-		var response registerResponse
+		var response convManagResponse
+		response.Success = true
 		var convID int
 		var userID int
+		var change int
 		var members []int
 		var spliMem []string
-		var allmembers string
+		// var allmembers string
 
-		spliMem = strings.Split(msg.Payload.Newmembers,"}")
-		spliMem = strings.Split(spliMem[0],"{")
-		spliMem = strings.Split(spliMem[1],",")
+		change = 0
+
+		spliMem = strings.Split(msg.Payload.Newmembers, "}")
+		spliMem = strings.Split(spliMem[0], "{")
+		spliMem = strings.Split(spliMem[1], ",")
 
 		for _, v := range spliMem {
-			userID, _  = strconv.Atoi(v)
+			userID, _ = strconv.Atoi(v)
 			members = append(members, userID)
 		}
 
 		convID, err = strconv.Atoi(msg.Payload.ConvID)
 
 		if err != nil {
-			response = registerResponse{
+			response = convManagResponse{
 				Action:  "conv_manag",
 				Success: false,
 				Error:   "Conversation ID is not valid",
 			}
-			goto send_msg
 		}
 
-		if msg.Payload.Convname != "" {
-
+		if msg.Payload.Convname != "" && response.Success {
+			_, err = db.Write().Query(`
+				UPDATE conversations
+				SET convname = $1
+				WHERE conv_id = $2;
+			`, msg.Payload.Convname, convID)
+			change = 1
 		}
 
-		if msg.Payload.Convtopic != "" {
-
+		if msg.Payload.Convtopic != "" && response.Success {
+			_, err = db.Write().Query(`
+				UPDATE conversations
+				SET topic = $1
+				WHERE conv_id = $2;
+			`, msg.Payload.Convtopic, convID)
+			change = 1
 		}
 
-		if len(members) > 0 {
+		if len(members) > 0 && response.Success {
+			for _, v := range members {
+				_, err = db.Write().Query(
+					`INSERT INTO conv_keys(user_id, conv_id, shared_key, timefrom, timeto, favorite, audio)
+					VALUES($1, $2, 0, current_timestamp, NULL, false, false);`, v, convID)
+			}
+			change = 1
+		}
+
+		if change == 1 && response.Success {
+			err = db.Read().QueryRow(`
+				SELECT c.conv_id,
+								c.convname,
+								q.shared_key,
+								ARRAY_AGG(q.user_id) users
+				FROM conversations c, conv_keys q
+				WHERE c.conv_id =$1
+				AND c.conv_id = q.conv_id
+				GROUP BY c.conv_id, c.convname, q.shared_key`, convID).Scan(&response.ConvID, &response.Convname, &response.Sharedkey, &response.Members)
+
+			if err != nil {
+				response = convManagResponse{
+					Action:  "conv_manag",
+					Success: false,
+					Error:   "Issue on Database, reload later",
+				}
+			}
 
 		}
-	// to old members send a conv-mana msg
-	// to new members send a conv-creation msg with creator 0
+		// to old members send a conv-mana msg
+		// to new members send a conv-creation msg with creator 0
 
-	send_msg:
+		response = convManagResponse{
+			Action:  "conv_manag",
+			Success: false,
+			Error:   "Processing",
+		}
 		j, err := json.Marshal(response)
 		nc.Publish("ws."+msg.WsID+".send", j)
+
 	})
 
 	<-c
