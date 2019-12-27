@@ -193,7 +193,16 @@ class WebsocketProvider extends React.Component<Props, State> {
       this.props.dispatch(
         alertError('You were disconnected. You will need to login again.')
       );
+      this.setState({ token: null });
     }
+  }
+
+  serviceResponseLogout(_data: any) {
+    console.log('logged out!');
+    localStorage.removeItem('token');
+    this.props.dispatch(clearAuth());
+    this.props.dispatch(alertInfo('Successfully logged out!'));
+    this.setState({ token: null });
   }
 
   sendPing() {
@@ -328,6 +337,10 @@ class WebsocketProvider extends React.Component<Props, State> {
 
       case 'token-refresh':
         this.serviceResponseTokenRefresh(data);
+        break;
+
+      case 'logout':
+        this.serviceResponseLogout(data);
         break;
     }
   }
