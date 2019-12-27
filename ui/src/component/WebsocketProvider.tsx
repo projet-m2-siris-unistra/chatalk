@@ -18,11 +18,13 @@ import { DispatchProp, connect } from 'react-redux';
 interface WebsocketContextValue {
   isOpen: boolean;
   connection: WebSocket | null;
+  token: string | null;
 }
 
 const defaultWebsocketContextValue: WebsocketContextValue = {
   isOpen: false,
   connection: null,
+  token: localStorage.getItem('token'),
 };
 
 const WebsocketContext: Context<WebsocketContextValue> = React.createContext(
@@ -370,6 +372,7 @@ class WebsocketProvider extends React.Component<Props, State> {
         value={{
           isOpen: this.state.isOpen,
           connection: this.state.socket,
+          token: this.state.token,
         }}
       >
         {this.props.children}
