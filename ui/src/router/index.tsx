@@ -10,7 +10,7 @@ import Privacy from '../component/Privacy';
 import Terms from '../component/Terms';
 import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
-import Settings from '../component/conversations/Settings';
+import Settings from '../component/Settings';
 
 const AppRouter: React.FC = () => {
   return (
