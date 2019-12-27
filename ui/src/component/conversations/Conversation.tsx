@@ -41,7 +41,6 @@ const useStyles = makeStyles(theme => ({
       },
     },
     overflow: 'auto',
-    padding: '10px',
     display: 'flex',
     flexDirection: 'column',
   },
@@ -65,21 +64,25 @@ const useStyles = makeStyles(theme => ({
     alignSelf: 'flex-end',
     borderRadius: '10px',
     padding: '10px',
+    marginBottom: '10px',
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.primary.contrastText,
   },
   hidden: {
     display: 'none',
   },
-  footer: {
-    padding: '35px',
-    lineHeight: '2px',
-    fontSize: '18px',
-    height: '30px',
-    overflow: 'hidden',
-    borderTopStyle: 'solid',
-    borderTopWidth: '1px',
-    borderTopColor: theme.palette.grey[200],
+  msgZone: {
+    flex: 1,
+    padding: '10px',
+    overflowY: 'scroll',
+  },
+  inputZone: {
+    padding: '10px',
+    display: 'flex',
+  },
+  inputField: {
+    flex: 1,
+    marginRight: '16px',
   },
 }));
 
@@ -163,6 +166,7 @@ const Conversation: React.FC = () => {
         payload: ownmsg,
       })
     );
+    setOwnMsg('');
   };
 
   return (
@@ -176,23 +180,26 @@ const Conversation: React.FC = () => {
           <SettingsIcon />
         </IconButton>
       </div>
-      <div className={classes.content}>{msg}</div>
-      <div className={classes.footer}>
-        <Input
-          placeholder="Your text"
-          inputProps={{
-            'aria-label': 'description',
-          }}
-          onChange={e => setOwnMsg(e.target.value)}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          endIcon={<Icon>send</Icon>}
-          onClick={sendMessage}
-        >
-          Send
-        </Button>
+      <div className={classes.content}>
+        <div className={classes.msgZone}>
+          {msg}
+        </div>
+        <div className={classes.inputZone}>
+          <Input
+            className={classes.inputField}
+            placeholder="Enter your message here…"
+            value={ownmsg}
+            onChange={e => setOwnMsg(e.target.value)}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            endIcon={<Icon>send</Icon>}
+            onClick={sendMessage}
+          >
+            Send
+          </Button>
+        </div>
       </div>
     </>
   );
