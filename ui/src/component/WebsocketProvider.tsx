@@ -91,17 +91,37 @@ class WebsocketProvider extends React.Component<Props, State> {
   }
 
   serviceResponseLogin(data: any) {
+    if (data.type) {
+      switch (data.type) {
+        case 'logout':
+          this.serviceResponseLogout(data);
+          return;
+        case 'token-refresh':
+          this.serviceResponseTokenRefresh(data);
+          return;
+      }
+    }
+
     if (!data.success) {
       if (data.error) {
         this.props.dispatch(
           alertError(data.error || 'Login failed. Retry later…')
         );
       }
+
+      // log the user out
+      localStorage.removeItem('token');
+      this.props.dispatch(clearAuth());
+      this.props.dispatch(alertInfo('Successfully logged out!'));
+      this.setState({ token: null });
+
       return;
     }
-    this.props.dispatch(
-      alertInfo(`Welcome ${data.displayname || data.username || ''}!`)
-    );
+    if (!data.type) {
+      this.props.dispatch(
+        alertInfo(`Welcome ${data.displayname || data.username || ''}!`)
+      );
+    }
     this.props.dispatch(
       setAuth({
         userid: data.userid,
@@ -179,12 +199,9 @@ class WebsocketProvider extends React.Component<Props, State> {
     }
   }
 
-  serviceResponsePing(data: any) {
-    console.log('svc/ping: ', data);
-  }
-
   serviceResponseTokenRefresh(data: any) {
     if (data.success && data.token) {
+      localStorage.setItem('token', data.token);
       this.setState({ token: data.token });
     }
     if (!data.success) {
@@ -259,7 +276,7 @@ class WebsocketProvider extends React.Component<Props, State> {
     this.setState({
       isOpen: true,
       ping: setInterval(() => this.sendPing(), 15000), // 15 sec
-      refresh: setInterval(() => this.sendRefresh(), 120000), // 2 min
+      refresh: setInterval(() => this.sendRefresh(), 300000), // 5 min
     });
 
     // if a token is present, try to reconnect the user
@@ -323,24 +340,12 @@ class WebsocketProvider extends React.Component<Props, State> {
         this.serviceResponseConvCreation(data);
         break;
 
-      case 'ping':
-        this.serviceResponsePing(data);
-        break;
-
       case 'msg_sender':
         this.serviceResponseMsgSender(data);
         break;
 
       case 'conv-sub':
         this.serviceResponseConvSub(data);
-        break;
-
-      case 'token-refresh':
-        this.serviceResponseTokenRefresh(data);
-        break;
-
-      case 'logout':
-        this.serviceResponseLogout(data);
         break;
     }
   }
