@@ -162,7 +162,6 @@ const Listbox = styled('ul')`
   }
 `;
 
-
 const NewConversation: React.FC = () => {
   const classes = useStyles();
   const isDesktop = useMediaQuery('(min-width:1000px)');
@@ -206,7 +205,7 @@ const NewConversation: React.FC = () => {
       return;
     }
 
-    const members = value.map((user:any) => user.userid)
+    const members = value.map((user: any) => user.userid);
 
     console.log('new:create conv:', name, topic);
     connection.send(
@@ -249,8 +248,11 @@ const NewConversation: React.FC = () => {
         <div>
           <div {...getRootProps()}>
             <Label {...getInputLabelProps()}>Add Members:</Label>
-            <InputWrapper ref={setAnchorEl} className={focused ? 'focused' : ''}>
-              {value.map((option:any, index:any) => (
+            <InputWrapper
+              ref={setAnchorEl}
+              className={focused ? 'focused' : ''}
+            >
+              {value.map((option: any, index: any) => (
                 <Tag label={option.username} {...getTagProps({ index })} />
               ))}
 
@@ -281,4 +283,3 @@ const NewConversation: React.FC = () => {
 };
 
 export default NewConversation;
-

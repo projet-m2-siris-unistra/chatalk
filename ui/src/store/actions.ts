@@ -11,6 +11,7 @@ export const UPDATE_MESSAGES = 'UPDATE_MESSAGES';
 export const UPDATE_CONVERSATIONS = 'UPDATE_CONVERSATIONS';
 export const CHANGE_CONVERSATIONS = 'CHANGE_CONVERSATiONS';
 
+
 interface SetAuthAction {
   type: typeof SET_AUTH;
   auth: Auth;
@@ -41,15 +42,15 @@ interface SetUsersAction {
 
 interface SetMessagesAction {
   type: typeof SET_MESSAGES;
-  messages : Message[];
+  messages: Message[];
 }
 
 interface UpdateMessagesAction {
   type: typeof UPDATE_MESSAGES;
-  message : Message;
+  message: Message;
 }
 
-interface UpdateConversationsAction{
+interface UpdateConversationsAction {
   type: typeof UPDATE_CONVERSATIONS;
   conversation: Conversation;
 }
@@ -59,14 +60,17 @@ interface ChangeConversationsAction{
   convchange: Conversation;
 }
 
-
 export type AuthAction = SetAuthAction | ClearAuthAction;
 export type AlertAction = SetAlertAction | ClearAlertAction;
-export type Action = AuthAction | AlertAction | SetConversationsAction
-                    | SetUsersAction | SetMessagesAction | UpdateMessagesAction
-                    | UpdateConversationsAction | ChangeConversationsAction;
-
-
+export type Action =
+  | AuthAction
+  | AlertAction
+  | SetConversationsAction
+  | SetUsersAction
+  | SetMessagesAction
+  | UpdateMessagesAction
+  | UpdateConversationsAction
+  | ChangeConversationsAction;
 
 
 export function setAuth(auth: Auth): SetAuthAction {
@@ -117,27 +121,21 @@ export function setConversations(
   };
 }
 
-export function setUsers(
-  users: User[]
-): SetUsersAction {
+export function setUsers(users: User[]): SetUsersAction {
   return {
     type: SET_USERS,
     users,
   };
 }
 
-export function setMessages(
-  messages: Message[]
-): SetMessagesAction {
+export function setMessages(messages: Message[]): SetMessagesAction {
   return {
     type: SET_MESSAGES,
     messages,
   };
 }
 
-export function updateMessages(
-  message: Message
-): UpdateMessagesAction {
+export function updateMessages(message: Message): UpdateMessagesAction {
   return {
     type: UPDATE_MESSAGES,
     message,

@@ -113,7 +113,7 @@ const ConversationsList: React.FC = () => {
   const classes = useStyles();
   const isDesktop = useMediaQuery('(min-width:1000px)');
   const conversations = useSelector((state: State) => state.conversations);
-  console.log("conversationindex: ",conversations);
+  console.log('conversationindex: ', conversations);
   const listItems = conversations.map(c => (
     <Link
       to={`/conversation/${c.convid}`}
@@ -161,11 +161,9 @@ const ConversationsList: React.FC = () => {
           <div className={classes.headerTitle}>Conversations</div>
           <Link to="/settings">
             <IconButton
-
-            aria-label="settings"
-            size="small"
-            className={classes.headerButton}
-
+              aria-label="settings"
+              size="small"
+              className={classes.headerButton}
             >
               <SettingsIcon />
             </IconButton>

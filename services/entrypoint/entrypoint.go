@@ -47,11 +47,9 @@ func unsubscribeNatsTopics(s map[string]*nats.Subscription) {
 }
 
 func handleWS(w http.ResponseWriter, r *http.Request) {
-	//subscriptions := make(map[string][]*nats.Subscription) ?
-	//multiple sub for each subject
 	subscriptions := make(map[string]*nats.Subscription)
 	wsID := uuid.New().String()
-	log.Printf("New websocket connection (#%s)", wsID)
+	log.Printf("new websocket connection (#%s)", wsID)
 
 	upgrader := websocket.Upgrader{}
 	upgrader.CheckOrigin = func(r *http.Request) bool {
@@ -77,17 +75,18 @@ func handleWS(w http.ResponseWriter, r *http.Request) {
 
 	// subscribe to a topic
 	subWsSub, err := nc.Subscribe("ws."+wsID+".sub", func(m *nats.Msg) {
-		sub, err := nc.Subscribe(string(m.Data), func(msg *nats.Msg) {
-			nc.Publish("ws."+wsID+".send", msg.Data)
-		})
-
-		if err != nil {
-			log.Fatal(err)
+		topicName := string(m.Data)
+		if _, ok := subscriptions[topicName]; ok {
+			log.Println("already subscribed to: ", topicName)
+		} else {
+			sub, err := nc.Subscribe(topicName, func(msg *nats.Msg) {
+				nc.Publish("ws."+wsID+".send", msg.Data)
+			})
+			if err != nil {
+				log.Fatal(err)
+			}
+			subscriptions[topicName] = sub
 		}
-
-		//if multiple sub per sibject =>
-		//subscriptions[string(m.Data)] = append(subscriptions[string(m.Data)],sub)
-		subscriptions[string(m.Data)] = sub
 	})
 
 	if err != nil {

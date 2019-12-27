@@ -4,8 +4,10 @@ go 1.12
 
 require (
 	chatalk.fr/utils v0.0.0-00010101000000-000000000000
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/google/uuid v1.1.1
 	github.com/lib/pq v1.2.0
+	github.com/ludovicm67/go-rwdatabasepool v0.0.0-20191208202427-27271ad552d4
 	github.com/nats-io/nats.go v1.9.1
 	github.com/nats-io/stan.go v0.5.2
 	golang.org/x/crypto v0.0.0-20191112222119-e1110fd1c708

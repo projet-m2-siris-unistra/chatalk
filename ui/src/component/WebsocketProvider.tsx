@@ -71,7 +71,7 @@ class WebsocketProvider extends React.Component<Props, State> {
       this.props.dispatch(setUsers(data.users));
     }
     if (data.messages) {
-      this.props.dispatch(setMessages(data.messages))
+      this.props.dispatch(setMessages(data.messages));
     }
   }
 
@@ -107,7 +107,7 @@ class WebsocketProvider extends React.Component<Props, State> {
         avatar: data.picture,
       })
     );
-    this.setState({userid: data.userid});
+    this.setState({ userid: data.userid });
   }
 
   serviceResponseConvCreation(data: any) {
@@ -123,9 +123,7 @@ class WebsocketProvider extends React.Component<Props, State> {
 
     // if success (whaaaaaaat?!)
     if (data.success) {
-      this.props.dispatch(
-        alertInfo('The conversation was created.')
-      );
+      this.props.dispatch(alertInfo('The conversation was created.'));
       this.props.dispatch(
         updateConversations({
           convid: data.convid,
@@ -134,13 +132,11 @@ class WebsocketProvider extends React.Component<Props, State> {
           members: data.members,
         })
       );
-      if(data.creator === this.state.userid) {
+
+      if (data.creator === this.state.userid) {
         this.props.history.push(`/conversation/${data.convid}`);
       } else {
-        if (
-          this.state.isOpen &&
-          this.state.socket !== null
-        ) {
+        if (this.state.isOpen && this.state.socket !== null) {
           this.state.socket.send(
             JSON.stringify({
               action: 'conv-sub',
@@ -194,7 +190,7 @@ class WebsocketProvider extends React.Component<Props, State> {
 
   serviceResponseConvSub(data: any) {
     console.log('svc/conv-sub: ', data);
-    if(!data.success) {
+    if (!data.success) {
       this.props.dispatch(
         alertError(data.error || 'Oups, try to reconnect Please.')
       );

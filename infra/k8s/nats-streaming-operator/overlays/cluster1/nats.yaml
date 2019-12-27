@@ -1,0 +1,28 @@
+apiVersion: "nats.io/v1alpha2"
+kind: "NatsCluster"
+metadata:
+  name: "nats"
+spec:
+  size: 3
+
+  natsConfig:
+    debug: true
+    trace: true
+
+  pod:
+    enableClientsHostPort: true
+    advertiseExternalIP: true
+
+  gatewayConfig:
+    name: c1
+    hostPort: 32328
+    gateways:
+    - name: c1
+      url: nats://cluster1.chatalk.fr:32328
+    - name: c2
+      url: nats://cluster2.chatalk.fr:32328
+
+  template:
+    spec:
+      # Required to be able to lookup public ip address from a server.
+      serviceAccountName: "nats-server"

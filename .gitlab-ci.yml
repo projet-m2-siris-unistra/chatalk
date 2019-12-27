@@ -33,9 +33,13 @@ build-ui:
   tags:
     - docker
     - socket
+  artifacts:
+    paths:
+      - .build/
   script:
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
     - |
+      mkdir -p .build/
       if [ "$CI_COMMIT_REF_SLUG" == master ]; then
         ARGS="--destination $CI_REGISTRY/$IMAGE"
       fi
@@ -45,10 +49,36 @@ build-ui:
         --dockerfile $CI_PROJECT_DIR/$IMAGE/Dockerfile \
         --build-arg "BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
         --build-arg "COMMIT=$CI_COMMIT_SHA" \
-        --build-arg "VERSION=$CI_COMMIT_REF_SLUG"
+        --build-arg "VERSION=$CI_COMMIT_REF_SLUG" \
+        --digest-file "$CI_PROJECT_DIR/.build/$IMAGE.digest"
   variables:
     IMAGE: ui
   only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "ui/**/*"
+
+deploy-ui:
+  stage: deploy
+  tags:
+    - docker
+    - socket
+  image: ludovicm67/k8s-tools:latest
+  script:
+    - DIGEST="$(cat .build/$IMAGE.digest)"
+    - DOCKER_IMG="$IMAGE@$DIGEST"
+    - echo "$DOCKER_IMG"
+    - cd $CI_PROJECT_DIR/infra/k8s/chatalk/$IMAGE/
+    - kustomize edit set image $CI_REGISTRY/$IMAGE=$CI_REGISTRY/$DOCKER_IMG
+    - kustomize build > manifest.yaml
+    - cat manifest.yaml
+    - cat manifest.yaml | kubectl --server="$CLUSTER1_K8S_ENDPOINT" --token="$CLUSTER1_K8S_TOKEN" --certificate-authority="$CLUSTER1_K8S_CERT" apply -f -
+    - cat manifest.yaml | kubectl --server="$CLUSTER2_K8S_ENDPOINT" --token="$CLUSTER2_K8S_TOKEN" --certificate-authority="$CLUSTER2_K8S_CERT" apply -f -
+  variables:
+    IMAGE: ui
+  only:
+    refs:
+      - master
     changes:
       - ".gitlab-ci.yml"
       - "ui/**/*"
@@ -221,13 +251,18 @@ build-service-send-info:
     - echo "$DOCKER_IMG"
     - cd $CI_PROJECT_DIR/infra/k8s/chatalk/$IMAGE/
     - kustomize edit set image $CI_REGISTRY/$IMAGE=$CI_REGISTRY/$DOCKER_IMG
-    - kustomize build
+    - kustomize build > manifest.yaml
+    - cat manifest.yaml
+    - cat manifest.yaml | kubectl --server="$CLUSTER1_K8S_ENDPOINT" --token="$CLUSTER1_K8S_TOKEN" --certificate-authority="$CLUSTER1_K8S_CERT" apply -f -
+    - cat manifest.yaml | kubectl --server="$CLUSTER2_K8S_ENDPOINT" --token="$CLUSTER2_K8S_TOKEN" --certificate-authority="$CLUSTER2_K8S_CERT" apply -f -
 
 deploy-service-conv_creation:
   <<: *deploy-service-image
   variables:
     IMAGE: conv_creation
   only:
+    refs:
+      - master
     changes:
       - ".gitlab-ci.yml"
       - "services/Dockerfile"
@@ -238,6 +273,8 @@ deploy-service-conv-sub:
   variables:
     IMAGE: conv-sub
   only:
+    refs:
+      - master
     changes:
       - ".gitlab-ci.yml"
       - "services/Dockerfile"
@@ -248,6 +285,8 @@ deploy-service-conv_manag:
   variables:
     IMAGE: conv_manag
   only:
+    refs:
+      - master
     changes:
       - ".gitlab-ci.yml"
       - "services/Dockerfile"
@@ -258,6 +297,8 @@ deploy-service-entrypoint:
   variables:
     IMAGE: entrypoint
   only:
+    refs:
+      - master
     changes:
       - ".gitlab-ci.yml"
       - "services/Dockerfile"
@@ -268,6 +309,8 @@ deploy-service-login:
   variables:
     IMAGE: login
   only:
+    refs:
+      - master
     changes:
       - ".gitlab-ci.yml"
       - "services/Dockerfile"
@@ -278,6 +321,8 @@ deploy-service-msg_sender:
   variables:
     IMAGE: msg_sender
   only:
+    refs:
+      - master
     changes:
       - ".gitlab-ci.yml"
       - "services/Dockerfile"
@@ -288,6 +333,8 @@ deploy-service-ping:
   variables:
     IMAGE: ping
   only:
+    refs:
+      - master
     changes:
       - ".gitlab-ci.yml"
       - "services/Dockerfile"
@@ -298,6 +345,8 @@ deploy-service-register:
   variables:
     IMAGE: register
   only:
+    refs:
+      - master
     changes:
       - ".gitlab-ci.yml"
       - "services/Dockerfile"
@@ -308,6 +357,8 @@ deploy-service-send-info:
   variables:
     IMAGE: send-info
   only:
+    refs:
+      - master
     changes:
       - ".gitlab-ci.yml"
       - "services/Dockerfile"
@@ -365,10 +416,15 @@ deploy-db-migrations:
     - cd $CI_PROJECT_DIR/infra/k8s/chatalk/$IMAGE/
     - kustomize edit set image $CI_REGISTRY/$IMAGE=$CI_REGISTRY/$DOCKER_IMG
     - kustomize edit set namesuffix -- "-$LAST_MIGRATION"
-    - kustomize build
+    - kustomize build > manifest.yaml
+    - cat manifest.yaml
+    - cat manifest.yaml | kubectl --server="$CLUSTER1_K8S_ENDPOINT" --token="$CLUSTER1_K8S_TOKEN" --certificate-authority="$CLUSTER1_K8S_CERT" apply -f -
+    - cat manifest.yaml | kubectl --server="$CLUSTER2_K8S_ENDPOINT" --token="$CLUSTER2_K8S_TOKEN" --certificate-authority="$CLUSTER2_K8S_CERT" apply -f -
   variables:
     IMAGE: db-migrations
   only:
+    refs:
+      - master
     changes:
       - ".gitlab-ci.yml"
       - "services/db-migrations/**/*"

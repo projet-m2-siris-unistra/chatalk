@@ -18,6 +18,9 @@ bases:
 - send-info
 - ui
 
+generatorOptions:
+  disableNameSuffixHash: true
+
 configMapGenerator:
 - name: svc-config
   literals:
@@ -29,3 +32,4 @@ configMapGenerator:
   - DB_USER=chatalk
   - DB_PASS=ieceetiothux6aechieBohvoozaezo1zaetequahShuw6faePeng4shaem3raece
   - DB_MODE=disable
+  - JWT_SECRET=ieRe9Pohyah3uacheJaeTho8
