@@ -114,7 +114,6 @@ class WebsocketProvider extends React.Component<Props, State> {
       // log the user out
       localStorage.removeItem('token');
       this.props.dispatch(clearAuth());
-      this.props.dispatch(alertInfo('Successfully logged out!'));
       this.setState({ token: null });
 
       return;
