@@ -8,8 +8,9 @@ import { State } from '../../store/state';
 import Input from '@material-ui/core/Input';
 import Icon from '@material-ui/core/Icon';
 import Button from '@material-ui/core/Button';
-import SettingsIcon from '@material-ui/icons/Settings';
 import IconButton from '@material-ui/core/IconButton';
+import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
+import EditIcon from '@material-ui/icons/Edit';
 
 const useStyles = makeStyles(theme => ({
   msg: {
@@ -22,6 +23,7 @@ const useStyles = makeStyles(theme => ({
     lineHeight: '2px',
     fontSize: '18px',
     display: 'flex',
+    alignItems: 'center',
     height: '60px',
     overflow: 'hidden',
     borderBottomStyle: 'solid',
@@ -44,13 +46,13 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
   },
-  headerButton: {
-    backgroundColor: '#0b6374',
-    color: '#fff',
-    '&:hover': {
-      backgroundColor: '#0b6374',
-      opacity: 0.8,
-    },
+  headerTitle: {
+    flex: 1,
+    margin: '0 20px',
+  },
+  smallTitle: {
+    color: '#ccc',
+    fontSize: '12px',
   },
   msgOther: {
     alignSelf: 'flex-start',
@@ -101,6 +103,7 @@ const Conversation: React.FC = () => {
   const conv = useSelector((state: State) => state.conversations).filter(
     c => parseInt(c.convid) === convid
   );
+  const conversationName = conv[0].convname || 'Conversation';
   const members = conv[0].members
     .replace('{', '')
     .replace('}', '')
@@ -173,21 +176,29 @@ const Conversation: React.FC = () => {
     <>
       <div className={classes.header}>
         <Link to="/conversation" className={displayBackBtn}>
-          «
+          <IconButton
+            aria-label="go back to the list of conversations"
+            size="small"
+          >
+            <ArrowBackIosIcon />
+          </IconButton>
         </Link>
-        Conversation name - config ({id})
-        <IconButton aria-label="settings" size="small">
-          <SettingsIcon />
-        </IconButton>
+        <span className={classes.headerTitle}>
+          {conversationName}
+          <small className={classes.smallTitle}>#{id}</small>
+        </span>
+        <Link to={`/conversation/${id}/manage`}>
+          <IconButton aria-label="manage conversation" size="small">
+            <EditIcon />
+          </IconButton>
+        </Link>
       </div>
       <div className={classes.content}>
-        <div className={classes.msgZone}>
-          {msg}
-        </div>
+        <div className={classes.msgZone}>{msg}</div>
         <div className={classes.inputZone}>
           <Input
             className={classes.inputField}
-            placeholder="Enter your message here…"
+            placeholder="Enter your message…"
             value={ownmsg}
             onChange={e => setOwnMsg(e.target.value)}
           />
