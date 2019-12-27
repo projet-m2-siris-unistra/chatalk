@@ -78,6 +78,15 @@ const Settings: React.FC = () => {
         <Link to="/logout" className={classes.navLink}>
           Logout
         </Link>
+        <a href="https://blog.chatalk.fr/" className={classes.navLink}>
+          Blog
+        </a>
+        <a href="https://status.chatalk.fr/" className={classes.navLink}>
+          Status
+        </a>
+        <Link to="/credits" className={classes.navLink}>
+          Credits
+        </Link>
       </nav>
     </div>
   );
