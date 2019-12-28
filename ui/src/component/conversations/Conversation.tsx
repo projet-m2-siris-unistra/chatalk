@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Switch, Route, useRouteMatch } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -98,6 +98,8 @@ const Conversation: React.FC = () => {
   const { id } = useParams<Params>();
   const convid = parseInt(id);
   const classes = useStyles();
+  const messagesList = useRef<HTMLDivElement>(null);
+  const messagesListEnd = useRef<HTMLSpanElement>(null);
   const { connection, isOpen } = useWebsocket();
   const isDesktop = useMediaQuery('(min-width:1000px)');
   const auth = useSelector((state: State) => state.auth);
@@ -115,6 +117,16 @@ const Conversation: React.FC = () => {
     members.includes(u.userid)
   );
   const [ownmsg, setOwnMsg] = useState('');
+  const [scrollToBottom, setScrollToBottom] = useState(true);
+  useEffect(() => {
+    if (
+      scrollToBottom &&
+      messagesList.current !== null &&
+      messagesListEnd.current !== null
+    ) {
+      messagesListEnd.current.scrollIntoView();
+    }
+  });
 
   const me = {
     id: 0,
@@ -192,14 +204,29 @@ const Conversation: React.FC = () => {
               {conversationName}
               <small className={classes.smallTitle}>#{id}</small>
             </span>
-            <Link to={`/conversation/${id}/convsettings`} key={id}>
+            <Link to={`/conversation/${id}/convsettings`}>
               <IconButton aria-label="manage conversation" size="small">
                 <EditIcon />
               </IconButton>
             </Link>
           </div>
           <div className={classes.content}>
-            <div className={classes.msgZone}>{msg}</div>
+            <div
+              ref={messagesList}
+              onScroll={e => {
+                if (messagesList && messagesList.current) {
+                  setScrollToBottom(
+                    messagesList.current.scrollTop ===
+                      messagesList.current.scrollHeight -
+                        messagesList.current.offsetHeight
+                  );
+                }
+              }}
+              className={classes.msgZone}
+            >
+              {msg}
+              <span ref={messagesListEnd}></span>
+            </div>
             <div className={classes.inputZone}>
               <Input
                 className={classes.inputField}
