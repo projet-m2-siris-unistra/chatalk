@@ -8,8 +8,8 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"syscall"
 	"strconv"
+	"syscall"
 
 	"chatalk.fr/utils"
 	stan "github.com/nats-io/stan.go"
@@ -30,9 +30,9 @@ type UserManagRequest struct {
 }
 
 type UserManagResponse struct {
-	Success     bool        `json:"success"`
-	Action      string      `json:"action"`
-	Error       string      `json:"error,omitempty"`
+	Success bool   `json:"success"`
+	Action  string `json:"action"`
+	Error   string `json:"error,omitempty"`
 }
 
 func verifyPayload(request UserManagRequest) error {
@@ -52,7 +52,7 @@ func main() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 
-	sub, _ := sc.Subscribe(channelName, func(m *stan.Msg) {
+	sub, _ := sc.QueueSubscribe(channelName, func(m *stan.Msg) {
 		log.Println("User Management service is handling a new request")
 
 		var msg UserManagRequest
@@ -116,7 +116,7 @@ func main() {
 
 		j, err := json.Marshal(response)
 		nc.Publish("ws."+msg.WsID+".send", j)
-	})
+	}, stan.DurableName(channelName))
 
 	<-c
 

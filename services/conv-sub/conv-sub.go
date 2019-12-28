@@ -13,7 +13,7 @@ import (
 	stan "github.com/nats-io/stan.go"
 )
 
-type ConvSubRequest struct {
+type convSubRequest struct {
 	Action  string `json:"action"`
 	WsID    string `json:"ws-id"`
 	Payload struct {
@@ -22,7 +22,7 @@ type ConvSubRequest struct {
 	} `json:"payload"`
 }
 
-type ConvSubResponse struct {
+type convSubResponse struct {
 	Action  string `json:"action"`
 	Success bool   `json:"success"`
 	Error   string `json:"error,omitempty"`
@@ -38,10 +38,10 @@ func main() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 
-	sub, _ := sc.Subscribe(channelName, func(m *stan.Msg) {
+	sub, _ := sc.QueueSubscribe(channelName, channelName, func(m *stan.Msg) {
 		log.Println("Conversation Subscription service is handling a new request")
 
-		var msg ConvSubRequest
+		var msg convSubRequest
 		err := json.Unmarshal(m.Data, &msg)
 		if err != nil {
 			log.Print("failed to parse JSON", err)
@@ -51,7 +51,7 @@ func main() {
 		userID, _ := strconv.Atoi(msg.Payload.UserID)
 		convID, _ := strconv.Atoi(msg.Payload.ConvID)
 
-		response := ConvSubResponse{
+		response := convSubResponse{
 			Action:  "Conv-sub",
 			Success: false,
 		}
@@ -76,7 +76,7 @@ func main() {
 
 		j, err := json.Marshal(response)
 		nc.Publish("ws."+msg.WsID+".send", j)
-	})
+	}, stan.DurableName(channelName))
 
 	<-c
 

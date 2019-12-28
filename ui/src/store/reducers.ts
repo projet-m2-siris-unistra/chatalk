@@ -1,4 +1,4 @@
-import { initialState, State, Conversation } from './state';
+import { initialState, State} from './state';
 import * as actions from './actions';
 
 export default (state: State = initialState, action: actions.Action): State => {

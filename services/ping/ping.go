@@ -49,7 +49,7 @@ func main() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 
-	sub, _ := sc.Subscribe(channelName, func(m *stan.Msg) {
+	sub, _ := sc.QueueSubscribe(channelName, channelName, func(m *stan.Msg) {
 		log.Println("ping service is handling a new request")
 		var msg pingRequest
 		err := json.Unmarshal(m.Data, &msg)
@@ -59,7 +59,7 @@ func main() {
 		}
 
 		nc.Publish("ws."+msg.WsID+".send", m.Data)
-	})
+	}, stan.DurableName(channelName))
 
 	<-c // just wait for terminaison signal to continue (exit)
 

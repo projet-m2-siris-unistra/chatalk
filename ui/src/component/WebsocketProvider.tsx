@@ -14,7 +14,7 @@ import {
   updateConversations,
   changeConversations,
 } from '../store/actions';
-import { DispatchProp, connect, useSelector } from 'react-redux';
+import { DispatchProp, connect} from 'react-redux';
 
 interface WebsocketContextValue {
   isOpen: boolean;

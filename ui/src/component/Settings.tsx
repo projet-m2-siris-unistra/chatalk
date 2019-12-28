@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+
+import { useWebsocket } from './WebsocketProvider';
+import { useSelector } from 'react-redux';
+import { State } from '../store/state';
 
 const useStyles = makeStyles({
   settings: {
@@ -49,6 +53,40 @@ const useStyles = makeStyles({
 
 const Settings: React.FC = () => {
   const classes = useStyles();
+  const { connection, isOpen } = useWebsocket();
+  const auth = useSelector((state: State) => state.auth);
+  const [username, setUName] = useState('');
+  const [displayname, setDName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPswd] = useState('');
+
+
+  const usermanag = () => {
+    if (!isOpen || connection === null) {
+      console.error('ws is not open');
+      return;
+    }
+
+    if (!auth) {
+      console.error('user is not logged in');
+      return;
+    }
+
+    console.log('Settings:change user settings', username);
+    connection.send(
+      JSON.stringify({
+        action: 'user-manag',
+        payload: {
+          userid: `${auth.userid}`,
+          username,
+          displayname,
+          email,
+          password,
+        },
+      })
+    );
+  };
+
   return (
     <div className={classes.settings}>
       <header className={classes.header}>
@@ -62,15 +100,30 @@ const Settings: React.FC = () => {
         On this page you can change some settings and logout if you want.
       </p>
       <div className={classes.form}>
-        <TextField label="Username" variant="outlined" />
-        <TextField label="Display name" variant="outlined" />
-        <TextField label="Email" type="email" variant="outlined" />
+        <TextField 
+          label="Username" 
+          variant="outlined"
+          onChange={e => setUName(e.target.value)} />
+        <TextField 
+          label="Display name"
+          variant="outlined"
+          onChange={e => setDName(e.target.value)} />
+        <TextField 
+          label="Email" 
+          type="email" 
+          variant="outlined"
+          onChange={e => setEmail(e.target.value)} />
         <TextField
           label="Password (leave empty if no change)"
           type="password"
           variant="outlined"
+          onChange={e => setPswd(e.target.value)}
         />
-        <Button type="button" variant="contained" color="primary">
+        <Button 
+            type="button" 
+            variant="contained" 
+            color="primary"
+            onClick={usermanag}>
           Submit
         </Button>
       </div>

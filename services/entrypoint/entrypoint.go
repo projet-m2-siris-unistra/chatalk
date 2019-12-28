@@ -95,8 +95,11 @@ func handleWS(w http.ResponseWriter, r *http.Request) {
 
 	// unsubscribe to a topic
 	subWsUnsub, err := nc.Subscribe("ws."+wsID+".unsub", func(m *nats.Msg) {
-		subscriptions[string(m.Data)].Unsubscribe()
-		delete(subscriptions, string(m.Data))
+		topicName := string(m.Data)
+		if _, ok := subscriptions[topicName]; ok {
+			subscriptions[topicName].Unsubscribe()
+			delete(subscriptions, topicName)
+		}
 	})
 
 	if err != nil {

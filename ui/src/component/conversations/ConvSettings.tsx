@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import { Link, useParams } from 'react-router-dom';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-
-import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-
 import useAutocomplete from '@material-ui/lab/useAutocomplete';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
@@ -18,78 +12,48 @@ import { useWebsocket } from '../WebsocketProvider';
 import { useSelector } from 'react-redux';
 import { State } from '../../store/state';
 
-import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
-
-
-import {
-  createMuiTheme,
-  withStyles,
-  ThemeProvider,
-} from '@material-ui/core/styles';
-
-const useStyles = makeStyles(theme => ({
-  '@global': {
-    body: {
-      backgroundColor: theme.palette.common.white,
-    },
+const useStyles = makeStyles({
+  settings: {
+    maxWidth: '1000px',
+    margin: 'auto',
   },
-  button: {
-    margin: theme.spacing(1),
-    left:0,
-    top:0,
-    position:'absolute'
-  },
-  paper: {
-    marginTop: theme.spacing(8),
+  header: {
     display: 'flex',
-    flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    color: '#0b6374',
+    fontSize: '24px',
+  },
+  headerBack: {
+    color: '#0b6374',
+    padding: '20px',
+    textDecoration: 'none',
+  },
+  headerTitle: {
+    textAlign: 'center',
+  },
+  navLink: {
+    display: 'block',
+    color: '#0b6374',
+    padding: '20px',
+    fontWeight: 'bold',
+    fontSize: '18px',
+    textDecoration: 'none',
+    textAlign: 'center',
+  },
+  description: {
+    textAlign: 'center',
+    padding: '20px',
   },
   form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(3),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-  footer: {
-    paddingTop: theme.spacing(8),
-    marginTop: 'auto',
     display: 'flex',
-  },
-
-  logo: {
-    maxWidth: '90vw',
-  },
-  title: {
-    fontSize: '32px',
-  },
-
-}));
-
-const theme = createMuiTheme({
-  palette: {
-    primary: {
-      main: '#0b6374',
+    flexDirection: 'column',
+    padding: '20px',
+    '& > *': {
+      marginBottom: '12px',
     },
   },
 });
-
-const CssTextField = withStyles({
-  root: {
-    '& .MuiOutlinedInput-root': {
-      '& fieldset': {
-        borderColor: '#0b6374',
-      },
-      '&.Mui-focused fieldset': {
-        borderColor: '#0b6374',
-      },
-    },
-    '& label.Mui-focused': {
-      color: '#0b6374',
-    },
-  },
-})(TextField);
 
 const Label = styled('label')`
   padding: 0 0 4px;
@@ -219,8 +183,8 @@ const ConvSettings: React.FC = () => {
   const auth = useSelector((state: State) => state.auth);
   const [convname, setName] = useState('');
   const [convtopic, setTopic] = useState('');
-  const conv = useSelector((state: State) => state.conversations).filter(c => parseInt(c.convid) === convid);
-  const membersList = conv[0].members.replace('{','').replace('}','').split(',').map(n => parseInt(n));
+  const conv = useSelector((state: State) => state.conversations).filter(c => parseInt(c.convid) === convid)[0];
+  const membersList = conv.members.replace('{','').replace('}','').split(',').map(n => parseInt(n));
   const users = useSelector((state: State) => state.users).filter(u => membersList.indexOf(u.userid) < 0);
   const members = useSelector((state: State) => state.users).filter(u => membersList.indexOf(u.userid) > -1);
 
@@ -280,50 +244,32 @@ const ConvSettings: React.FC = () => {
   };
 
   return (
-    <div className={classes.paper}>
-      <Link to="/conversation">
-        <Button
-          type="button"
-          style={{ color: '#0b6374' }}
-          className={classes.button}
-          startIcon={<ArrowBackIosIcon />}
-        >
-          Back
-        </Button>
-      </Link>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Typography className={classes.title} align="center">
-          Conversation Managament
-        </Typography>
-
-        <form className={classes.form} noValidate>
-          <Grid container spacing={2} alignItems="center">
-
-            <Grid item xs={12}>
-              <CssTextField
-                variant="outlined"
-                fullWidth
+    <div className={classes.settings}>
+      <header className={classes.header}>
+        <Link className={classes.headerBack} to={`/conversation/${id}`}>
+          «
+        </Link>
+        <h1 className={classes.headerTitle}>Conversation Settings</h1>
+        <p></p>
+      </header>
+      <p className={classes.description}>
+        Manage Conversation: <strong>{conv.convname}</strong> .
+      </p>
+      <div className={classes.form}>
+        <TextField 
                 name="convname"
                 label="Conversation Name"
                 id="convname"
-                onChange={e => setName(e.target.value)}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <CssTextField
+                onChange={e => setName(e.target.value)} 
+                variant="outlined" />
+        <TextField
                 variant="outlined"
                 fullWidth
                 id="topic"
                 label="Topic"
                 name="topic"
-                onChange={e => setTopic(e.target.value)}
-              />
-            </Grid>
-          </Grid>
-
-          <div>
+                onChange={e => setTopic(e.target.value)} />
+        <div>
           <div {...getRootProps()}>
             <Label {...getInputLabelProps()}>Add Members:</Label>
             <InputWrapper ref={setAnchorEl} className={focused ? 'focused' : ''}>
@@ -368,49 +314,27 @@ const ConvSettings: React.FC = () => {
             </Listbox>
           ) : null}
         </div>
-
-
-        <ThemeProvider theme={theme}>
-            <Button
-              type="button"
+        <Button
               fullWidth
               variant="contained"
               color="primary"
-              className={classes.submit}
               onClick={convmanagement}
+        >
+          Save changes
+        </Button>
+      </div>
+      <nav>
+        <a href="https://blog.chatalk.fr/" className={classes.navLink}>
+          Blog
+        </a>
+        <a href="https://status.chatalk.fr/" className={classes.navLink}>
+          Status
+        </a>
+        <Link to="/credits" className={classes.navLink}>
+          Credits
+        </Link>
+      </nav>
 
-            >
-              Save changes
-            </Button>
-          </ThemeProvider>
-        </form>
-      </Container>
-      <footer className={classes.footer}>
-        <Container component="main" maxWidth="sm">
-          <Grid
-            container
-            spacing={1}
-            justify="space-between"
-            alignItems="center"
-          >
-            <Grid item>
-              <a href="https://status.chatalk.fr/" style={{ color: '#0b6374' }}>
-                Status
-              </a>
-            </Grid>
-            <Grid item>
-              <a href="https://blog.chatalk.fr" style={{ color: '#0b6374' }}>
-                Blog
-              </a>
-            </Grid>
-            <Grid item>
-              <Link to="/credits" style={{ color: '#0b6374' }}>
-                Credits
-              </Link>
-            </Grid>
-          </Grid>
-        </Container>
-      </footer>
     </div>
   );
 };
