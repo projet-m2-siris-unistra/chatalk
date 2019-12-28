@@ -77,7 +77,7 @@ func main() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 
-	sub, _ := sc.Subscribe(channelName, func(m *stan.Msg) {
+	sub, _ := sc.QueueSubscribe(channelName, channelName, func(m *stan.Msg) {
 		log.Println("register service is handling a new request")
 
 		var msg registerRequest
@@ -131,7 +131,7 @@ func main() {
 
 		j, err := json.Marshal(response)
 		nc.Publish("ws."+msg.WsID+".send", j)
-	})
+	}, stan.DurableName(channelName))
 
 	<-c // just wait for terminaison signal to continue (exit)
 

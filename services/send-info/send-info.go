@@ -40,7 +40,7 @@ type Conv struct {
 	Members   string `json:"members"`
 }
 
-type Message struct {
+type message struct {
 	MsgID   int    `json:"msgid"`
 	Sender  int    `json:"senderid"`
 	ConvID  int    `json:"convid"`
@@ -53,7 +53,7 @@ type sendInfoResponse struct {
 	Error    string    `json:"error,omitempty"`
 	Users    []User    `json:"users,omitempty"`
 	Convs    []Conv    `json:"convs,omitempty"`
-	Messages []Message `json:"messages,omitempty"`
+	Messages []message `json:"messages,omitempty"`
 }
 
 // get environment variable, if not found will be set to `fallback` value
@@ -102,7 +102,7 @@ func main() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)
 
-	sub, _ := sc.Subscribe(channelName, func(m *stan.Msg) {
+	sub, _ := sc.QueueSubscribe(channelName, channelName, func(m *stan.Msg) {
 		log.Println("Send Information service is handling a new request")
 		var msg sendInfoRequest
 		err := json.Unmarshal(m.Data, &msg)
@@ -114,12 +114,12 @@ func main() {
 		var response sendInfoResponse
 		var uID int
 		var usrname string
-		var dispName, picUrl null.String
+		var dispName, picURL null.String
 		var usersArr []User
 		var cnv Conv
 		var convsArr []Conv
-		var content Message
-		var msgsArr []Message
+		var content message
+		var msgsArr []message
 
 		userID := msg.UserID
 
@@ -137,7 +137,7 @@ func main() {
 		}
 
 		for rows.Next() {
-			err := rows.Scan(&uID, &usrname, &dispName, &picUrl)
+			err := rows.Scan(&uID, &usrname, &dispName, &picURL)
 			if err == sql.ErrNoRows {
 				log.Println("No rows were returned!")
 				response = sendInfoResponse{
@@ -166,7 +166,7 @@ func main() {
 				goto send_msg
 			}
 
-			usersArr = append(usersArr, User{UserID: uID, Username: usrname, DisplayName: dispName, PictureURL: picUrl})
+			usersArr = append(usersArr, User{UserID: uID, Username: usrname, DisplayName: dispName, PictureURL: picURL})
 		}
 		rows.Close()
 
@@ -254,7 +254,7 @@ func main() {
 		j, err := json.Marshal(response)
 		nc.Publish("ws."+msg.WsID+".send", j)
 
-	})
+	}, stan.DurableName(channelName))
 
 	<-c
 
