@@ -3,21 +3,13 @@ import { Link } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import Button from '@material-ui/core/Button';
-import { makeStyles /*, createMuiTheme */ } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
   button: {
     margin: theme.spacing(1),
   },
 }));
-
-// const theme = createMuiTheme({
-//   palette: {
-//     primary: {
-//       main: '#0b6374',
-//     },
-//   },
-// });
 
 const Terms: React.FC = () => {
   const classes = useStyles();

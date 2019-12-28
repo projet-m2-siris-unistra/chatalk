@@ -19,11 +19,13 @@ import { DispatchProp, connect, useSelector } from 'react-redux';
 interface WebsocketContextValue {
   isOpen: boolean;
   connection: WebSocket | null;
+  token: string | null;
 }
 
 const defaultWebsocketContextValue: WebsocketContextValue = {
   isOpen: false,
   connection: null,
+  token: localStorage.getItem('token'),
 };
 
 const WebsocketContext: Context<WebsocketContextValue> = React.createContext(
@@ -43,6 +45,8 @@ interface State {
   isOpen: boolean;
   ping: ReturnType<typeof setInterval> | null;
   userid: number | null;
+  token: string | null;
+  refresh: ReturnType<typeof setInterval> | null;
 }
 
 class WebsocketProvider extends React.Component<Props, State> {
@@ -51,6 +55,8 @@ class WebsocketProvider extends React.Component<Props, State> {
     isOpen: false,
     ping: null,
     userid: null,
+    token: localStorage.getItem('token'),
+    refresh: null,
   };
 
   componentDidMount() {
@@ -76,7 +82,6 @@ class WebsocketProvider extends React.Component<Props, State> {
   }
 
   serviceResponseRegister(data: any) {
-    console.log('svc/register: ', data);
     if (!data.success) {
       this.props.dispatch(
         alertError(data.error || 'Registration failed. Retry later…')
@@ -89,16 +94,36 @@ class WebsocketProvider extends React.Component<Props, State> {
   }
 
   serviceResponseLogin(data: any) {
-    console.log('svc/login: ', data);
+    if (data.type) {
+      switch (data.type) {
+        case 'logout':
+          this.serviceResponseLogout(data);
+          return;
+        case 'token-refresh':
+          this.serviceResponseTokenRefresh(data);
+          return;
+      }
+    }
+
     if (!data.success) {
-      this.props.dispatch(
-        alertError(data.error || 'Login failed. Retry later…')
-      );
+      if (data.error) {
+        this.props.dispatch(
+          alertError(data.error || 'Login failed. Retry later…')
+        );
+      }
+
+      // log the user out
+      localStorage.removeItem('token');
+      this.props.dispatch(clearAuth());
+      this.setState({ token: null });
+
       return;
     }
-    this.props.dispatch(
-      alertInfo(`Welcome ${data.displayname || data.username || ''}!`)
-    );
+    if (!data.type) {
+      this.props.dispatch(
+        alertInfo(`Welcome ${data.displayname || data.username || ''}!`)
+      );
+    }
     this.props.dispatch(
       setAuth({
         userid: data.userid,
@@ -107,7 +132,11 @@ class WebsocketProvider extends React.Component<Props, State> {
         avatar: data.picture,
       })
     );
-    this.setState({ userid: data.userid });
+    localStorage.setItem('token', data.token);
+    this.setState({
+      userid: data.userid,
+      token: data.token,
+    });
   }
 
   serviceResponseConvCreation(data: any) {
@@ -121,7 +150,6 @@ class WebsocketProvider extends React.Component<Props, State> {
       return;
     }
 
-    // if success (whaaaaaaat?!)
     if (data.success) {
       this.props.dispatch(alertInfo('The conversation was created.'));
       this.props.dispatch(
@@ -198,8 +226,27 @@ class WebsocketProvider extends React.Component<Props, State> {
     }
   }
 
-  serviceResponsePing(data: any) {
-    console.log('svc/ping: ', data);
+  serviceResponseTokenRefresh(data: any) {
+    if (data.success && data.token) {
+      localStorage.setItem('token', data.token);
+      this.setState({ token: data.token });
+    }
+    if (!data.success) {
+      localStorage.removeItem('token');
+      this.props.dispatch(clearAuth());
+      this.props.dispatch(
+        alertError('You were disconnected. You will need to login again.')
+      );
+      this.setState({ token: null });
+    }
+  }
+
+  serviceResponseLogout(_data: any) {
+    console.log('logged out!');
+    localStorage.removeItem('token');
+    this.props.dispatch(clearAuth());
+    this.props.dispatch(alertInfo('Successfully logged out!'));
+    this.setState({ token: null });
   }
 
   sendPing() {
@@ -218,27 +265,72 @@ class WebsocketProvider extends React.Component<Props, State> {
     );
   }
 
+  sendRefresh() {
+    if (
+      !this.state.isOpen ||
+      this.state.socket === null ||
+      this.state.refresh === null ||
+      !this.state.token
+    )
+      return;
+
+    this.state.socket.send(
+      JSON.stringify({
+        action: 'login',
+        payload: {
+          method: 'jwt',
+          action: 'refresh',
+          token: this.state.token,
+        },
+      })
+    );
+  }
+
   stopPing() {
     if (this.state.ping === null) return;
     clearInterval(this.state.ping);
     this.setState({ ping: null });
   }
 
+  stopRefresh() {
+    if (this.state.refresh === null) return;
+    clearInterval(this.state.refresh);
+    this.setState({ refresh: null });
+  }
+
   onWsOpen() {
-    console.log('ws opened');
+    this.props.dispatch(clearAlert());
     this.setState({
       isOpen: true,
-      ping: setInterval(() => this.sendPing(), 15000),
+      ping: setInterval(() => this.sendPing(), 15000), // 15 sec
+      refresh: setInterval(() => this.sendRefresh(), 300000), // 5 min
     });
-    this.props.dispatch(clearAlert());
+
+    // if a token is present, try to reconnect the user
+    if (this.state.token && this.state.socket) {
+      this.state.socket.send(
+        JSON.stringify({
+          action: 'login',
+          payload: {
+            method: 'jwt',
+            action: 'login',
+            token: this.state.token,
+          },
+        })
+      );
+    }
   }
 
   onWsClose() {
-    console.log('ws closed');
     this.props.dispatch(clearAuth());
     this.setState({ isOpen: false });
     this.stopPing();
+    this.stopRefresh();
+
+    // try to reconnect to the websocket
     setTimeout(() => this.createWs(this.props.wsUrl), 2000);
+
+    // inform the user that the connection was lost
     this.props.dispatch(
       alertError(
         'Server connection lost. Please check your Internet connection and wait…'
@@ -247,16 +339,15 @@ class WebsocketProvider extends React.Component<Props, State> {
   }
 
   onWsError(error: any) {
-    console.log('ws errored:', error);
     this.props.dispatch(clearAuth());
     this.setState({ isOpen: false });
     this.stopPing();
+    this.stopRefresh();
   }
 
   onWsMessage(msg: any) {
     this.setState({ isOpen: true });
     const data = JSON.parse(msg.data);
-    console.log('ws messaged:', data);
     if (!data || !data.action) return;
 
     switch (data.action) {
@@ -274,10 +365,6 @@ class WebsocketProvider extends React.Component<Props, State> {
 
       case 'conv_creation':
         this.serviceResponseConvCreation(data);
-        break;
-
-      case 'ping':
-        this.serviceResponsePing(data);
         break;
 
       case 'msg_sender':
@@ -312,6 +399,7 @@ class WebsocketProvider extends React.Component<Props, State> {
         value={{
           isOpen: this.state.isOpen,
           connection: this.state.socket,
+          token: this.state.token,
         }}
       >
         {this.props.children}

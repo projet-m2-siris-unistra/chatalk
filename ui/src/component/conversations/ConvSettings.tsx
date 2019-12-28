@@ -220,8 +220,9 @@ const ConvSettings: React.FC = () => {
   const [convname, setName] = useState('');
   const [convtopic, setTopic] = useState('');
   const conv = useSelector((state: State) => state.conversations).filter(c => parseInt(c.convid) === convid);
-  const members = conv[0].members.replace('{','').replace('}','').split(',').map(n => parseInt(n));
-  const users = useSelector((state: State) => state.users).filter(u => !members.includes(u.userid));
+  const membersList = conv[0].members.replace('{','').replace('}','').split(',').map(n => parseInt(n));
+  const users = useSelector((state: State) => state.users).filter(u => membersList.indexOf(u.userid) < 0);
+  const members = useSelector((state: State) => state.users).filter(u => membersList.indexOf(u.userid) > -1);
 
   const {
     getRootProps,
@@ -242,6 +243,14 @@ const ConvSettings: React.FC = () => {
     getOptionLabel: option => option.username,
   });
 
+  const del = useAutocomplete({
+    id: 'participant-id',
+    defaultValue: [],
+    multiple: true,
+    options: members,
+    getOptionLabel: option => option.username,
+  });
+
   const convmanagement = () => {
     if (!isOpen || connection === null) {
       console.error('ws is not open');
@@ -254,7 +263,7 @@ const ConvSettings: React.FC = () => {
     }
 
     const newmembers = value.map((user:any) => user.userid)
-
+    const delmembers = del.value.map((user:any) => user.userid)
     console.log('ConvSettings:change conv_settings', convname, convtopic);
     connection.send(
       JSON.stringify({
@@ -264,6 +273,7 @@ const ConvSettings: React.FC = () => {
           convname,
           convtopic,
           newmembers: `{${newmembers}}`,
+          delmembers: `{${delmembers}}`,
         },
       })
     );
@@ -335,6 +345,30 @@ const ConvSettings: React.FC = () => {
             </Listbox>
           ) : null}
         </div>
+
+        <div>
+          <div {...del.getRootProps()}>
+            <Label {...del.getInputLabelProps()}>Delete Members:</Label>
+            <InputWrapper ref={del.setAnchorEl} className={focused ? 'focused' : ''}>
+              {del.value.map((option:any, index:any) => (
+                <Tag label={option.username} {...del.getTagProps({ index })} />
+              ))}
+
+              <input {...del.getInputProps()} />
+            </InputWrapper>
+          </div>
+          {del.groupedOptions.length > 0 ? (
+            <Listbox {...del.getListboxProps()}>
+              {del.groupedOptions.map((option, index) => (
+                <li {...del.getOptionProps({ option, index })}>
+                  <span>{option.username}</span>
+                  <CheckIcon fontSize="small" />
+                </li>
+              ))}
+            </Listbox>
+          ) : null}
+        </div>
+
 
         <ThemeProvider theme={theme}>
             <Button
