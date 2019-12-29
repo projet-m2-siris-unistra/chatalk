@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"strconv"
 	"syscall"
 
 	dberror "github.com/Shyp/go-dberror"
@@ -34,7 +33,7 @@ type User struct {
 
 // Conv is the representation of a conversation
 type Conv struct {
-	ConvID    int    `json:"convid"`
+	ConvID    string `json:"convid"`
 	Convname  string `json:"convname"`
 	SharedKey string `json:"shared_key"`
 	Members   string `json:"members"`
@@ -203,7 +202,7 @@ func main() {
 			}
 
 			convsArr = append(convsArr, cnv)
-			topicName := "conv." + strconv.Itoa(cnv.ConvID)
+			topicName := "conv." + cnv.ConvID
 			nc.Publish("ws."+msg.WsID+".sub", []byte(topicName))
 		}
 		rows.Close()

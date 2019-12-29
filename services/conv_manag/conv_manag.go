@@ -57,6 +57,7 @@ func main() {
 		}
 
 		var response convManagResponse
+		response.Action = "conv_manag"
 		response.Success = true
 		var convID int
 		var userID int
@@ -71,10 +72,13 @@ func main() {
 		spliMem = strings.Split(spliMem[0], "{")
 		spliMem = strings.Split(spliMem[1], ",")
 
-		for _, v := range spliMem {
-			userID, _ = strconv.Atoi(v)
-			members = append(members, userID)
+		if spliMem[0] != "" {
+			for _, v := range spliMem {
+				userID, _ = strconv.Atoi(v)
+				members = append(members, userID)
+			}
 		}
+		log.Println(members)
 
 		convID, err = strconv.Atoi(msg.Payload.ConvID)
 
@@ -130,19 +134,22 @@ func main() {
 					Success: false,
 					Error:   "Issue on Database, reload later",
 				}
+			} else {
+				jm, _ := json.Marshal(response)
+				nc.Publish("conv."+msg.Payload.ConvID, []byte(jm))
+				response.Action = "conv_creation"
+				response.Creator = 0
+				jm, _ = json.Marshal(response)
+				for _, v := range members {
+					nc.Publish("user."+strconv.Itoa(v), []byte(jm))
+				}
 			}
-
 		}
-		// to old members send a conv-mana msg
-		// to new members send a conv-creation msg with creator 0
 
-		response = convManagResponse{
-			Action:  "conv_manag",
-			Success: false,
-			Error:   "Processing",
+		if response.Success == false {
+			j, _ := json.Marshal(response)
+			nc.Publish("ws."+msg.WsID+".send", j)
 		}
-		j, err := json.Marshal(response)
-		nc.Publish("ws."+msg.WsID+".send", j)
 
 	}, stan.DurableName(channelName))
 

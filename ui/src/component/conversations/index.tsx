@@ -113,7 +113,6 @@ const ConversationsList: React.FC = () => {
   const classes = useStyles();
   const isDesktop = useMediaQuery('(min-width:1000px)');
   const conversations = useSelector((state: State) => state.conversations);
-  console.log('conversationindex: ', conversations);
   const listItems = conversations.map(c => (
     <Link
       to={`/conversation/${c.convid}`}

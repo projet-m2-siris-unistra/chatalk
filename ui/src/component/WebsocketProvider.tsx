@@ -181,6 +181,7 @@ class WebsocketProvider extends React.Component<Props, State> {
   }
   
   serviceResponseConvChange(data:any) {
+    console.log('svc/conv_manag: ', data);
     if (!data.success) {
       this.props.dispatch(
         alertError(
@@ -205,6 +206,7 @@ class WebsocketProvider extends React.Component<Props, State> {
   }
 
   serviceResponseUserChange(data:any) {
+    console.log('svc/user_manag: ', data);
     if (!data.success) {
       this.props.dispatch(
         alertError(
@@ -404,7 +406,7 @@ class WebsocketProvider extends React.Component<Props, State> {
       case 'msg_sender':
         this.serviceResponseMsgSender(data);
         break;
-      case 'conv_change':
+      case 'conv_manag':
         this.serviceResponseConvChange(data);
         break;
       case 'user_change':
