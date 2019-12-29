@@ -13,6 +13,7 @@ import {
   updateMessages,
   updateConversations,
   changeConversations,
+  changeUser,
 } from '../store/actions';
 import { DispatchProp, connect} from 'react-redux';
 
@@ -178,18 +179,19 @@ class WebsocketProvider extends React.Component<Props, State> {
       }
     }
   }
+  
   serviceResponseConvChange(data:any) {
     if (!data.success) {
       this.props.dispatch(
         alertError(
-          data.error || 'The creation of the conversation failed. Retry later…'
+          data.error || 'The change on the conversation failed. Retry later…'
         )
       );
       return;
     }
     if (data.success) {
       this.props.dispatch(
-        alertInfo('The conversation was created.')
+        alertInfo('The conversation was changed.')
       );
       this.props.dispatch(
         changeConversations({
@@ -199,9 +201,41 @@ class WebsocketProvider extends React.Component<Props, State> {
           members: data.members,
         })
       );
-
+    }
   }
-}
+
+  serviceResponseUserChange(data:any) {
+    if (!data.success) {
+      this.props.dispatch(
+        alertError(
+          data.error || 'The change of your profil failed. Retry later…'
+        )
+      );
+      return;
+    }
+    if (data.success) {
+      this.props.dispatch(
+        alertInfo('Profil changed.')
+      );
+      if( data.userid === this.state.userid) {
+        setAuth({
+          userid: data.userid,
+          username: data.username,
+          displayname: `${data.displayname}@${data['ws-id']}`,
+          avatar: data.picture,
+        })
+        return;
+      } 
+      this.props.dispatch(
+        changeUser({
+          userid: data.userid,
+          username: data.username,
+          displayname: `${data.displayname}@${data['ws-id']}`,
+          avatar: data.picture,
+        })
+      );
+    }
+  }
 
   serviceResponseMsgSender(data: any) {
     console.log('svc/msg_sender: ', data);
@@ -371,7 +405,10 @@ class WebsocketProvider extends React.Component<Props, State> {
         this.serviceResponseMsgSender(data);
         break;
       case 'conv_change':
-
+        this.serviceResponseConvChange(data);
+        break;
+      case 'user_change':
+        this.serviceResponseUserChange(data);
         break;
       case 'conv-sub':
         this.serviceResponseConvSub(data);

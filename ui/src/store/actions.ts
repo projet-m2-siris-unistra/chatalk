@@ -9,7 +9,8 @@ export const SET_USERS = 'SET_USERS';
 export const SET_MESSAGES = 'SET_MESSAGES';
 export const UPDATE_MESSAGES = 'UPDATE_MESSAGES';
 export const UPDATE_CONVERSATIONS = 'UPDATE_CONVERSATIONS';
-export const CHANGE_CONVERSATIONS = 'CHANGE_CONVERSATiONS';
+export const CHANGE_CONVERSATIONS = 'CHANGE_CONVERSATIONS';
+export const CHANGE_USER = 'CHANGE_USER';
 
 
 interface SetAuthAction {
@@ -61,6 +62,11 @@ interface ChangeConversationsAction{
   convchange: Conversation;
 }
 
+interface ChangeUserAction{
+  type: typeof  CHANGE_USER;
+  userchange: User;
+}
+
 export type AuthAction = SetAuthAction | ClearAuthAction;
 export type AlertAction = SetAlertAction | ClearAlertAction;
 export type Action =
@@ -71,7 +77,8 @@ export type Action =
   | SetMessagesAction
   | UpdateMessagesAction
   | UpdateConversationsAction
-  | ChangeConversationsAction;
+  | ChangeConversationsAction
+  | ChangeUserAction;
 
 
 export function setAuth(auth: Auth): SetAuthAction {
@@ -163,5 +170,14 @@ export function changeConversations(
   return {
     type: CHANGE_CONVERSATIONS,
     convchange,
+  };
+}
+
+export function changeUser(
+  userchange: User
+): ChangeUserAction {
+  return {
+    type: CHANGE_USER,
+    userchange,
   };
 }
