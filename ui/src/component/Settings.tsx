@@ -59,6 +59,7 @@ const Settings: React.FC = () => {
   const [displayname, setDName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPswd] = useState('');
+  const [passwordconf, setPswdConf] = useState('');
 
 
   const usermanag = () => {
@@ -82,6 +83,7 @@ const Settings: React.FC = () => {
           displayname,
           email,
           password,
+          passwordconf
         },
       })
     );
@@ -118,6 +120,12 @@ const Settings: React.FC = () => {
           type="password"
           variant="outlined"
           onChange={e => setPswd(e.target.value)}
+        />
+        <TextField
+          label="Password Confirmation"
+          type="password"
+          variant="outlined"
+          onChange={e => setPswdConf(e.target.value)}
         />
         <Button 
             type="button" 

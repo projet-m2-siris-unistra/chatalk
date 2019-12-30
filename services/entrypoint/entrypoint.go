@@ -34,6 +34,7 @@ func isValidServiceName(name string) bool {
 		"conv_manag",
 		"msg_sender",
 		"conv-sub",
+		"user-manag",
 		"login":
 		return true
 	}

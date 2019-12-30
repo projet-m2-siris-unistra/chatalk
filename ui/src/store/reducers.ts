@@ -41,7 +41,7 @@ export default (state: State = initialState, action: actions.Action): State => {
       //sort + dedupli 
       return {
         ...state,
-        messages: [...state.messages, ...action.messages]
+        messages: action.messages,
       };
     case actions.UPDATE_MESSAGES:
       return {

@@ -126,7 +126,8 @@ func main() {
 				FROM conversations c, conv_keys q
 				WHERE c.conv_id =$1
 				AND c.conv_id = q.conv_id
-				GROUP BY c.conv_id, c.convname, q.shared_key`, convID).Scan(&response.ConvID, &response.Convname, &response.Sharedkey, &response.Members)
+				GROUP BY c.conv_id, c.convname, q.shared_key`, convID).Scan(&response.ConvID,
+				&response.Convname, &response.Sharedkey, &response.Members)
 
 			if err != nil {
 				response = convManagResponse{

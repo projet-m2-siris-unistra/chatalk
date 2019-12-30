@@ -216,10 +216,18 @@ class WebsocketProvider extends React.Component<Props, State> {
       return;
     }
     if (data.success) {
-      this.props.dispatch(
-        alertInfo('Profil changed.')
-      );
+      if(data.error){
+        this.props.dispatch(
+          alertInfo(data.error)
+        );
+        return;
+      }
+      
       if( data.userid === this.state.userid) {
+        this.props.dispatch(
+          alertInfo("Profil Changed")
+        );
+
         setAuth({
           userid: data.userid,
           username: data.username,
@@ -406,12 +414,15 @@ class WebsocketProvider extends React.Component<Props, State> {
       case 'msg_sender':
         this.serviceResponseMsgSender(data);
         break;
+
       case 'conv_manag':
         this.serviceResponseConvChange(data);
         break;
-      case 'user_change':
+
+      case 'user-manag':
         this.serviceResponseUserChange(data);
         break;
+
       case 'conv-sub':
         this.serviceResponseConvSub(data);
         break;

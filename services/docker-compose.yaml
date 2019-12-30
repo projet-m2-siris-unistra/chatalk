@@ -171,11 +171,11 @@ services:
       - DB_PASS=chatalk
       - DB_MODE=disable
 
-  conv-sub:
+  user-manag:
     build:
       context: .
       args:
-        service: conv-sub
+        service: user-manag
     depends_on:
       - bus
       - db-migrations
