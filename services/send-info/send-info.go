@@ -29,6 +29,7 @@ type User struct {
 	Username    string      `json:"username"`
 	DisplayName null.String `json:"displayname"`
 	PictureURL  null.String `json:"picture"`
+	PublicKey   string      `json:"publickay"`
 }
 
 // Conv is the representation of a conversation
@@ -112,7 +113,7 @@ func main() {
 
 		var response sendInfoResponse
 		var uID int
-		var usrname string
+		var usrname, pubkey string
 		var dispName, picURL null.String
 		var usersArr []User
 		var cnv Conv
@@ -164,8 +165,11 @@ func main() {
 				}
 				goto send_msg
 			}
-
-			usersArr = append(usersArr, User{UserID: uID, Username: usrname, DisplayName: dispName, PictureURL: picURL})
+			err = db.QueryRow(`
+			SELECT pubkey
+			FROM pubkeys
+			WHERE user_id = $1;`, uID).Scan(&pubkey)
+			usersArr = append(usersArr, User{UserID: uID, Username: usrname, DisplayName: dispName, PictureURL: picURL, PublicKey: pubkey})
 		}
 		rows.Close()
 

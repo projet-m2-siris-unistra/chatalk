@@ -35,6 +35,7 @@ type userManagResponse struct {
 	Username    string `json:"username,omitempty"`
 	Displayname string `json:"displayname,omitempty"`
 	Picture     string `json:"picture,omitempty"`
+	PublicKey   string `json:"picture,omitempty"`
 }
 
 func main() {
@@ -121,6 +122,10 @@ func main() {
 			WHERE user_id = $1`, userID).Scan(&response.UserID,
 				&response.Username, &response.Displayname, &response.Picture)
 
+			err = db.Read().QueryRow(`
+				SELECT pubkey
+				FROM pubkeys
+				WHERE user_id = $1;`, userID).Scan(&response.PublicKey)
 			rows, _ := db.Read().Query(`
 			SELECT user_id
 			FROM users

@@ -26,6 +26,7 @@ export interface Conversation {
 }
 
 export interface User extends Auth {
+  publickey: string;
   online?: boolean;
 }
 

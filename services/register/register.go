@@ -24,6 +24,7 @@ type registerRequest struct {
 		Email                string `json:"email"`
 		Password             string `json:"password"`
 		PasswordConfirmation string `json:"password-confirmation"`
+		PublicKey            string `json:"publickey"`
 	} `json:"payload"`
 }
 
@@ -120,6 +121,11 @@ func main() {
 					response.Error = "unknown error"
 				}
 			} else {
+				_, err = db.Write().Query(`
+					INSERT INTO pubkeys(user_id, pubkey, device_id, last_used, desc_string)
+					VALUES($1, $2, 1, now(), NULL);
+				`, userID, msg.Payload.PublicKey)
+
 				response.Success = true
 				response.UserID = userID
 				response.Username = userUsername

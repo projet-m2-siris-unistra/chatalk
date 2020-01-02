@@ -242,6 +242,7 @@ class WebsocketProvider extends React.Component<Props, State> {
           username: data.username,
           displayname: `${data.displayname}@${data['ws-id']}`,
           avatar: data.picture,
+          publickey: data.publickey,
         })
       );
     }

@@ -19,6 +19,8 @@ import {
 
 import { useWebsocket } from './WebsocketProvider';
 
+import crypto from 'crypto';
+
 const useStyles = makeStyles(theme => ({
   '@global': {
     body: {
@@ -90,6 +92,17 @@ const SignUp: React.FC = () => {
       return;
     }
 
+    const diffie = crypto.getDiffieHellman('modp1');
+    diffie.generateKeys();
+
+
+    const publicKey = diffie.getPublicKey().toString();
+    const privateKey = diffie.getPrivateKey().toString();
+
+    localStorage.setItem(`publicKey_${username}`, publicKey);
+    localStorage.setItem(`privateKey_${username}`, privateKey);    
+    console.log(`publicKey_${username}`, publicKey);
+    
     connection.send(
       JSON.stringify({
         action: 'register',
@@ -98,6 +111,7 @@ const SignUp: React.FC = () => {
           email,
           password,
           'password-confirmation': passwordconf,
+          publickey : publicKey,
         },
       })
     );
