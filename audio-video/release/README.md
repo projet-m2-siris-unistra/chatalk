@@ -17,7 +17,7 @@ node index.js
 ```
 
 Puis dans le navigateur, aller à l'adresse `localhost:8080` (ouvrir deux onglets).
-Après une modification, recharger ne suffit pas: il faut fermer les onglets et les réouvrir.
+Après une modification, recharger ne suffit pas: il faut fermer les onglets et les réouvrir. De plus il ne faut pas oublier d'effacerles données de navigations.
 Pour appeller, la seule possibilité, c'est que celui qui n'initialise pas la room (le deuxième onglet ouvert, donc) clique le premier sur le bouton call, puis celui qui initialise.
 
 ### Pour avoir de l'audio uniquement
