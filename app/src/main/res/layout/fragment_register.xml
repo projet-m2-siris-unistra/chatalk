@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     android:textColor="#fff"
-    tools:context=".RegisterFragment">
+    tools:context=".ui.register.RegisterFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
