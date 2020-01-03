@@ -12,19 +12,18 @@ import com.tinder.scarlet.ws.Send
 import io.reactivex.Flowable
 import okhttp3.OkHttpClient
 import io.reactivex.disposables.CompositeDisposable
-import androidx.core.app.ComponentActivity.ExtraData
-import androidx.core.content.ContextCompat.getSystemService
-import android.icu.lang.UCharacter.GraphemeClusterBreak.T
 import java.util.*
 
+data class EmptyWSMessage(val action: String, val payload: Map<String, Int> = emptyMap())
 
 interface EchoService {
     @Receive
     fun observeText(): Flowable<String>
 
     @Send
-    fun sendText(message: String): Boolean
+    fun sendText(message: EmptyWSMessage): Boolean
 }
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,7 +33,7 @@ class MainActivity : AppCompatActivity() {
 
         val client = OkHttpClient()
         val scarletInstance = Scarlet.Builder()
-            .webSocketFactory(client.newWebSocketFactory("wss://echo.websocket.org"))
+            .webSocketFactory(client.newWebSocketFactory("wss://ws.chatalk.fr"))
             .addMessageAdapterFactory(MoshiMessageAdapter.Factory())
             .addStreamAdapterFactory(RxJava2StreamAdapterFactory())
             .build()
@@ -46,9 +45,10 @@ class MainActivity : AppCompatActivity() {
         }
         compositeDisposable.add(disposable)
 
+        val pingMessage = EmptyWSMessage("ping")
         Timer().scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
-                newsService.sendText("hello world")
+                newsService.sendText(pingMessage)
             }
         }, 0, 1_000)
     }
