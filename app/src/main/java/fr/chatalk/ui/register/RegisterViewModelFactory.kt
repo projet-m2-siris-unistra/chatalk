@@ -8,6 +8,7 @@ class RegisterViewModelFactory(
     private val db: AppDatabase
 ): ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        @Suppress("UNCHECKED_CAST")
         return RegisterViewModel(db) as T
     }
 }

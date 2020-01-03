@@ -1,106 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/register"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
-    android:textColor="#fff"
-    tools:context=".ui.register.RegisterFragment">
-
-    <LinearLayout
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/register"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:background="@color/colorPrimary"
+        android:textColor="#fff"
+        tools:context=".ui.register.RegisterFragment">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingVertical="36dp"
-            android:text="Sign Up"
-            android:textColor="#fff"
-            android:textSize="36sp" />
-
-        <EditText
-            android:id="@+id/register_username"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#fff"
-            android:ems="10"
-            android:hint="Username…"
-            android:inputType="textPersonName"
-            android:paddingVertical="12dp"
-            android:textColor="#fff"
-            android:textColorHint="#aaa"
-            android:autofillHints="username" />
+            android:layout_height="match_parent"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-        <EditText
-            android:id="@+id/register_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#fff"
-            android:ems="10"
-            android:hint="Email…"
-            android:inputType="textEmailAddress"
-            android:paddingVertical="12dp"
-            android:textColor="#fff"
-            android:textColorHint="#aaa"
-            android:autofillHints="email_address" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="36dp"
+                android:text="@string/sign_up"
+                android:textColor="@color/design_default_color_on_primary"
+                android:textSize="36sp" />
 
-        <EditText
-            android:id="@+id/register_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#fff"
-            android:ems="10"
-            android:hint="Password…"
-            android:inputType="textPassword"
-            android:paddingVertical="12dp"
-            android:textColor="#fff"
-            android:textColorHint="#aaa"
-            android:autofillHints="password" />
+            <EditText
+                android:id="@+id/register_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="username"
+                android:backgroundTint="@color/design_default_color_on_primary"
+                android:ems="10"
+                android:hint="@string/username_hint"
+                android:inputType="textPersonName"
+                android:paddingVertical="12dp"
+                android:textColor="@color/design_default_color_on_primary"
+                android:textColorHint="@color/material_on_primary_disabled" />
 
-        <EditText
-            android:id="@+id/register_password_confirmation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#fff"
-            android:ems="10"
-            android:hint="Password confirmation…"
-            android:inputType="textPassword"
-            android:paddingVertical="12dp"
-            android:textColor="#fff"
-            android:textColorHint="#aaa"
-            android:autofillHints="password" />
+            <EditText
+                android:id="@+id/register_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="email_address"
+                android:backgroundTint="@color/design_default_color_on_primary"
+                android:ems="10"
+                android:hint="@string/email_hint"
+                android:inputType="textEmailAddress"
+                android:paddingVertical="12dp"
+                android:textColor="@color/design_default_color_on_primary"
+                android:textColorHint="@color/material_on_primary_disabled" />
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="20sp" />
+            <EditText
+                android:id="@+id/register_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="password"
+                android:backgroundTint="@color/design_default_color_on_primary"
+                android:ems="10"
+                android:hint="@string/password_hint"
+                android:inputType="textPassword"
+                android:paddingVertical="12dp"
+                android:textColor="@color/design_default_color_on_primary"
+                android:textColorHint="@color/material_on_primary_disabled" />
 
-        <Button
-            android:id="@+id/register_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Register" />
+            <EditText
+                android:id="@+id/register_password_confirmation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints="password"
+                android:backgroundTint="@color/design_default_color_on_primary"
+                android:ems="10"
+                android:hint="@string/password_confirmation_hint"
+                android:inputType="textPassword"
+                android:paddingVertical="12dp"
+                android:textColor="@color/design_default_color_on_primary"
+                android:textColorHint="@color/material_on_primary_disabled" />
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="20sp" />
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20sp" />
 
-        <TextView
-            android:id="@+id/register_login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingVertical="10dp"
-            android:text="Already have an account? Sign In!"
-            android:textAlignment="center"
-            android:textColor="#fff" />
-    </LinearLayout>
+            <Button
+                android:id="@+id/register_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/design_default_color_on_primary"
+                android:text="@string/register"
+                android:textColor="@color/colorPrimary" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="20sp" />
+
+            <TextView
+                android:id="@+id/register_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingVertical="10dp"
+                android:text="@string/already_have_an_account_sign_in"
+                android:textAlignment="center"
+                android:textColor="@color/design_default_color_on_primary" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
