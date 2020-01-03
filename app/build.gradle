@@ -51,6 +51,7 @@ dependencies {
     implementation "com.github.tinder.scarlet:scarlet-message-adapter-moshi:0.1.9"
     //noinspection GradleDependency
     implementation "com.github.tinder.scarlet:scarlet-stream-adapter-rxjava2:0.1.9"
+    implementation "com.squareup.moshi:moshi-adapters:1.8.0"
 
     // AndroidX Room support:
     implementation "androidx.room:room-runtime:$room_version"

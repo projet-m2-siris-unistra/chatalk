@@ -13,6 +13,7 @@ import fr.chatalk.MainActivity
 import fr.chatalk.R
 import fr.chatalk.data.AppDatabase
 import fr.chatalk.ui.register.RegisterFragment
+import fr.chatalk.utils.InjectorUtils
 
 class LoginFragment : Fragment() {
 
@@ -21,7 +22,7 @@ class LoginFragment : Fragment() {
     }
 
     private val viewModel: LoginViewModel by viewModels {
-        LoginViewModelFactory(AppDatabase(requireContext().applicationContext))
+        InjectorUtils.provideLoginViewModelFactory(requireContext())
     }
 
     override fun onCreateView(
