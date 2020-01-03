@@ -2,25 +2,19 @@ package fr.chatalk.ui.register
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import fr.chatalk.MainActivity
 import fr.chatalk.R
-import fr.chatalk.data.AppDatabase
-import fr.chatalk.ui.login.LoginFragment
 import fr.chatalk.utils.InjectorUtils
 
 class RegisterFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = RegisterFragment()
-    }
-
     private val viewModel: RegisterViewModel by viewModels {
         InjectorUtils.provideRegisterViewModelFactory(requireContext())
     }
@@ -44,10 +38,8 @@ class RegisterFragment : Fragment() {
 
         val btnLogin: TextView = view.findViewById(R.id.register_login)
         btnLogin.setOnClickListener {
-            fragmentManager
-                ?.beginTransaction()
-                ?.replace(R.id.auth_container, LoginFragment.newInstance())
-                ?.commit()
+            val direction = RegisterFragmentDirections.actionRegisterFragmentToLoginFragment()
+            findNavController().navigate(direction)
         }
     }
 }

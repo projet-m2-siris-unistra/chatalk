@@ -19,7 +19,7 @@ data class LoginRequest(
 data class LoginResponse(
     val success: Boolean,
     val error: String?,
-    val userid: Integer?,
+    val userid: Int?,
     val displayname: String?,
     val picture: String?
 ) : Action(ActionType.login)

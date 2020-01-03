@@ -23,6 +23,8 @@ object InjectorUtils {
         .build()
 
     fun provideChatalkService() = ChatalkService(provideMoshi(), provideHttpClient())
+    fun provideWebSocketProvider(context: Context) =
+        WebSocketProvider.getInstance(provideChatalkService(), provideDatabase(context))
 
     private fun provideDatabase(context: Context) = AppDatabase(context)
 
