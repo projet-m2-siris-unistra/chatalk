@@ -56,7 +56,10 @@ dependencies {
     implementation "com.github.tinder.scarlet:scarlet-message-adapter-moshi:0.1.9"
     //noinspection GradleDependency
     implementation "com.github.tinder.scarlet:scarlet-stream-adapter-rxjava2:0.1.9"
-    implementation "com.squareup.moshi:moshi-adapters:1.8.0"
+    implementation "com.squareup.moshi:moshi:1.9.2"
+    implementation "com.squareup.moshi:moshi-adapters:1.9.2"
+    implementation "com.squareup.moshi:moshi-kotlin:1.9.2"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:1.9.2"
 
     // AndroidX Room support:
     implementation "androidx.room:room-runtime:$room_version"
@@ -76,4 +79,6 @@ dependencies {
 
     //noinspection GradleDependency
     implementation "com.google.android.material:material:1.1.0-beta02"
+
+    implementation "com.squareup.okhttp3:logging-interceptor:4.3.0"
 }

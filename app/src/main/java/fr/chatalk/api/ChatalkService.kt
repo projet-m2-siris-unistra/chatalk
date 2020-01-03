@@ -12,16 +12,16 @@ import okhttp3.OkHttpClient
 
 interface ChatalkService {
     @Receive
-    fun observePing(): Flowable<PingResponse>
+    fun observeResponse(): Flowable<Response>
 
     @Send
-    fun sendPing(message: PingRequest): Boolean
+    fun sendRequest(message: Request): Boolean
+
+    @Receive
+    fun observePing(): Flowable<PingResponse>
 
     @Receive
     fun observeLogin(): Flowable<LoginResponse>
-
-    @Send
-    fun sendLogin(message: LoginRequest): Boolean
 
     companion object {
         @Volatile

@@ -10,18 +10,20 @@ import java.util.concurrent.TimeUnit
 class WebSocketProvider(val service: ChatalkService, val database: AppDatabase) {
     val disposable = CompositeDisposable()
     init {
+        service.observeResponse()
+            .subscribe { Log.d("WSA", it.toString()) }
+            .addTo(disposable)
+
         service.observePing()
-            .filter { it.action == ActionType.ping }
-            .subscribe { Log.d("WS", it.toString()) }
+            .subscribe { Log.d("WSP", it.toString()) }
             .addTo(disposable)
 
         service.observeLogin()
-            .filter { it.action == ActionType.login }
-            .subscribe { Log.d("WS", it.toString()) }
+            .subscribe { Log.d("WSL", it.toString()) }
             .addTo(disposable)
 
         Observable.interval(0, 15, TimeUnit.SECONDS)
-            .subscribe { service.sendPing(PingRequest()) }
+            .subscribe { service.sendRequest(PingRequest()) }
             .addTo(disposable)
     }
 
