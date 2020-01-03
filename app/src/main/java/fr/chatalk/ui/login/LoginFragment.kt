@@ -8,14 +8,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.fragment.app.viewModels
 import fr.chatalk.MainActivity
 import fr.chatalk.R
+import fr.chatalk.data.AppDatabase
 import fr.chatalk.ui.register.RegisterFragment
 
 class LoginFragment : Fragment() {
 
     companion object {
         fun newInstance() = LoginFragment()
+    }
+
+    private val viewModel: LoginViewModel by viewModels {
+        LoginViewModelFactory(AppDatabase(requireContext().applicationContext))
     }
 
     override fun onCreateView(
