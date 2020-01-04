@@ -26,6 +26,7 @@ data class LoginRequest(
 data class LoginResponse(
     val success: Boolean,
     val error: String?,
+    val token: String?,
     val userid: Int?,
     val displayname: String?,
     val picture: String?

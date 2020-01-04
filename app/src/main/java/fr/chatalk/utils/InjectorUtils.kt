@@ -41,6 +41,6 @@ object InjectorUtils {
 
     private fun provideDatabase(context: Context) = AppDatabase(context)
 
-    fun provideLoginViewModelFactory(context: Context) = LoginViewModelFactory(provideDatabase(context))
-    fun provideRegisterViewModelFactory(context: Context) = RegisterViewModelFactory(provideDatabase(context))
+    fun provideLoginViewModelFactory(context: Context) = LoginViewModelFactory(provideDatabase(context), provideChatalkService())
+    fun provideRegisterViewModelFactory(context: Context) = RegisterViewModelFactory(provideDatabase(context), provideChatalkService())
 }

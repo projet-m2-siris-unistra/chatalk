@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -25,6 +26,12 @@ class LoginFragment : Fragment() {
         binding.loginRegister.setOnClickListener {
             val direction = LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
             findNavController().navigate(direction)
+        }
+
+        binding.loginButton.setOnClickListener {
+            val username: String = binding.loginUsername.text.toString()
+            val password: String = binding.loginPassword.text.toString()
+            viewModel.login(username, password)
         }
 
         return binding.root
