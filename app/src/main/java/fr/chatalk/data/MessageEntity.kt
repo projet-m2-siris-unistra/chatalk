@@ -2,9 +2,8 @@ package fr.chatalk.data
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.util.Date
+import java.util.*
 
 @Entity(tableName = "messages")
 data class MessageEntity(

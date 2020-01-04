@@ -1,14 +1,13 @@
 package fr.chatalk
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import fr.chatalk.api.WebSocketProvider
 import fr.chatalk.databinding.ActivityAuthBinding
-import fr.chatalk.ui.login.LoginFragment
 import fr.chatalk.utils.InjectorUtils
 
 class AuthActivity : AppCompatActivity() {

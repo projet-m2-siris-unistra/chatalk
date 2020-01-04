@@ -6,7 +6,8 @@ import com.squareup.moshi.JsonClass
 enum class ActionType {
     ping,
     login,
-    @Json(name = "send-info") sendInfo
+    @Json(name = "send-info")
+    sendInfo
 }
 
 sealed class Request(val action: ActionType)

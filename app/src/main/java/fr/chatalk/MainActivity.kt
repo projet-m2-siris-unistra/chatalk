@@ -1,7 +1,7 @@
 package fr.chatalk
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import fr.chatalk.api.WebSocketProvider
 import fr.chatalk.databinding.ActivityMainBinding

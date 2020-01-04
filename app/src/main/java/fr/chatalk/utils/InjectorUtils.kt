@@ -37,13 +37,22 @@ object InjectorUtils {
             .build()
     }
 
-    fun provideSharedPreferences(context: Context) = PreferenceManager.getDefaultSharedPreferences(context)
+    fun provideSharedPreferences(context: Context) =
+        PreferenceManager.getDefaultSharedPreferences(context)
+
     fun provideChatalkService() = ChatalkService(provideMoshi(), provideHttpClient())
     fun provideWebSocketProvider(context: Context) =
-        WebSocketProvider.getInstance(provideChatalkService(), provideDatabase(context), provideSharedPreferences(context))
+        WebSocketProvider.getInstance(
+            provideChatalkService(),
+            provideDatabase(context),
+            provideSharedPreferences(context)
+        )
 
     private fun provideDatabase(context: Context) = AppDatabase(context)
 
-    fun provideLoginViewModelFactory(context: Context) = LoginViewModelFactory(provideDatabase(context), provideChatalkService())
-    fun provideRegisterViewModelFactory(context: Context) = RegisterViewModelFactory(provideDatabase(context), provideChatalkService())
+    fun provideLoginViewModelFactory(context: Context) =
+        LoginViewModelFactory(provideDatabase(context), provideChatalkService())
+
+    fun provideRegisterViewModelFactory(context: Context) =
+        RegisterViewModelFactory(provideDatabase(context), provideChatalkService())
 }

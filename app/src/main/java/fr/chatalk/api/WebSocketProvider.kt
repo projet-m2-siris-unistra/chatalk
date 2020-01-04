@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
 import fr.chatalk.data.AppDatabase
+import fr.chatalk.data.ConversationEntity
 import fr.chatalk.data.MessageEntity
 import fr.chatalk.data.UserEntity
 import io.reactivex.Observable
@@ -11,8 +12,13 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import java.util.concurrent.TimeUnit
 
-class WebSocketProvider(val service: ChatalkService, val database: AppDatabase, val pref: SharedPreferences) {
+class WebSocketProvider(
+    val service: ChatalkService,
+    val database: AppDatabase,
+    val pref: SharedPreferences
+) {
     val disposable = CompositeDisposable()
+
     init {
         service.observeResponse()
             .subscribe { Log.d("WS/all", it.toString()) }
@@ -75,6 +81,27 @@ class WebSocketProvider(val service: ChatalkService, val database: AppDatabase, 
                     }
                     .subscribe {
                         Log.d("WS/sendInfos/messages", "inserted message $it")
+                    }
+                    .addTo(disposable)
+
+
+                this
+                    .flatMapIterable { it.convs }
+                    .map { ConversationEntity(it.convid!!, it.convname!!, it.sharedKey!!, it.members!!) }
+                    .flatMapSingle { conversation ->
+                        database.conversationDao().insert(conversation)
+                            .onErrorResumeNext {
+                                if (it !is SQLiteConstraintException) throw it
+                                Log.d(
+                                    "WS/sendInfos/convs",
+                                    "conflict on conversation $conversation, updating"
+                                )
+                                database.conversationDao().update(conversation)
+                                    .toSingle { conversation.conversationId.toLong() }
+                            }
+                    }
+                    .subscribe {
+                        Log.d("WS/sendInfos/convs", "inserted conversation $it")
                     }
                     .addTo(disposable)
             }

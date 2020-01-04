@@ -8,7 +8,7 @@ import fr.chatalk.data.AppDatabase
 class RegisterViewModelFactory(
     private val db: AppDatabase,
     private val service: ChatalkService
-): ViewModelProvider.NewInstanceFactory() {
+) : ViewModelProvider.NewInstanceFactory() {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
         return RegisterViewModel(db, service) as T
