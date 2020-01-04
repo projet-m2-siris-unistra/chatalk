@@ -1,7 +1,10 @@
 package fr.chatalk.data
 
+import android.database.sqlite.SQLiteConstraintException
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import io.reactivex.Completable
+import io.reactivex.Single
 
 @Dao
 interface UserDao {
@@ -18,14 +21,14 @@ interface UserDao {
     fun findById(id: Int): LiveData<UserEntity>
 
     @Insert
-    suspend fun insert(user: UserEntity): Long
+    fun insert(user: UserEntity): Single<Long>
 
     @Insert
-    suspend fun insertAll(vararg user: UserEntity)
+    fun insertAll(users: List<UserEntity>): Completable
 
     @Delete
     suspend fun delete(user: UserEntity)
 
     @Update
-    suspend fun update(vararg users: UserEntity)
+    fun update(user: UserEntity): Completable
 }

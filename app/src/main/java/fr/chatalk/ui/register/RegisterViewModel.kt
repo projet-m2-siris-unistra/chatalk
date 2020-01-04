@@ -12,15 +12,5 @@ import kotlinx.coroutines.launch
 
 class RegisterViewModel(private val db: AppDatabase, private val service: ChatalkService) : ViewModel() {
     fun register(user: UserEntity) {
-        val userDao: UserDao = db.userDao()
-
-        viewModelScope.launch {
-            try {
-                val userId: Int = userDao.insert(user).toInt()
-                Log.d("Register", userId.toString())
-            } catch (e: SQLiteConstraintException) {
-                println("registration failed: username/email already used or missing field")
-            }
-        }
     }
 }

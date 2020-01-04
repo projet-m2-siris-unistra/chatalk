@@ -1,6 +1,7 @@
 package fr.chatalk.utils
 
 import android.content.Context
+import androidx.preference.PreferenceManager
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -36,9 +37,10 @@ object InjectorUtils {
             .build()
     }
 
+    fun provideSharedPreferences(context: Context) = PreferenceManager.getDefaultSharedPreferences(context)
     fun provideChatalkService() = ChatalkService(provideMoshi(), provideHttpClient())
     fun provideWebSocketProvider(context: Context) =
-        WebSocketProvider.getInstance(provideChatalkService(), provideDatabase(context))
+        WebSocketProvider.getInstance(provideChatalkService(), provideDatabase(context), provideSharedPreferences(context))
 
     private fun provideDatabase(context: Context) = AppDatabase(context)
 
