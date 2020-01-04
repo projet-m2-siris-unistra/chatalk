@@ -5,7 +5,8 @@ import com.squareup.moshi.JsonClass
 
 enum class ActionType {
     ping,
-    login
+    login,
+    @Json(name = "send-info") sendInfo
 }
 
 sealed class Request(val action: ActionType)
@@ -28,9 +29,40 @@ data class LoginResponse(
     val error: String?,
     val token: String?,
     val userid: Int?,
+    val username: String?,
     val displayname: String?,
     val picture: String?
 ) : Response(ActionType.login)
+
+data class InfosUser(
+    val userid: Int?,
+    val username: String?,
+    val displayname: String?,
+    val picture: String?
+)
+
+data class InfosConv(
+    val convid: Int?,
+    val convname: String?,
+    @Json(name = "shared_key") val sharedKey: String?,
+    val members: String?
+)
+
+data class InfosMessage(
+    val msgid: Int?,
+    val senderid: Int?,
+    val convid: Int?,
+    val content: String?
+)
+
+@JsonClass(generateAdapter = true)
+data class SendInfosResponse(
+    val success: Boolean,
+    val error: String?,
+    val users: List<InfosUser>,
+    val convs: List<InfosConv>,
+    val messages: List<InfosMessage>
+) : Response(ActionType.sendInfo)
 
 @JsonClass(generateAdapter = true)
 data class PingRequest(val payload: Map<String, String> = emptyMap()) : Request(ActionType.ping)

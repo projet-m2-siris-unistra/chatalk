@@ -18,6 +18,7 @@ object InjectorUtils {
                 PolymorphicJsonAdapterFactory.of(Response::class.java, "action")
                     .withSubtype(PingResponse::class.java, ActionType.ping.name)
                     .withSubtype(LoginResponse::class.java, ActionType.login.name)
+                    .withSubtype(SendInfosResponse::class.java, "send-info")
             )
             .add(
                 PolymorphicJsonAdapterFactory.of(Request::class.java, "action")
