@@ -7,13 +7,14 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 @Database(
-    entities = [UserEntity::class],
+    entities = [UserEntity::class, MessageEntity::class],
     version = 1,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase: RoomDatabase() {
     abstract fun userDao(): UserDao
+    abstract fun messageDao(): MessageDao
 
     companion object {
         @Volatile private var instance: AppDatabase? = null
@@ -27,6 +28,6 @@ abstract class AppDatabase: RoomDatabase() {
             context,
             AppDatabase::class.java,
             "chatalk.db"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 }

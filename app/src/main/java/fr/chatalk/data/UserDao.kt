@@ -1,6 +1,5 @@
 package fr.chatalk.data
 
-import android.database.sqlite.SQLiteConstraintException
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import io.reactivex.Completable

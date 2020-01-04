@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
 import fr.chatalk.data.AppDatabase
+import fr.chatalk.data.MessageEntity
 import fr.chatalk.data.UserEntity
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -39,21 +40,44 @@ class WebSocketProvider(val service: ChatalkService, val database: AppDatabase, 
             .addTo(disposable)
 
         service.observeSendInfos()
-            .flatMapIterable { it.users.map { user ->
-                UserEntity(user.userid!!, user.username!!, user.displayname)
-            } }
-            .flatMapSingle { user ->
-                database.userDao().insert(user)
-                    .onErrorResumeNext {
-                        if (it !is SQLiteConstraintException) throw it
-                        Log.d("WS/sendInfos/users", "conflict on user $user, updating")
-                        database.userDao().update(user).toSingle { user.userId.toLong() }
+            .filter { it.success }
+            .apply {
+                this
+                    .flatMapIterable { it.users }
+                    .map { UserEntity(it.userid!!, it.username!!, it.displayname) }
+                    .flatMapSingle { user ->
+                        database.userDao().insert(user)
+                            .onErrorResumeNext {
+                                if (it !is SQLiteConstraintException) throw it
+                                Log.d("WS/sendInfos/users", "conflict on user $user, updating")
+                                database.userDao().update(user).toSingle { user.userId.toLong() }
+                            }
                     }
+                    .subscribe {
+                        Log.d("WS/sendInfos/users", "inserted user $it")
+                    }
+                    .addTo(disposable)
+
+                this
+                    .flatMapIterable { it.messages }
+                    .map { MessageEntity(it.msgid!!, it.senderid!!, it.convid!!, it.content!!) }
+                    .flatMapSingle { message ->
+                        database.messageDao().insert(message)
+                            .onErrorResumeNext {
+                                if (it !is SQLiteConstraintException) throw it
+                                Log.d(
+                                    "WS/sendInfos/messages",
+                                    "conflict on message $message, updating"
+                                )
+                                database.messageDao().update(message)
+                                    .toSingle { message.messageId.toLong() }
+                            }
+                    }
+                    .subscribe {
+                        Log.d("WS/sendInfos/messages", "inserted message $it")
+                    }
+                    .addTo(disposable)
             }
-            .subscribe {
-                Log.d("WS/sendInfos/users", "inserted user $it")
-            }
-            .addTo(disposable)
 
         Observable.interval(0, 15, TimeUnit.SECONDS)
             .subscribe { service.sendRequest(PingRequest()) }
