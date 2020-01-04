@@ -11,9 +11,6 @@ interface ConversationDao {
     fun getAll(): LiveData<List<ConversationEntity>>
 
     @Query("SELECT * FROM conversations WHERE id = :id")
-    fun findByConversation(id: Int): LiveData<ConversationEntity>
-
-    @Query("SELECT * FROM conversations WHERE id = :id")
     fun findById(id: Int): LiveData<ConversationEntity>
 
     @Insert

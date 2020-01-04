@@ -7,6 +7,8 @@ import com.squareup.moshi.adapters.PolymorphicJsonAdapterFactory
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import fr.chatalk.api.*
 import fr.chatalk.data.AppDatabase
+import fr.chatalk.ui.conversation.ConversationListViewModelFactory
+import fr.chatalk.ui.conversation.ConversationSingleViewModelFactory
 import fr.chatalk.ui.login.LoginViewModelFactory
 import fr.chatalk.ui.register.RegisterViewModelFactory
 import okhttp3.OkHttpClient
@@ -55,4 +57,10 @@ object InjectorUtils {
 
     fun provideRegisterViewModelFactory(context: Context) =
         RegisterViewModelFactory(provideDatabase(context), provideChatalkService())
+
+    fun provideConversationListViewModelFactory(context: Context) =
+        ConversationListViewModelFactory(provideDatabase((context)))
+
+    fun provideConversationSingleViewModelFactory(context: Context, conversationId: Int) =
+        ConversationSingleViewModelFactory(provideDatabase(context), conversationId)
 }
