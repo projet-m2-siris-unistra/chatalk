@@ -2,12 +2,12 @@ package fr.chatalk.ui.conversation
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
+import fr.chatalk.R
 import fr.chatalk.databinding.FragmentConversationListBinding
 import fr.chatalk.utils.InjectorUtils
 
@@ -29,6 +29,18 @@ class ConversationListFragment : Fragment() {
             Log.d("conv", conversations.toString())
             adapter.submitList(conversations)
         }
+
+        (activity as AppCompatActivity).apply {
+            setSupportActionBar(binding.conversationsToolbar)
+            supportActionBar?.title = "Conversations"
+        }
+        setHasOptionsMenu(true)
+
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        activity?.menuInflater?.inflate(R.menu.conversations_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
 }
