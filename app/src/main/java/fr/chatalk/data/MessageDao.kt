@@ -10,8 +10,8 @@ interface MessageDao {
     @Query("SELECT * FROM messages")
     fun getAll(): LiveData<List<MessageEntity>>
 
-    @Query("SELECT * FROM messages WHERE convid = :convid")
-    fun findByConversation(convid: Int): LiveData<MessageEntity>
+    @Query("SELECT * FROM messages WHERE convid = :convid ORDER BY id ASC")
+    fun findByConversation(convid: Int): LiveData<List<MessageEntity>>
 
     @Query("SELECT * FROM messages WHERE id = :id")
     fun findById(id: Int): LiveData<MessageEntity>

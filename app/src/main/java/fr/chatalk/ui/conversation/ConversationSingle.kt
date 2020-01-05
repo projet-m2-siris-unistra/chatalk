@@ -50,6 +50,12 @@ class ConversationSingle : Fragment() {
             }
         }
 
+        val adapter = MessageAdapter()
+        binding.messageList.adapter = adapter
+        viewModel.messages.observe(viewLifecycleOwner) { messages ->
+            adapter.submitList(messages)
+        }
+
         return binding.root
     }
 }
