@@ -14,4 +14,6 @@
     <string name="password_confirmation_hint">Password confirmation…</string>
     <string name="conversation_icon">conversation_icon</string>
     <string name="logout">Logout</string>
+    <string name="send">Send</string>
+    <string name="your_message_hint">Your message…</string>
 </resources>
