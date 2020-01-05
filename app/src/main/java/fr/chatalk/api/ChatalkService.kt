@@ -24,6 +24,9 @@ interface ChatalkService {
     fun observeLogin(): Flowable<LoginResponse>
 
     @Receive
+    fun observeRegister(): Flowable<RegisterResponse>
+
+    @Receive
     fun observeSendInfos(): Flowable<SendInfosResponse>
 
     companion object {

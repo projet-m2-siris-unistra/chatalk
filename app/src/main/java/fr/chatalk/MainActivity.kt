@@ -9,7 +9,6 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.navigation.findNavController
 import fr.chatalk.api.WebSocketProvider
 import fr.chatalk.databinding.ActivityMainBinding
 import fr.chatalk.utils.InjectorUtils

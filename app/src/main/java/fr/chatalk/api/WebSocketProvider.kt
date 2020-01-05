@@ -45,6 +45,12 @@ class WebSocketProvider(
             }
             .addTo(disposable)
 
+        service.observeRegister()
+            .subscribe {
+                Log.d("WS/register", it.toString())
+            }
+            .addTo(disposable)
+
         service.observeSendInfos()
             .filter { it.success }
             .apply {
@@ -87,7 +93,14 @@ class WebSocketProvider(
 
                 this
                     .flatMapIterable { it.convs }
-                    .map { ConversationEntity(it.convid!!, it.convname!!, it.sharedKey!!, it.members!!) }
+                    .map {
+                        ConversationEntity(
+                            it.convid!!,
+                            it.convname!!,
+                            it.sharedKey!!,
+                            it.members!!
+                        )
+                    }
                     .flatMapSingle { conversation ->
                         database.conversationDao().insert(conversation)
                             .onErrorResumeNext {

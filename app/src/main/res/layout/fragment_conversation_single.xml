@@ -46,7 +46,6 @@
                 app:stackFromEnd="true"
                 tools:listitem="@layout/fragment_conversation_item" />
 
-
             <EditText
                 android:id="@+id/editText"
                 android:layout_width="0dp"

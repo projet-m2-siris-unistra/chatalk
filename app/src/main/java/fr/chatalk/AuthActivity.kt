@@ -33,8 +33,8 @@ class AuthActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         prefs.unregisterOnSharedPreferenceChangeListener(this)
+        super.onDestroy()
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {

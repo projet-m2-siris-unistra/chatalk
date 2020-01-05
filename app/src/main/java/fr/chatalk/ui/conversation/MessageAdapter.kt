@@ -3,14 +3,11 @@ package fr.chatalk.ui.conversation
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import fr.chatalk.R
-import fr.chatalk.data.ConversationEntity
 import fr.chatalk.data.MessageEntity
-import fr.chatalk.databinding.FragmentConversationItemBinding
 import fr.chatalk.databinding.FragmentMessageBinding
 
 class MessageAdapter :

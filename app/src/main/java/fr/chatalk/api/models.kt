@@ -6,6 +6,7 @@ import com.squareup.moshi.JsonClass
 enum class ActionType {
     ping,
     login,
+    register,
     @Json(name = "send-info")
     sendInfo
 }
@@ -34,6 +35,25 @@ data class LoginResponse(
     val displayname: String?,
     val picture: String?
 ) : Response(ActionType.login)
+
+@JsonClass(generateAdapter = true)
+data class RegisterPayload(
+    val username: String,
+    val email: String,
+    val password: String,
+    @Json(name = "password-confirmation") val passwordConfirmation: String
+)
+
+@JsonClass(generateAdapter = true)
+data class RegisterRequest(
+    val payload: RegisterPayload
+) : Request(ActionType.register)
+
+@JsonClass(generateAdapter = true)
+data class RegisterResponse(
+    val success: Boolean,
+    val error: String?
+) : Response(ActionType.register)
 
 data class InfosUser(
     val userid: Int?,
