@@ -11,6 +11,7 @@ import fr.chatalk.ui.conversation.ConversationListViewModelFactory
 import fr.chatalk.ui.conversation.ConversationSingleViewModelFactory
 import fr.chatalk.ui.login.LoginViewModelFactory
 import fr.chatalk.ui.register.RegisterViewModelFactory
+import io.karn.notify.Notify
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 
@@ -51,7 +52,8 @@ object InjectorUtils {
         WebSocketProvider.getInstance(
             provideChatalkService(),
             provideDatabase(context),
-            provideSharedPreferences(context)
+            provideSharedPreferences(context),
+            provideNotifyCreator(context)
         )
 
     private fun provideDatabase(context: Context) = AppDatabase(context)
@@ -76,4 +78,7 @@ object InjectorUtils {
             provideChatalkService(),
             provideSharedPreferences(context)
         )
+
+    fun provideNotifyCreator(context: Context) =
+        Notify.with(context)
 }

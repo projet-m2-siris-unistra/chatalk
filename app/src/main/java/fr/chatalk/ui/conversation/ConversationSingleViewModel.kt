@@ -21,12 +21,14 @@ class ConversationSingleViewModel internal constructor(
             val jwt = JWT(token)
             val userId = jwt.getClaim("user-id").asString()
             if (!userId.isNullOrBlank()) {
-                service.sendRequest(MsgSenderRequest(
-                    source = userId,
-                    destination = conversationId.toString(),
-                    device = "1",
-                    payload = content
-                ))
+                service.sendRequest(
+                    MsgSenderRequest(
+                        source = userId,
+                        destination = conversationId.toString(),
+                        device = "1",
+                        payload = content
+                    )
+                )
             }
         }
     }

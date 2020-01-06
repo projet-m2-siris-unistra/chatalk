@@ -8,6 +8,7 @@ import fr.chatalk.data.AppDatabase
 import fr.chatalk.data.ConversationEntity
 import fr.chatalk.data.MessageEntity
 import fr.chatalk.data.UserEntity
+import io.karn.notify.NotifyCreator
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
@@ -16,7 +17,8 @@ import java.util.concurrent.TimeUnit
 class WebSocketProvider(
     val service: ChatalkService,
     val database: AppDatabase,
-    val pref: SharedPreferences
+    val pref: SharedPreferences,
+    val notifyCreator: NotifyCreator
 ) {
     val disposable = CompositeDisposable()
 
@@ -26,7 +28,15 @@ class WebSocketProvider(
             .subscribe {
                 val token = pref.getString("token", "")
                 if (!token.isNullOrBlank()) {
-                    service.sendRequest(LoginRequest(LoginPayload(token = token, method = "jwt", action = "login")))
+                    service.sendRequest(
+                        LoginRequest(
+                            LoginPayload(
+                                token = token,
+                                method = "jwt",
+                                action = "login"
+                            )
+                        )
+                    )
                 }
             }
             .addTo(disposable)
@@ -65,6 +75,10 @@ class WebSocketProvider(
                 }
                 database.clearAllTables()
                 Log.d("logout", "got logout response from server")
+                notifyCreator.content {
+                    title = "Logged out"
+                    text = "You were successfully logged out from ChaTalK"
+                }.show()
             }
             .addTo(disposable)
 
@@ -177,11 +191,15 @@ class WebSocketProvider(
             .subscribe {
                 val token = pref.getString("token", "")
                 if (!token.isNullOrBlank()) {
-                    service.sendRequest(LoginRequest(LoginPayload(
-                        token = token,
-                        method = "jwt",
-                        action = "refresh"
-                    )))
+                    service.sendRequest(
+                        LoginRequest(
+                            LoginPayload(
+                                token = token,
+                                method = "jwt",
+                                action = "refresh"
+                            )
+                        )
+                    )
                 }
             }
             .addTo(disposable)
@@ -191,9 +209,15 @@ class WebSocketProvider(
         @Volatile
         private var instance: WebSocketProvider? = null
 
-        fun getInstance(service: ChatalkService, database: AppDatabase, pref: SharedPreferences) =
-            instance ?: synchronized(this) {
-                instance ?: WebSocketProvider(service, database, pref).also { instance = it }
+        fun getInstance(
+            service: ChatalkService,
+            database: AppDatabase,
+            pref: SharedPreferences,
+            notifyCreator: NotifyCreator
+        ) = instance ?: synchronized(this) {
+            instance ?: WebSocketProvider(service, database, pref, notifyCreator).also {
+                instance = it
             }
+        }
     }
 }

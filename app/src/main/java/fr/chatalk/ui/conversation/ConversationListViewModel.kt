@@ -16,11 +16,15 @@ class ConversationListViewModel internal constructor(
     fun logout() {
         val token = prefs.getString("token", "")
         if (!token.isNullOrBlank()) {
-            service.sendRequest(LoginRequest(LoginPayload(
-                method = "jwt",
-                token = token,
-                action = "logout"
-            )))
+            service.sendRequest(
+                LoginRequest(
+                    LoginPayload(
+                        method = "jwt",
+                        token = token,
+                        action = "logout"
+                    )
+                )
+            )
         }
     }
 }
