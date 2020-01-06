@@ -1,0 +1,166 @@
+\documentclass{ter}
+
+\title{Mémoire du projet ChaTalK}
+
+\author{
+  Roberty, Adrien \and
+  Muller, Ludovic \and
+  Tourki, Oussema \and
+  Vetrivel, Govindaraj \and
+  Froeliger, Thomas \and
+  Poittevin Gabriel
+}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Page de garde
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\thispagestyle{empty}
+
+\begin{center}
+  % Logos divers, mettre celui de ChaTalK et d'ALGGOT™ dedans
+  \includegraphics[height=2.5cm]{logos/logo-uds-couleur.pdf}
+  \vfill
+
+  \includegraphics[width=7.0cm]{logos/logo-uds.pdf}\\
+  %\vfill
+
+  \includegraphics[width=7.0cm]{logos/logo-ufr.pdf}
+  \vfill
+  \vfill
+
+  {
+  \large
+  \textsc {
+    Master de Science, mention Informatique
+    spécialité Science et Ingénierie des Réseaux, de l'Internet
+    et des Systèmes
+  }
+  }
+
+  \bigskip
+  %\bigskip
+
+  {\large Mémoire de projet de Master, groupe n°2}
+
+  \medskip
+
+  % Identité de l'auteur
+  {\large Gabriel \textsc {Poittevin}}
+
+  % Contact mail ou téléphone
+  {\small gabriel.poittevin@etu.unistra.fr}
+
+  \vfill
+
+  {
+  \begin{spacing}{1.4}
+  \huge
+  \textsc {
+  \textbf {
+      ChaTalK, application de télécommunications sécurisées et centralisées
+  }
+  }
+  \end{spacing}
+  }
+
+  \vfill
+
+  {\large Projet encadré et commandité par}
+
+  \medskip
+
+  % Identité de l'encadrant
+  {\large Julien \textsc {Montavont}}
+  % Contact mail ou téléphone
+  {\small montavont@unistra.fr}
+  et
+  % Identité de l'encadrant
+  {\large Cristel \textsc {Pelsser}}
+  % Contact mail ou téléphone
+  {\small pelsser@unistra.fr}
+
+  \medskip
+
+  % Logo du client (Journalistes Sans Papiers)
+  \includegraphics[width=8cm]{logos/icube.png}
+  %\includegraphics[height=3cm]{logos/logo-icube.pdf}
+
+  {
+  \begin{otherlanguage}{french}
+    \small \today
+  \end{otherlanguage}
+  }
+\end{center}
+
+\cleardoublepage
+
+% Old title page
+% Ancienne page de garde
+%\maketitle
+
+\tableofcontents
+
+{
+  \listoffigures
+  \listoftables
+}
+
+\cleardoublepage
+
+\begin{abstract}
+
+\end{abstract}
+
+% Section Introduction
+%  - présentation du projet
+%  - description générale de la solution
+%    - architecture
+%    - technologies
+\input{sections/intro}
+
+% Section Technique
+%  - présentation des choix technique
+%  - justification des choix
+%  - regard critique sur les choix
+%  - perspectives d'amélioration
+%  - satisfaction des critères
+\input{sections/tech}
+
+% Section Solution
+%  - présentation de la solution effective
+%  - détails
+\input{sections/solut}
+
+% Section Gestion de projet
+%  - méthode de travail
+%  - gestion et partage du travail
+%  - outils utilisés
+%  - réactivité, gestion humaine
+\input{sections/gest}
+
+% Section Évolution du planning
+%  - présentation des Gantt
+%  - discussion sur leur évolution et les raisons
+\input{sections/gantt}
+
+% Section Timesheets
+%  - discussion sur la répartition du temps
+%    et de la charge de travail
+%  - présentation des six timesheets (timesheets à faire)
+\input{sections/time}
+
+% Section conclusion
+%  - différences entre solution envisagée et solution effective
+%  - explication des différences
+%  - retour d'expérience
+\input{sections/cncln}
+
+\clearpage
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
