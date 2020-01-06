@@ -54,6 +54,14 @@ class ConversationSingle : Fragment() {
             adapter.submitList(messages)
         }
 
+        binding.sendButton.setOnClickListener {
+            val msg: String = binding.editText.text.toString()
+            if (!msg.isBlank()) {
+                viewModel.sendMessage(msg)
+                binding.editText.text.clear()
+            }
+        }
+
         return binding.root
     }
 }

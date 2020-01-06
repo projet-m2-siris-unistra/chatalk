@@ -70,5 +70,10 @@ object InjectorUtils {
         )
 
     fun provideConversationSingleViewModelFactory(context: Context, conversationId: Int) =
-        ConversationSingleViewModelFactory(provideDatabase(context), conversationId)
+        ConversationSingleViewModelFactory(
+            provideDatabase(context),
+            conversationId,
+            provideChatalkService(),
+            provideSharedPreferences(context)
+        )
 }
