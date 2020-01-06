@@ -9,10 +9,7 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import androidx.databinding.Observable
 import fr.chatalk.api.ChatalkService
-import fr.chatalk.api.LoginPayload
-import fr.chatalk.api.LoginRequest
 import fr.chatalk.api.WebSocketProvider
 import fr.chatalk.databinding.ActivityAuthBinding
 import fr.chatalk.utils.InjectorUtils
