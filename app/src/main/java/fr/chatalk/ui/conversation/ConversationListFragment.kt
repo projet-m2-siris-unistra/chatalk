@@ -43,4 +43,16 @@ class ConversationListFragment : Fragment() {
         activity?.menuInflater?.inflate(R.menu.conversations_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val prefs = InjectorUtils.provideSharedPreferences(requireContext())
+        when (item.itemId) {
+            R.id.logout_btn ->
+                prefs.edit().apply {
+                    remove("token")
+                    apply()
+                }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 }
