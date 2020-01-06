@@ -3,6 +3,7 @@ package fr.chatalk.api
 import android.content.SharedPreferences
 import android.database.sqlite.SQLiteConstraintException
 import android.util.Log
+import com.tinder.scarlet.WebSocket
 import fr.chatalk.data.AppDatabase
 import fr.chatalk.data.ConversationEntity
 import fr.chatalk.data.MessageEntity
@@ -20,6 +21,16 @@ class WebSocketProvider(
     val disposable = CompositeDisposable()
 
     init {
+        service.observeWebSocketEvent()
+            .filter { it is WebSocket.Event.OnConnectionOpened<*> }
+            .subscribe {
+                val token = pref.getString("token", "")
+                if (!token.isNullOrBlank()) {
+                    service.sendRequest(LoginRequest(LoginPayload(token = token, method = "jwt", action = "login")))
+                }
+            }
+            .addTo(disposable)
+
         service.observeResponse()
             .subscribe { Log.d("WS/all", it.toString()) }
             .addTo(disposable)
@@ -42,6 +53,29 @@ class WebSocketProvider(
                     return@subscribe
                 }
                 Log.d("token", token)
+            }
+            .addTo(disposable)
+
+        service.observeLogin()
+            .filter { it.success && !it.type.isNullOrBlank() && it.type == "logout" }
+            .subscribe {
+                pref.edit().apply {
+                    remove("token")
+                    apply()
+                }
+                database.clearAllTables()
+                Log.d("logout", "got logout response from server")
+            }
+            .addTo(disposable)
+
+        service.observeLogin()
+            .filter { !it.success }
+            .subscribe {
+                pref.edit().apply {
+                    remove("token")
+                    apply()
+                }
+                Log.d("WS/login/failure", "logged out because of login error")
             }
             .addTo(disposable)
 
@@ -137,6 +171,19 @@ class WebSocketProvider(
 
         Observable.interval(0, 15, TimeUnit.SECONDS)
             .subscribe { service.sendRequest(PingRequest()) }
+            .addTo(disposable)
+
+        Observable.interval(0, 2, TimeUnit.MINUTES)
+            .subscribe {
+                val token = pref.getString("token", "")
+                if (!token.isNullOrBlank()) {
+                    service.sendRequest(LoginRequest(LoginPayload(
+                        token = token,
+                        method = "jwt",
+                        action = "refresh"
+                    )))
+                }
+            }
             .addTo(disposable)
     }
 

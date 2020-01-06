@@ -18,8 +18,11 @@ sealed class Response(val action: ActionType)
 
 @JsonClass(generateAdapter = true)
 data class LoginPayload(
-    val username: String,
-    val password: String
+    val username: String? = null,
+    val password: String? = null,
+    val method: String? = null,
+    val action: String? = null,
+    val token: String? = null
 )
 
 @JsonClass(generateAdapter = true)
@@ -35,7 +38,8 @@ data class LoginResponse(
     val userid: Int?,
     val username: String?,
     val displayname: String?,
-    val picture: String?
+    val picture: String?,
+    val type: String?
 ) : Response(ActionType.login)
 
 @JsonClass(generateAdapter = true)

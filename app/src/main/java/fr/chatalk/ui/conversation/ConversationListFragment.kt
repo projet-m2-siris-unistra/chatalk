@@ -48,10 +48,7 @@ class ConversationListFragment : Fragment() {
         val prefs = InjectorUtils.provideSharedPreferences(requireContext())
         when (item.itemId) {
             R.id.logout_btn ->
-                prefs.edit().apply {
-                    remove("token")
-                    apply()
-                }
+                viewModel.logout()
         }
         return super.onOptionsItemSelected(item)
     }

@@ -9,6 +9,10 @@ import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
+import androidx.databinding.Observable
+import fr.chatalk.api.ChatalkService
+import fr.chatalk.api.LoginPayload
+import fr.chatalk.api.LoginRequest
 import fr.chatalk.api.WebSocketProvider
 import fr.chatalk.databinding.ActivityAuthBinding
 import fr.chatalk.utils.InjectorUtils
@@ -17,12 +21,14 @@ class AuthActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
     private lateinit var wsp: WebSocketProvider
     private lateinit var binding: ActivityAuthBinding
     private lateinit var prefs: SharedPreferences
+    private lateinit var service: ChatalkService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_auth)
         wsp = InjectorUtils.provideWebSocketProvider(applicationContext)
         prefs = InjectorUtils.provideSharedPreferences(applicationContext)
+        service = InjectorUtils.provideChatalkService()
 
         val w: Window = window
         w.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
@@ -30,6 +36,12 @@ class AuthActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         w.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
 
         prefs.registerOnSharedPreferenceChangeListener(this)
+
+        val token = prefs.getString("token", "")
+        if (!token.isNullOrBlank()) {
+            Log.d("AuthActivity", "auto logged in using token $token")
+            startActivity(Intent(this, MainActivity::class.java))
+        }
     }
 
     override fun onDestroy() {

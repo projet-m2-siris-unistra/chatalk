@@ -63,7 +63,11 @@ object InjectorUtils {
         RegisterViewModelFactory(provideDatabase(context), provideChatalkService())
 
     fun provideConversationListViewModelFactory(context: Context) =
-        ConversationListViewModelFactory(provideDatabase((context)))
+        ConversationListViewModelFactory(
+            provideDatabase((context)),
+            provideChatalkService(),
+            provideSharedPreferences(context)
+        )
 
     fun provideConversationSingleViewModelFactory(context: Context, conversationId: Int) =
         ConversationSingleViewModelFactory(provideDatabase(context), conversationId)

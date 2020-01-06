@@ -2,6 +2,7 @@ package fr.chatalk.api
 
 import com.squareup.moshi.Moshi
 import com.tinder.scarlet.Scarlet
+import com.tinder.scarlet.WebSocket
 import com.tinder.scarlet.messageadapter.moshi.MoshiMessageAdapter
 import com.tinder.scarlet.streamadapter.rxjava2.RxJava2StreamAdapterFactory
 import com.tinder.scarlet.websocket.okhttp.newWebSocketFactory
@@ -11,6 +12,9 @@ import io.reactivex.Flowable
 import okhttp3.OkHttpClient
 
 interface ChatalkService {
+    @Receive
+    fun observeWebSocketEvent(): Flowable<WebSocket.Event>
+
     @Receive
     fun observeResponse(): Flowable<Response>
 
