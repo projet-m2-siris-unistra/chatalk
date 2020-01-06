@@ -51,6 +51,22 @@ class WebSocketProvider(
             }
             .addTo(disposable)
 
+        service.observeMsgSender()
+            .map { MessageEntity(it.msgid!!, it.source!!, it.destination!!, it.payload) }
+            .flatMapSingle { message ->
+                database.messageDao().insert(message)
+                    .onErrorResumeNext {
+                        if (it !is SQLiteConstraintException) throw it
+                        Log.d("WS/msgSender", "conflict on message $message, updating")
+                        database.messageDao().update(message)
+                            .toSingle { message.messageId.toLong() }
+                    }
+            }
+            .subscribe {
+                Log.d("WS/msgSender", "inserted message $it")
+            }
+            .addTo(disposable)
+
         service.observeSendInfos()
             .filter { it.success }
             .apply {

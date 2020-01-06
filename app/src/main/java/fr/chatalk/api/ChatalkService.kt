@@ -29,6 +29,9 @@ interface ChatalkService {
     @Receive
     fun observeSendInfos(): Flowable<SendInfosResponse>
 
+    @Receive
+    fun observeMsgSender(): Flowable<MsgSenderResponse>
+
     companion object {
         @Volatile
         private var instance: ChatalkService? = null

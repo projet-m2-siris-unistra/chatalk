@@ -8,7 +8,9 @@ enum class ActionType {
     login,
     register,
     @Json(name = "send-info")
-    sendInfo
+    sendInfo,
+    @Json(name = "msg_sender")
+    msgSender
 }
 
 sealed class Request(val action: ActionType)
@@ -54,6 +56,23 @@ data class RegisterResponse(
     val success: Boolean,
     val error: String?
 ) : Response(ActionType.register)
+
+@JsonClass(generateAdapter = true)
+data class MsgSenderRequest(
+    val source: String,
+    val destination: String,
+    val device: String,
+    val payload: String
+) : Request(ActionType.msgSender)
+
+@JsonClass(generateAdapter = true)
+data class MsgSenderResponse(
+    val msgid: Int?,
+    val source: Int?,
+    val destination: Int?,
+    val device: Int?,
+    val payload: String
+) : Response(ActionType.msgSender)
 
 data class InfosUser(
     val userid: Int?,
