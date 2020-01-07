@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ter}[2019/01/31 TER class]
+\ProvidesClass{memoire}[2020/01/07 Mémoire class]
 
 \LoadClass[11pt, twoside, openright, titlepage, a4paper]{article}
 %\LoadClass[10pt, oneside, titlepage, a4paper]{article}
@@ -26,7 +26,7 @@
 \MakePerPage{footnote} %the perpage package command
 
 %\setkeys {Gin} {keepaspectratio}	% par défaut : conserver les proportions
-     
+
 \parskip=1mm
 \parindent=4mm
 \pagestyle{plain}
@@ -37,10 +37,10 @@
 %     \usepackage {mathpazo}
 %     \usepackage [scaled] {helvet}
 %     \usepackage {courier}
-% 
+%
 %     % pour \EUR
 %     \usepackage {marvosym}
-% 
+%
 %     % \usepackage {emptypage}
-% 
-% 
+%
+%
