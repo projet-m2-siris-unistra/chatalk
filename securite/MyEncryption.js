@@ -2,7 +2,7 @@ var crypto = require('crypto');
 //var rsa = require('ursa');
 var stringtest = "mon message secret";
 var nombreBits = 8;
-var mygroup = 'modp1';
+var mygroup = 'modp1c';
 //var key = new Buffer('mykey').toString('binary');
 var fs = require('fs');
 

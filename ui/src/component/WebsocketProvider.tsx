@@ -141,14 +141,34 @@ class WebsocketProvider extends React.Component<Props, State> {
         // Generate shared key
         const init_vect = crypto.randomBytes(16);
         const random_key = crypto.randomBytes(32);
-        const shared_key = Buffer.concat([random_key, init_vect])
+        const shared_key = Buffer.concat([random_key, init_vect]);
+
+        /*const diffie = crypto.getDiffieHellman('modp1c');
+        const keypair = diffie.generateKeys();*/
         // Make a loop which :
+
+        // date.members : array id conv members (/!\ string)
+
+        //parcours des membres de la conversation
+        /*for(i = 0; i < data.members.length(); i++)
+        {
+          const userid = Number(data.members[i]); // member id
+          for(j=0; j< )
+          const pubkey = ; //getpublic key func;
+          const encrypted_sk = crypto.publicEncrypt(pubkey, shared_key);
+          localStorage.setItem('mykey', encrypted_sk.toString());
+        }*/
+
         //// for each conv member
         //// Get public keys of conv members
         //const pubkey; // get public key
         //// Encrypt shared key for each conv member
         //const encrypted_sk = crypto.publicEncrypt(pubkey, shared_key)
         // End loop
+        // this.state.socket?send(
+        // JSON.stringify({
+          //action: 'setSharedKey',
+        //}))
         // Send key to server
         // Server handles sending keys to conv members
       } else {
