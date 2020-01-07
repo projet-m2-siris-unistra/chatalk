@@ -45,7 +45,6 @@ class ConversationListFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val prefs = InjectorUtils.provideSharedPreferences(requireContext())
         when (item.itemId) {
             R.id.logout_btn ->
                 viewModel.logout()
