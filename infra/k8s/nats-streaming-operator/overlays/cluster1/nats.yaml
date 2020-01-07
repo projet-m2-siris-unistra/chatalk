@@ -12,6 +12,9 @@ spec:
   pod:
     enableClientsHostPort: true
     advertiseExternalIP: true
+    enableMetrics: true
+    metricsImage: "synadia/prometheus-nats-exporter"
+    metricsImageTag: "0.6.0"
 
   gatewayConfig:
     name: c1

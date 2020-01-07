@@ -60,3 +60,11 @@ kubectl --namespace monitoring port-forward svc/alertmanager-main 9093
 ```
 
 Go to http://localhost:9093
+
+### Allow to scrape other namespaces
+
+To allow `chatalk` namespace scraping:
+
+```sh
+kubectl create rolebinding -n chatalk --serviceaccount monitoring:prometheus-k8s --clusterrole view prometheus-k8s
+```
