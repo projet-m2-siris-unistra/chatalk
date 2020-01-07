@@ -9,3 +9,4 @@ bases:
 resources:
 - nats.yaml
 - stan.yaml
+- servicemonitor.yaml

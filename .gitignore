@@ -1,1 +1,9 @@
 .idea/
+memoire/*.aux
+memoire/*.log
+memoire/*.blg
+memoire/*.bbl
+memoire/*.out
+memoire/*.lof
+memoire/*.lot
+memoire/*.toc

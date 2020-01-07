@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ChaTalK</string>
+    <string name="already_have_an_account_sign_in">Déjà un compte ? Connectez-vous !</string>
+    <string name="conversation_icon">conversation_icon</string>
+    <string name="email_hint">Adresse mail…</string>
+    <string name="hello_blank_fragment">Bonjour fragment vide</string>
+    <string name="log_in">Connexion</string>
+    <string name="login">Connexion</string>
+    <string name="logout">Déconnexion</string>
+    <string name="need_an_account_register_now">Besoin d\'un compte ? Inscrivez-vous !</string>
+    <string name="password_confirmation_hint">Confirmation du mot de passe…</string>
+    <string name="password_hint">Mot de passe…</string>
+    <string name="register">Inscription</string>
+    <string name="send">Envoyer</string>
+    <string name="sign_up">Inscription</string>
+    <string name="username_hint">Nom d\'utilisateur…</string>
+    <string name="your_message_hint">Votre message…</string>
+</resources>
