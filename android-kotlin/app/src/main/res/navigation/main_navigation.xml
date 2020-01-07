@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/conversationListFragment">
+
+    <fragment
+        android:id="@+id/conversationListFragment"
+        android:name="fr.chatalk.ui.conversation.ConversationListFragment"
+        android:label="ConversationListFragment"
+        tools:layout="@layout/fragment_conversation_list">
+        <action
+            android:id="@+id/action_conversationListFragment_to_conversationSingle"
+            app:destination="@id/conversationSingle" />
+    </fragment>
+    <fragment
+        android:id="@+id/conversationSingle"
+        android:name="fr.chatalk.ui.conversation.ConversationSingle"
+        android:label="ConversationSingle"
+        tools:layout="@layout/fragment_conversation_single">
+        <argument
+            android:name="conversationId"
+            app:argType="integer" />
+    </fragment>
+</navigation>
