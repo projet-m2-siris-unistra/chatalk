@@ -5,6 +5,9 @@ metadata:
 spec:
   template:
     spec:
+      securityContext:
+        runAsGroup: 65534
+        runAsUser: 65534
       containers:
       - name: db-migrations
         image: registry.chatalk.fr/db-migrations:master

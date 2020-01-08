@@ -6,6 +6,9 @@ spec:
   replicas: 1
   template:
     spec:
+      securityContext:
+        runAsGroup: 65534
+        runAsUser: 65534
       containers:
       - name: ping
         image: registry.chatalk.fr/ping:master
