@@ -248,6 +248,17 @@ build-service-send-info:
       - "services/send-info/**/*"
       - "services/utils/**/*"
 
+build-service-user-manag:
+  <<: *build-service-image
+  variables:
+    IMAGE: user-manag
+  only:
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/Dockerfile"
+      - "services/user-manag/**/*"
+      - "services/utils/**/*"
+
 .deploy-service-image: &deploy-service-image
   stage: deploy
   tags:
@@ -380,6 +391,19 @@ deploy-service-send-info:
       - ".gitlab-ci.yml"
       - "services/Dockerfile"
       - "services/send-info/**/*"
+      - "services/utils/**/*"
+
+deploy-service-user-manag:
+  <<: *deploy-service-image
+  variables:
+    IMAGE: user-manag
+  only:
+    refs:
+      - master
+    changes:
+      - ".gitlab-ci.yml"
+      - "services/Dockerfile"
+      - "services/user-manag/**/*"
       - "services/utils/**/*"
 
 # database migrations
