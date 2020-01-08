@@ -27,6 +27,22 @@ sleep 10 # wait that ressources are successfuly created
 kubectl apply -f manifests/
 ```
 
+You will need to copy the cert from the `chatalk` namespace into `monitoring`:
+
+```sh
+# copy cert from chatalk namespace to monitoring namespace
+kubectl get secret chatalk-cert -n chatalk -o yaml \
+  | sed '/namespace: /d' \
+  | kubectl apply -n monitoring -f -
+```
+
+Configures ingresses:
+
+```sh
+kubectl apply -f ingresses/cluster2.yaml --context=cluster2
+kubectl apply -f ingresses/cluster2.yaml --context=cluster2
+```
+
 That's it!
 
 ## Access to services

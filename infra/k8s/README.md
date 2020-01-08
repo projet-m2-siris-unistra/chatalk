@@ -139,6 +139,15 @@ sudo docker run --rm \
       --key=/etc/letsencrypt/live/chatalk.fr/privkey.pem chatalk-cert
 ```
 
+To copy a certificate from one namespace to another, you can use:
+
+```sh
+# copy cert from chatalk namespace to monitoring namespace
+kubectl get secret chatalk-cert -n chatalk -o yaml \
+  | sed '/namespace: /d' \
+  | kubectl apply -n monitoring -f -
+```
+
 ## Deploy our application
 
 Use the following command:
