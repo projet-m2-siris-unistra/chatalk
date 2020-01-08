@@ -9,3 +9,14 @@ spec:
       nats_cluster: nats
   endpoints:
   - port: metrics
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: stan
+spec:
+  selector:
+    matchLabels:
+      app: stan-svc
+  endpoints:
+  - port: metrics

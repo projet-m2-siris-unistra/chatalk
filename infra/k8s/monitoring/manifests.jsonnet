@@ -3,6 +3,7 @@ local kp =
   // Uncomment the following imports to enable its patches
   (import 'kube-prometheus/kube-prometheus-anti-affinity.libsonnet') +
   (import 'kube-prometheus/kube-prometheus-kubespray.libsonnet') +
+  (import 'dashboards.jsonnet') +
   // (import 'kube-prometheus/kube-prometheus-managed-cluster.libsonnet') +
   // (import 'kube-prometheus/kube-prometheus-node-ports.libsonnet') +
   // (import 'kube-prometheus/kube-prometheus-static-etcd.libsonnet') +
@@ -17,7 +18,10 @@ local kp =
               enabled: true
             }
           }
-        }
+        },
+        plugins+: [
+          'grafana-piechart-panel',
+        ],
       }
     },
   };
