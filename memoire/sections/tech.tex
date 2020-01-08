@@ -2,7 +2,7 @@
 
 \section{Descriptif général}
 
-Nous avons fait le choix de déployer des clusters
+Nous avons fait le choix de déployer des grappes
 Kubernetes\footnote{\url{https://kubernetes.io/fr/}}
 pour un certain nombre de raisons. Tout d'abord, Kubernetes est une
 technologie répandue et approuvée à très grande échelle, ce qui en fait
@@ -34,10 +34,10 @@ cet objectif, car il aurait été trop long de tout redévelopper..
 
 Les machines virtuelles que nous avons ont été configurées avec l'aide
 d'Ansible\footnote{\url{https://www.ansible.com/}}, de
-même que la base des clusters Kubernetes avec l'aide de
+même que la base des grappes Kubernetes avec l'aide de
 \textit{Kubespray}\footnote{\url{https://kubespray.io/\#/}}, un
 Playbook Ansible, ce qui nous permet d'avoir un déploiement automatisé
-assez rapide. Un nouveau cluster complet peut être monté en une heure
+assez rapide. Un nouveau grappe complet peut être monté en une heure
 environ.
 
 \section{Gestion de flux de données très importants}
@@ -48,7 +48,7 @@ métriques. Le fait d'avoir architecturé notre application sous forme de
 micro-services nous permet de monter ou diminuer le nombre d'instances
 d'un de ces services de manière indépendante avec l'aide des métriques
 que nous avons récupérées, ce qui permet d'adapter les ressources de nos
-clusters en fonction de la demande courante, et donc de pouvoir
+grappes en fonction de la demande courante, et donc de pouvoir
 s'adapter à des flux de données très importants peu importe le service
 sollicité.
 
@@ -59,25 +59,25 @@ l'ensemble des requêtes en attente avec l'aide de \textit{Nats-Streaming
 
 \section{Tolérance aux pannes}
 
-Nous avons deux clusters Kubernetes répartis sur deux sites
+Nous avons deux grappes Kubernetes répartis sur deux sites
 géographiquement distincts : l'un à Illkirch et l'autre à Esplanade. Si
 l'un des deux venait à tomber, l'autre sera là pour prendre la charge et
 répondre à la demande.
 
-Nos clusters Kubernetes sont chacun constitués de trois nœuds,
-permettant de mutualiser l'ensemble des ressources au sein du cluster.
-Si au sein d'un cluster on perd un nœud, il en restera toujours deux qui
+Nos grappes Kubernetes sont chacun constituées de trois nœuds,
+permettant de mutualiser l'ensemble des ressources au sein d'une grappe.
+Si au sein d'une grappe on perd un nœud, il en restera toujours deux qui
 seraient disponibles, soit la majorité ; Kubernetes peut donc continuer
 à instancier de nouvelles instances sans difficultés. Par contre si on
-venait à perdre un second nœud au sein de ce cluster, il n'y aurait plus
+venait à perdre un second nœud au sein de cette grappe, il n'y aurait plus
 la majorité. Les services actuellement en place sur le dernier nœud
 resteront accessibles, mais les services se trouvant sur les autres
 nœuds ne pourront pas être déployés sur ce dernier nœud comme cela
 pourrait être le cas dans le cas précédent.
 
-Chaque cluster expose l'application depuis une adresse IP qui est
+Chaque grappe expose l'application depuis une adresse IP qui est
 assignée à l'un des nœuds. Si le nœud en question venait à tomber, cette
-adresse IP sera attribuée à un autre nœud du cluster qui est disponible.
+adresse IP sera attribuée à un autre nœud de la grappe qui est disponible.
 Ce point sera davantage détaillé dans la suite de ce mémoire.
 
 En termes de maintenance, remplacer un service, par exemple dans le
@@ -88,7 +88,7 @@ sera fonctionnelle ; c'est-à-dire que si une nouvelle instance n'arrive
 pas à se lancer correctement, l'ancienne instance, qui elle est
 fonctionnelle, continuera à répondre aux différentes demandes. De plus,
 il est possible d'avoir plusieurs instances d'un même service au sein
-d'un cluster pour avoir de la redondance et mieux résister aux pannes,
+d'une grappe pour avoir de la redondance et mieux résister aux pannes,
 ainsi que pour mieux gérer la charge.
 
 Au niveau de l'application web, si la connexion au WebSocket plante, la
@@ -97,11 +97,11 @@ manière périodique toutes les deux secondes jusqu'à ce que la connexion
 s'effectue à nouveau (le temps que le serveur soit à nouveau accessible
 en cas d'une panne de forte envergure par exemple).
 
-Du côté de la base de données, étant donné qu'on déploie des clusters
+Du côté de la base de données, étant donné qu'on déploie des grappes
 de PostgreSQL avec Stolon qu'on verra plus tard dans ce mémoire, nous
 avons une redondance qui évite une perte de données. De plus ces données
 sont persistées sur le disque contrairement aux autres données qui n'ont
-pas besoin de persistance. Le site d'Esplanade héberge notre cluster
+pas besoin de persistance. Le site d'Esplanade héberge notre grappe
 Postgres maître. S'il tombe, alors seules les lectures pourront être
 possibles ce qui constitue un mode dégradé. Il en va de même avec notre
 bus de données, qui est fédéré entre les deux sites, avec une instance
@@ -110,7 +110,7 @@ maître sur Esplanade.
 \section{Tolérance à la charge, redimensionnement automatique}
 
 Comme dit dans la partie précédente, il est possible d'avoir plusieurs
-instances d'un même service qui sont lancées au sein d'un même cluster.
+instances d'un même service qui sont lancées au sein d'une même grappe.
 Il est possible de mettre en place des règles afin que ces derniers
 soient par exemple lancés de préférence sur des nœuds différents. C'est
 par exemple le cas du contrôleur d'\textit{ingress} qui a une instance
@@ -123,8 +123,8 @@ récupérées par notre pile de surveillance en explorant des URL précises
 exposées par les services.
 
 Si jamais notre application deviendrait très populaire, il serait
-toujours possible de rajouter de nouvelles machines au sein des clusters
-existants, voire même ajouter des clusters entiers.
+toujours possible de rajouter de nouvelles machines au sein des grappes
+existantes, voire même ajouter des grappes entières.
 
 \section{Temps de réponse garantis}
 
@@ -156,12 +156,12 @@ Déployer un nouveau serveur au sein de l'Université est malheureusement
 trop complexe. Il a finalement pu trouver des machines virtuelles pour
 l'ensemble des groupes de projet à Illkirch ; c'est ainsi que nous
 avions eu nos quatre première machines virtuelles pour y déployer notre
-premier cluster Kubernetes.
+première grappe Kubernetes.
 
-Le premier cluster situé à Illkirch est constitué de trois machines
+La première grappe située à Illkirch est constituée de trois machines
 virtuelles (\texttt{chatalk-balzac}, \texttt{chatalk-camus} et
 \texttt{chatalk-zola}) qui sont configurées pour être les trois nœuds
-maîtres de ce cluster. Ces machines virtuelles sont dotées de 8vCPU,
+maîtres de cette grappe. Ces machines virtuelles sont dotées de 8vCPU,
 de 8Go de RAM, de 50Go de disque et ont pour système d'exploitation
 Ubuntu Server 18.04, qui correspond à la dernière LTS.
 
@@ -183,8 +183,8 @@ de registre (\textit{registry}).
 Ludovic a pu obtenir dans un second temps quatre autres machines
 virtuelles à Esplanade pour former un second site. Les machines
 virtuelles chatalk1, chatalk2 et chatalk3 sont les trois nœuds utilisés
-pour le second cluster Kubernetes, qui ont les mêmes ressources que le
-premier cluster. La dernière machine virtuelle, chatalk4, n'a pas été
+pour la seconde grappe Kubernetes, qui ont les mêmes ressources que la
+première grappe. La dernière machine virtuelle, chatalk4, n'a pas été
 utilisée pour le moment. Elle aurait pu nous permettre de redonder le
 stockage s3 par exemple, et par conséquence de s'assurer qu'il soit
 toujours accessible même si le site d'Illkirch venait à tomber ; hélas
@@ -213,7 +213,7 @@ Le schéma suivant illustre l'architecture actuelle de notre projet :
   \includegraphics[width=15cm]{images/infra-arch}
 \end{figure}
 
-Chaque cluster Kubernetes fait tourner les éléments suivants :
+Chaque grappe Kubernetes fait tourner les éléments suivants :
 
 \begin{itemize}
 \item
@@ -222,20 +222,20 @@ Chaque cluster Kubernetes fait tourner les éléments suivants :
     \url{https://kubernetes.github.io/ingress-nginx/}}
   qui est celui pris officiellement en charge par Kubernetes), qui
   permet de rediriger le trafic entrant vers les bons services hébergés
-  sur le cluster,
+  sur la grappe,
 \item
   une solution de basculement d'IP avec l'aide du projet
   \textit{metallb}\footnote{
     \url{https://metallb.universe.tf/concepts/layer2/}}
-  ; en demandant une IP supplémentaire pour chaque cluster
-  (\textit{chatalk} pour cluster1 et \textit{chatalk-vip} pour cluster2)
-  metallb va l'attribuer à l'un des nœuds du cluster. Si un des nœuds du
-  cluster en question tombe, cette IP sera automatiquement attribuée à
+  ; en demandant une IP supplémentaire pour chaque grappe
+  (\textit{chatalk} pour grappe1 et \textit{chatalk-vip} pour grappe2)
+  metallb va l'attribuer à l'un des nœuds de la grappe. Si un des nœuds de la
+  grappe en question tombe, cette IP sera automatiquement attribuée à
   un autre nœud qui est disponible si c'était ce nœud qui possédait
   cette adresse. Le fait d'avoir une adresse IP qui est certaine de
   pointer sur un nœud qui est disponible nous permet de faire pointer
   les entrées DNS dessus, le contrôleur d'\textit{ingress} se charge de
-  répartir la charge convenablement au sein du cluster. Il s'agit d'un
+  répartir la charge convenablement au sein de la grappe. Il s'agit d'un
   mécanisme qui est habituellement déjà en place lorsque l'on est chez
   un fournisseur de services infonuagiques avec l'utilisation de
   \textit{load-balancers} physiques, ce qui n'est pas notre cas.\\
@@ -243,7 +243,7 @@ Chaque cluster Kubernetes fait tourner les éléments suivants :
   cas similaires au nôtre, c'est la raison pour laquelle nous l'avons
   choisie.\\
   Utiliser de la répartition de charge au niveau DNS n'est pas efficace,
-  car si un des trois nœuds d'un cluster tomberait en panne, un tiers
+  car si un des trois nœuds d'une grappe tomberait en panne, un tiers
   des requêtes échouerait.\\
   Nous ne pouvons également pas utiliser de l'\textit{anycast} car on
   n'aurait pas la garantie qu'un flux TCP irait sur un même nœud, ce qui
@@ -283,7 +283,7 @@ Chaque cluster Kubernetes fait tourner les éléments suivants :
   \textit{Grafana}\footnote{\url{https://grafana.com/}} (voir
   la partie concernant la supervision pour plus d'informations) qui sont
   les outils les plus couramment utilisés pour faire de la supervision
-  au sein d'un cluster Kubernetes.
+  au sein d'une grappe Kubernetes.
 \item
   notre application, que nous allons détailler dans la partie suivante.
 \end{itemize}
@@ -446,9 +446,9 @@ l'utilisateur, les messages, etc.
 Afin d'avoir une base de données en haute disponibilité, nous avons
 déployé Stolon (voir plus haut).
 
-Chaque cluster fait tourner une instance de Stolon, et les deux sont
-fédérées entre-elles. Cependant seule l'instance du cluster d'Esplanade
-(cluster2) est maître. C'est-à-dire que les lectures peuvent être
+Chaque grappe fait tourner une instance de Stolon, et les deux sont
+fédérées entre-elles. Cependant seule l'instance de la grappe d'Esplanade
+(grappe2) est maître. C'est-à-dire que les lectures peuvent être
 réalisées depuis n'importe quel instance. Cependant les écritures
 doivent être transmises à l'instance maître (\textit{dbmaster}). Par
 manque de temps, nous n'avions pas pu mettre en place un basculement
@@ -464,15 +464,15 @@ Voici à quoi ressemble l'architecture de notre base de données :
 \end{figure}
 
 Nous avons configurés Stolon pour qu'il déploie une instance de Postgres
-par nœud (donc trois par cluster). L'une de ces instance est désignée en
+par nœud (donc trois par grappe). L'une de ces instance est désignée en
 tant que \textit{master} et les autres sont configurées comme étant des
 réplicas.
 
-Sur le cluster1, qui est configuré pour ne pas être \textit{master},
+Sur la grappe1, qui est configurée pour ne pas être \textit{master},
 l'architecture sera similaire. Cependant la \textit{master} sera mise en
 \textit{stand-by} et ne fera que des lectures.
 
-Un cluster de Postgres est initialisé avec l'aide d'un point de
+Une grappe de Postgres est initialisée avec l'aide d'un point de
 récupération d'un instantané stocké sur notre instance de stockage S3
 qui a été envoyé par le \textit{master} de l'instance principale en
 envoyant les journaux de transactions (WAL).
@@ -481,7 +481,7 @@ envoyant les journaux de transactions (WAL).
 
 Seuls l'application web et un micro-service (entrypoint) sont exposés
 vers l'extérieur à travers un proxy hébergé à l'AIUS (qui forward
-uniquement le trafic TCP des ports 80 et 443 vers les clusters) la
+uniquement le trafic TCP des ports 80 et 443 vers les grappes) la
 surface d'exposition est minimisée.
 
 L'interface web ainsi que le websocket sont uniquement joignables de
@@ -500,7 +500,7 @@ La machine virtuelle que nous avons à l'AIUS est également un point
 critique important : si elle tombe, plus aucun service ne sera
 accessible. Le fait d'utiliser \textit{haproxy} de la manière dont on le
 fait nous prive de voir l'IP réelle du client depuis les services
-hébergés sur les clusters, bien que nous ne nous servons pas, cela
+hébergés sur les grappes, bien que nous ne nous servons pas, cela
 pourrait être utile pour l'analyse de certains logs.
 
 \section{Supervision}
@@ -519,7 +519,7 @@ requêtes HTTP vers la page d'accueil et va envoyer un mail à Ludovic en
 cas d'incident. L'incident de Renater du 18 décembre 2019 a par exemple
 été suivi en temps réel.
 
-Concernant la surveillance au niveau des clusters, nous avons, avec le
+Concernant la surveillance au niveau des grappes, nous avons, avec le
 projet
 \textit{kube-prometheus}\footnote{
   \url{https://github.com/coreos/kube-prometheus}},
@@ -546,7 +546,7 @@ plan de contrôle de Kubernetes va régulièrement vérifier les services
 qui sont configurés pour l'être afin de voir s'ils sont bien
 fonctionnels. Prometheus va explorer des URL spécifiées par les services
 qui proposent d'exposer leur propres métriques ainsi que celles exposées
-par le cluster Kubernetes. Alert Manager va récupérer ces métriques et
+par la grappe Kubernetes. Alert Manager va récupérer ces métriques et
 voir si certaines d'entre elles dépassent certaines valeurs et va donc
 lever certaines alertes. Grafana est une belle interface pour avoir une
 vue d'ensemble des métriques récupérées sur Prometheus avec l'aide de
@@ -566,7 +566,7 @@ Autoscaler}\footnote{
 
 En cas de soucis, les logs peuvent être facilement récupérés avec l'aide
 de l'outil \textit{kubectl}, qui est un outil en ligne de commandes
-utilisé pour gérer un cluster Kubernetes.
+utilisé pour gérer une grappe Kubernetes.
 
 \section{Double pile v4/v6 + v6-seul}
 
@@ -583,4 +583,4 @@ faire, Ludovic a déployé un proxy sur une machine virtuelle de l'AIUS,
 qui elle est accessible publiquement en IPv4 et en IPv6. Lorsqu'une
 connexion d'un utilisateur arrive, le proxy (\textit{haproxy} en
 l'occurence), va ouvrir une nouvelle connexion TCP vers les deux sites
-en faisant de la répartition de charge sur les clusters disponibles.
+en faisant de la répartition de charge sur les grappes disponibles.
