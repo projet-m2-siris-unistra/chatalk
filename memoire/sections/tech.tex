@@ -6,7 +6,7 @@ Nous avons fait le choix de déployer des clusters
 Kubernetes\footnote{\url{https://kubernetes.io/fr/}}
 pour un certain nombre de raisons. Tout d'abord, Kubernetes est une
 technologie répandue et approuvée à très grande échelle, ce qui en fait
-une référence incontournable en termes de fiabilité pour architecturer
+une référence incontournable en terme de fiabilité pour architecturer
 une infrastructure devant répondre à un certain nombre de problématiques
 bien précises, telles que la redondance, la tolérance aux pannes et à la
 charge, etc. Ce qui correspond à la demande de nos clients.
@@ -47,7 +47,7 @@ avons mis en place nous permettent de récupérer un certain nombre de
 métriques. Le fait d'avoir architecturé notre application sous forme de
 micro-services nous permet de monter ou diminuer le nombre d'instances
 d'un de ces services de manière indépendante avec l'aide des métriques
-que nous avons récupérés, ce qui permet d'adapter les ressources de nos
+que nous avons récupérées, ce qui permet d'adapter les ressources de nos
 clusters en fonction de la demande courante, et donc de pouvoir
 s'adapter à des flux de données très importants peu importe le service
 sollicité.
@@ -76,7 +76,7 @@ nœuds ne pourront pas être déployés sur ce dernier nœud comme cela
 pourrait être le cas dans le cas précédent.
 
 Chaque cluster expose l'application depuis une adresse IP qui est
-assignée à l'un des nœud. Si le nœud en question venait à tomber, cette
+assignée à l'un des nœuds. Si le nœud en question venait à tomber, cette
 adresse IP sera attribuée à un autre nœud du cluster qui est disponible.
 Ce point sera davantage détaillé dans la suite de ce mémoire.
 
@@ -97,20 +97,20 @@ manière périodique toutes les deux secondes jusqu'à ce que la connexion
 s'effectue à nouveau (le temps que le serveur soit à nouveau accessible
 en cas d'une panne de forte envergure par exemple).
 
-Du côté de la base de données, étant donné que l'on déploie des clusters
-de PostgreSQL avec Stolon que l'on verra plus tard dans ce mémoire, nous
+Du côté de la base de données, étant donné qu'on déploie des clusters
+de PostgreSQL avec Stolon qu'on verra plus tard dans ce mémoire, nous
 avons une redondance qui évite une perte de données. De plus ces données
-sont persistés sur le disque contrairement aux autres données qui n'ont
+sont persistées sur le disque contrairement aux autres données qui n'ont
 pas besoin de persistance. Le site d'Esplanade héberge notre cluster
-Postgres maître. S'il tombe, alors seuls les lectures pourront être
+Postgres maître. S'il tombe, alors seules les lectures pourront être
 possibles ce qui constitue un mode dégradé. Il en va de même avec notre
-bus de donné, qui est fédéré entre les deux sites, avec une instance
+bus de données, qui est fédéré entre les deux sites, avec une instance
 maître sur Esplanade.
 
 \section{Tolérance à la charge, redimensionnement automatique}
 
 Comme dit dans la partie précédente, il est possible d'avoir plusieurs
-instances d'un même service qui sont lancés au sein d'un même cluster.
+instances d'un même service qui sont lancées au sein d'un même cluster.
 Il est possible de mettre en place des règles afin que ces derniers
 soient par exemple lancés de préférence sur des nœuds différents. C'est
 par exemple le cas du contrôleur d'\textit{ingress} qui a une instance
@@ -141,13 +141,13 @@ avant d'accéder aux différentes ressources.
 
 \section{Hébergement sur deux sites}
 
-Nous n'avions aucune ressource à disposition, ni matérielles, ni
+Nous n'avions aucune ressources à disposition, ni matérielles, ni
 financières pour être en mesure de répondre à la demande, excepté les
 machines en salles de TP\.
 L'utilisation de ces dernières n'étaient malheureusement pas envisageables
 dans le cadre de ce projet étant donné que ces machines sont utilisées lors
 de différents TP et qu'il faudrait par conséquent réinstaller toute
-l'infrastructure à séance de travail fois avoir un environnement maîtrisé.
+l'infrastructure à chaque séance de travail fois avoir un environnement maîtrisé.
 
 Ludovic est donc allé voir différentes personnes au sein de l'Université
 afin de voir s'il était possible de venir avec son propre serveur 1U ou
@@ -160,8 +160,8 @@ premier cluster Kubernetes.
 
 Le premier cluster situé à Illkirch est constitué de trois machines
 virtuelles (\texttt{chatalk-balzac}, \texttt{chatalk-camus} et
-\texttt{chatalk-zola}) qui sont configurés pour être les trois nœuds
-maîtres de ce cluster. Ces machines virtuelles sont dotés de 8vCPU,
+\texttt{chatalk-zola}) qui sont configurées pour être les trois nœuds
+maîtres de ce cluster. Ces machines virtuelles sont dotées de 8vCPU,
 de 8Go de RAM, de 50Go de disque et ont pour système d'exploitation
 Ubuntu Server 18.04, qui correspond à la dernière LTS.
 
@@ -241,7 +241,7 @@ Chaque cluster Kubernetes fait tourner les éléments suivants :
   \textit{load-balancers} physiques, ce qui n'est pas notre cas.\\
   Metallb est une solution reconnue et est utilisée massivement pour les
   cas similaires au nôtre, c'est la raison pour laquelle nous l'avons
-  choisi.\\
+  choisie.\\
   Utiliser de la répartition de charge au niveau DNS n'est pas efficace,
   car si un des trois nœuds d'un cluster tomberait en panne, un tiers
   des requêtes échouerait.\\
@@ -570,7 +570,7 @@ utilisé pour gérer un cluster Kubernetes.
 
 \section{Double pile v4/v6 + v6-seul}
 
-Nos deux sites ne dispose pas de connectivité IPv6 du fait que
+Nos deux sites ne disposent pas de connectivité IPv6 du fait que
 l'Université de Strasbourg n'a pas été en mesure de pouvoir nous en
 router. Néanmoins, même avec de l'IPv6 il aurait été compliqué de
 configurer convenablement Kubernetes pour prendre en charge la double
