@@ -7,8 +7,8 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"strings"
 	"strconv"
+	"strings"
 	"syscall"
 
 	dberror "github.com/Shyp/go-dberror"
@@ -22,23 +22,25 @@ type registerRequest struct {
 	Action  string `json:"action"`
 	WsID    string `json:"ws-id"`
 	Payload struct {
-		UserID   string `json:"userid"`
-		Convname string `json:"convname"`
-		Topic    string `json:"topic"`
-		Picture  string `json:"picture"`
-		Members  string `json:"members"`
+		UserID    string `json:"userid"`
+		Convname  string `json:"convname"`
+		Topic     string `json:"topic"`
+		Picture   string `json:"picture"`
+		Sharedkey string `json:"sharedkey"`
+		Members   string `json:"members"`
+		MembersSk string `json:"memberssk"`
 	} `json:"payload"`
 }
 
 type registerResponse struct {
-	Action  string `json:"action"`
-	Success bool   `json:"success"`
-	Error   string `json:"error,omitempty"`
-	Creator int    `json:"creator,omitempty"`
-	ConvID  string `json:"convid,omitempty"`
-	Convname 	string `json:"convname,omitempty"`
-	Sharedkey	string `json:"sharedkey,omitempty"`
-	Members		string `json:"members,omitempty"`
+	Action    string `json:"action"`
+	Success   bool   `json:"success"`
+	Error     string `json:"error,omitempty"`
+	Creator   int    `json:"creator,omitempty"`
+	ConvID    string `json:"convid,omitempty"`
+	Convname  string `json:"convname,omitempty"`
+	Sharedkey string `json:"sharedkey,omitempty"`
+	Members   string `json:"members,omitempty"`
 }
 
 // get environment variable, if not found will be set to `fallback` value
@@ -100,22 +102,30 @@ func main() {
 		var userID int
 		var convID int
 		var members []int
+		var memberssk []string
 		var topicName string
 		var spliMem []string
 		var allmembers string
 
-		spliMem = strings.Split(msg.Payload.Members,"}")
-		allmembers= spliMem[0]
-		spliMem = strings.Split(spliMem[0],"{")
-		spliMem = strings.Split(spliMem[1],",")
+		spliMem = strings.Split(msg.Payload.Members, "}")
+		allmembers = spliMem[0]
+		spliMem = strings.Split(spliMem[0], "{")
+		spliMem = strings.Split(spliMem[1], ",")
 
 		for _, v := range spliMem {
-			userID, _  = strconv.Atoi(v)
+			userID, _ = strconv.Atoi(v)
 			members = append(members, userID)
 		}
 		userID, err = strconv.Atoi(msg.Payload.UserID)
-		allmembers=allmembers + "," + msg.Payload.UserID + "}"
+		allmembers = allmembers + "," + msg.Payload.UserID + "}"
 
+		spliMem = strings.Split(msg.Payload.MembersSk, "}")
+		spliMem = strings.Split(spliMem[0], "{")
+		spliMem = strings.Split(spliMem[1], ",")
+
+		for _, v := range spliMem {
+			memberssk = append(memberssk, v)
+		}
 
 		if err != nil {
 			response = registerResponse{
@@ -142,7 +152,7 @@ func main() {
 
 				_, err = db.Query(
 					`INSERT INTO conv_keys(user_id, conv_id, shared_key, timefrom, timeto, favorite, audio)
-					VALUES($1, $2, 0, current_timestamp, NULL, false, false);`, userID, convID)
+					VALUES($1, $2, $3, current_timestamp, NULL, false, false);`, userID, convID, msg.Payload.Sharedkey)
 				for _, v := range members {
 					_, err = db.Query(
 						`INSERT INTO conv_keys(user_id, conv_id, shared_key, timefrom, timeto, favorite, audio)
@@ -150,16 +160,16 @@ func main() {
 				}
 
 				response = registerResponse{
-					Action:  "conv_creation",
-					Success: true,
-					Creator: userID,
-					ConvID: strconv.Itoa(convID),
-					Convname: msg.Payload.Convname,
+					Action:    "conv_creation",
+					Success:   true,
+					Creator:   userID,
+					ConvID:    strconv.Itoa(convID),
+					Convname:  msg.Payload.Convname,
 					Sharedkey: "0",
-					Members: allmembers,
+					Members:   allmembers,
 				}
 				jm, _ := json.Marshal(response)
-				for _, v := range members{
+				for _, v := range members {
 					nc.Publish("user."+strconv.Itoa(v), []byte(jm))
 				}
 				topicName = "conv." + strconv.Itoa(convID)

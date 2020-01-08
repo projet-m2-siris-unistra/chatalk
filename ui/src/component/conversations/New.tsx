@@ -12,6 +12,7 @@ import useAutocomplete from '@material-ui/lab/useAutocomplete';
 import CheckIcon from '@material-ui/icons/Check';
 import CloseIcon from '@material-ui/icons/Close';
 import styled from 'styled-components';
+import crypto from 'crypto';
 
 const useStyles = makeStyles(theme => ({
   header: {
@@ -209,6 +210,24 @@ const NewConversation: React.FC = () => {
       return;
     }
 
+    const init_vect = crypto.randomBytes(16);
+    const random_key = crypto.randomBytes(32);
+    const shared_key = Buffer.concat([random_key, init_vect]);
+    console.log('wtf1');
+    const pubkeystr = localStorage.getItem(`publicKey_${auth.username}`);
+    if(pubkeystr === null){
+      console.error('No public key for this user.');
+      return;
+    }
+    console.log('wtf2');
+
+    const pubkey = Buffer.from(pubkeystr, 'base64');
+    const encryptedsk = crypto.publicEncrypt(pubkey, shared_key)
+    const encrypted_sk = encryptedsk.toString();
+    console.log('wtf3');
+
+    const members_sk = value.map((user: any) =>
+    crypto.publicEncrypt(user.publickey, shared_key).toString());
     const members = value.map((user: any) => user.userid);
 
     console.log('new:create conv:', name, topic);
@@ -220,7 +239,9 @@ const NewConversation: React.FC = () => {
           convname: name,
           topic,
           picture: '',
+          sharedkey: encrypted_sk,
           members: `{${members}}`,
+          memberssk: `{${members_sk}}`,
         },
       })
     );

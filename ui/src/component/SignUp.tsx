@@ -92,12 +92,12 @@ const SignUp: React.FC = () => {
       return;
     }
 
-    const diffie = crypto.getDiffieHellman('modp1');
+    const diffie = crypto.getDiffieHellman('modp1c');
     diffie.generateKeys();
 
 
-    const publicKey = diffie.getPublicKey().toString();
-    const privateKey = diffie.getPrivateKey().toString();
+    const publicKey = diffie.getPublicKey().toString('base64');
+    const privateKey = diffie.getPrivateKey().toString('base64');
 
     localStorage.setItem(`publicKey_${username}`, publicKey);
     localStorage.setItem(`privateKey_${username}`, privateKey);    
