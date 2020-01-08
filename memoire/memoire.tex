@@ -13,6 +13,20 @@
 % \ref{} pour référencer un \label{}
 % \pageref{} pour référencer un numéro de page
 
+\titleformat{\chapter}[display]
+{\bfseries\Large\itshape} % format
+{Partie n\up{o}\ \thechapter} % label
+{0.3ex} % sep
+{
+    \rule{\textwidth}{1pt}
+    \vspace{0.8ex}
+    \centering
+} % before-code
+[
+\vspace{-0.3ex}%
+\rule{\textwidth}{0.2pt}
+] % after-code
+
 \title{Mémoire du projet ChaTalK}
 
 \author{
@@ -34,13 +48,13 @@
 
 \begin{center}
   % Logos divers, mettre celui de ChaTalK et d'ALGGOT™ dedans
-  \includegraphics[height=2.5cm]{logos/logo-uds-couleur.pdf}
+  \includegraphics[height=2.0cm]{logos/logo-uds-couleur.pdf}
   \vfill
 
-  \includegraphics[width=7.0cm]{logos/logo-uds.pdf}\\
+  \includegraphics[width=6.0cm]{logos/logo-uds.pdf}\\
   %\vfill
 
-  \includegraphics[width=7.0cm]{logos/logo-ufr.pdf}
+  \includegraphics[width=6.0cm]{logos/logo-ufr.pdf}
   \vfill
   \vfill
 
@@ -58,13 +72,32 @@
 
   {\large Mémoire de projet de Master, groupe n°2}
 
+  \includegraphics[height=0.8cm]{logos/alggot.png}
+  \vfill
+
   \medskip
 
   % Identité de l'auteur
-  {\large Gabriel \textsc {Poittevin}}
-
-  % Contact mail ou téléphone
-  {\small gabriel.poittevin@etu.unistra.fr}
+  \begin{tabular}{c c c}
+  {\large Adrien} &
+    {\large Ludovic} &
+    {\large Oussema} \\
+  {\large \textsc{Roberty}} &
+    {\large \textsc{Muller}} &
+    {\large \textsc{Tourki}} \\
+  {\small roberty@etu.unistra.fr} &
+    {\small ludovic.muller2@etu.unistra.fr} &
+    {\small oussema.tourki@etu.unistra.fr} \\ \hline
+  {\large Govindaraj} &
+    {\large Thomas} &
+    {\large Gabriel} \\
+  {\large \textsc{Vetrivel}} &
+    {\large \textsc{Froeliger}} &
+    {\large \textsc{Poittevin}} \\
+  {\small govindaraj.vetrivel@etu.unistra.fr} &
+    {\small thomas.froeliger@etu.unistra.fr} &
+    {\small gabriel.poittevin@etu.unistra.fr}
+  \end{tabular}
 
   \vfill
 
@@ -78,7 +111,8 @@
   }
   \end{spacing}
   }
-
+  \vfill
+  \includegraphics[height=2.0cm]{logos/chatalk.png}
   \vfill
 
   {\large Projet encadré et commandité par}
@@ -98,14 +132,10 @@
   \medskip
 
   % Logo du client (Journalistes Sans Papiers)
-  \includegraphics[width=8cm]{logos/icube.png}
-  %\includegraphics[height=3cm]{logos/logo-icube.pdf}
+  \includegraphics[height=1.0cm]{logos/icube.png}
+  \includegraphics[height=1.0cm]{logos/jsp.png}
 
-  {
-  \begin{otherlanguage}{french}
-    \small \today
-  \end{otherlanguage}
-  }
+  {\small \today}
 \end{center}
 
 \cleardoublepage
@@ -115,7 +145,6 @@
 %\maketitle
 
 \tableofcontents
-
 {
   \listoffigures
   \listoftables
@@ -173,9 +202,9 @@ L'objectif de ce document est de présenter le projet dans son ensemble, avec se
 %  - retour d'expérience
 \input{sections/cncln}
 
-\clearpage
-
-\bibliographystyle{plain}
-\bibliography{references}
+%\clearpage
+%
+%\bibliographystyle{plain}
+%\bibliography{references}
 
 \end{document}
