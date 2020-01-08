@@ -1,6 +1,6 @@
 \chapter{Réalisation technique}
 
-\subsection{Descriptif général}
+\section{Descriptif général}
 
 Nous avons fait le choix de déployer des clusters
 Kubernetes\footnote{\url{https://kubernetes.io/fr/}}
@@ -41,7 +41,7 @@ Playbook Ansible, ce qui nous permet d'avoir un déploiement automatisé
 assez rapide. Un nouveau cluster complet peut être monté en une heure
 environ.
 
-\subsection{Gestion de flux de données très importants}
+\section{Gestion de flux de données très importants}
 
 L'utilisation de Kubernetes ainsi que la pile de surveillance que nous
 avons mis en place nous permettent de récupérer un certain nombre de
@@ -58,7 +58,7 @@ la notion de charge. En effet, c'est le bus de données qui temporise
 l'ensemble des requêtes en attente avec l'aide de \textit{Nats-Streaming
 (aka. stan)}\footnote{\url{https://docs.nats.io/nats-streaming-concepts/intro}}
 
-\subsection{Tolérance aux pannes}
+\section{Tolérance aux pannes}
 
 Nous avons deux clusters Kubernetes répartis sur deux sites
 géographiquement distincts : l'un à Illkirch et l'autre à Esplanade. Si
@@ -108,7 +108,7 @@ possibles ce qui constitue un mode dégradé. Il en va de même avec notre
 bus de donné, qui est fédéré entre les deux sites, avec une instance
 maître sur Esplanade.
 
-\subsection{Tolérance à la charge, redimensionnement automatique}
+\section{Tolérance à la charge, redimensionnement automatique}
 
 Comme dit dans la partie précédente, il est possible d'avoir plusieurs
 instances d'un même service qui sont lancés au sein d'un même cluster.
@@ -127,7 +127,7 @@ Si jamais notre application deviendrait très populaire, il serait
 toujours possible de rajouter de nouvelles machines au sein des clusters
 existants, voire même ajouter des clusters entiers.
 
-\subsection{Temps de réponse garantis}
+\section{Temps de réponse garantis}
 
 Nous ne garantissons pas spécialement de temps de réponse pour notre
 application. Néanmoins le fait qu'elle supporte bien la charge et que
@@ -140,7 +140,7 @@ Le fait d'avoir une tolérance aux pannes plutôt convenable nous aide
 moins de chances d'échouer, il y aura moins de tentatives à effectuer
 avant d'accéder aux différentes ressources.
 
-\subsection{Hébergement sur deux sites}
+\section{Hébergement sur deux sites}
 
 Nous n'avions aucune ressource à disposition, ni matérielles, ni
 financières pour être en mesure de répondre à la demande, excepté les
@@ -301,7 +301,7 @@ l'Université, seuls l'interface web et un point d'entrée pour établir
 une connexion WebSocket vers l'arrière-plan sont exposés sur Internet
 via cette machine virtuelle.
 
-\subsection{Application}
+\section{Application}
 
 L'application est décomposée en deux grandes parties : la partie
 \textit{frontale} qui est l'interface utilisateur, une application web sur
@@ -309,7 +309,7 @@ navigateur Internet ou une application mobile sur téléphone, ainsi que
 la partie \textit{arrière-plan} qui est l'ensemble des micro-services
 déployés pour traiter les différentes requêtes.
 
-\subsubsection{Application web}
+\subsection{Application web}
 
 Aujourd'hui un site web peut se comporter comme une application
 mobile\footnote{
@@ -335,7 +335,7 @@ connexion WebSocket sécurisée. Un mécanisme de reconnexion au WebSocket
 a été mis en place dans le cas où la connexion au WebSocket est
 momentanément indisponible ou est interrompue.
 
-\subsubsection{Application mobile}
+\subsection{Application mobile}
 
 Ludovic a réalisé une application mobile pour Android avec
 Kotlin\footnote{\url{https://kotlinlang.org/}} dans
@@ -411,7 +411,7 @@ Fonctionnalitées supplémentaires :
   français.
 \end{itemize}
 
-\subsubsection{Partie arrière-plan/serveur}
+\subsection{Partie arrière-plan/serveur}
 
 Cette partie est constitué de différentes parties :
 
@@ -434,15 +434,15 @@ Cette partie est constitué de différentes parties :
   des conversations, diffuser les messages, etc.
 \end{itemize}
 
-\subsection{Stockage des données}
+\section{Stockage des données}
 
 Nous utilisons une base PostgreSQL composé de différentes tables afin de
 stocker les différentes données, telles que les informations de
 l'utilisateur, les messages, etc.
 
-%\subsubsection{Structure de la base de données}
+%\subsection{Structure de la base de données}
 
-\subsubsection{Architecture}
+\subsection{Architecture}
 
 Afin d'avoir une base de données en haute disponibilité, nous avons
 déployé Stolon (voir plus haut).
@@ -478,7 +478,7 @@ récupération d'un instantané stocké sur notre instance de stockage S3
 qui a été envoyé par le \textit{master} de l'instance principale en
 envoyant les journaux de transactions (WAL).
 
-\subsection{Sécurisation et analyse des risques}
+\section{Sécurisation et analyse des risques}
 
 Seuls l'application web et un micro-service (entrypoint) sont exposés
 vers l'extérieur à travers un proxy hébergé à l'AIUS (qui forward
@@ -504,7 +504,7 @@ fait nous prive de voir l'IP réelle du client depuis les services
 hébergés sur les clusters, bien que nous ne nous servons pas, cela
 pourrait être utile pour l'analyse de certains logs.
 
-\subsection{Supervision}
+\section{Supervision}
 
 La supervision peut s'effectuer à différents niveaux. Tout d'abord il
 est possible de récupérer les différentes statistiques du proxy en place
@@ -569,7 +569,7 @@ En cas de soucis, les logs peuvent être facilement récupérés avec l'aide
 de l'outil \textit{kubectl}, qui est un outil en ligne de commandes
 utilisé pour gérer un cluster Kubernetes.
 
-\subsection{Double pile v4/v6 + v6-seul}
+\section{Double pile v4/v6 + v6-seul}
 
 Nos deux sites ne dispose pas de connectivité IPv6 du fait que
 l'Université de Strasbourg n'a pas été en mesure de pouvoir nous en
