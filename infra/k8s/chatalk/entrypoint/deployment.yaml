@@ -13,6 +13,10 @@ spec:
       - name: entrypoint
         image: registry.chatalk.fr/entrypoint:master
         imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "150Mi"
+            cpu: "100m"
         env:
         - name: NATS_URL
           valueFrom:
