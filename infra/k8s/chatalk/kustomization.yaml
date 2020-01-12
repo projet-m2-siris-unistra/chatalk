@@ -18,6 +18,9 @@ bases:
 - send-info
 - ui
 
+resources:
+- evicted-killer.yaml
+
 generatorOptions:
   disableNameSuffixHash: true
 
