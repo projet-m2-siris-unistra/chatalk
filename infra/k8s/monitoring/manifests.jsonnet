@@ -1,3 +1,8 @@
+local k = import 'ksonnet/ksonnet.beta.4/k.libsonnet';
+local secret = k.core.v1.secret;
+local service = k.core.v1.service;
+local servicePort = k.core.v1.service.mixin.spec.portsType;
+
 local kp =
   (import 'kube-prometheus/kube-prometheus.libsonnet') +
   // Uncomment the following imports to enable its patches
@@ -9,6 +14,51 @@ local kp =
   // (import 'kube-prometheus/kube-prometheus-static-etcd.libsonnet') +
   // (import 'kube-prometheus/kube-prometheus-thanos-sidecar.libsonnet') +
   {
+    prometheus+: {
+      loadBalancer: service.new(
+          'prometheus-lb-svc',
+          { app: 'prometheus', prometheus: 'k8s' },
+          servicePort.newNamed('web', 9090, 'web')
+        ) +
+        service.mixin.spec.withSessionAffinity('ClientIP') +
+        service.mixin.metadata.withNamespace($._config.namespace) +
+        service.mixin.metadata.withLabels({ prometheus: 'k8s' }) +
+        service.mixin.metadata.withAnnotations({
+          'metallb.universe.tf/allow-shared-ip': 'public'
+        }) +
+        service.mixin.spec.withType('LoadBalancer'),
+
+      additionalScrapSecret: secret.new('additional-scrape-configs', {
+          'prometheus-additional.yaml': std.base64(std.manifestYamlDoc([{
+            job_name: 'federate',
+            scrape_interval: '15s',
+            honor_labels: true,
+            metrics_path: '/federate',
+            params: {
+              'match[]': [
+                '{job="stan-svc"}'
+              ],
+            },
+            static_configs: [
+              {
+                targets: [
+                  'cluster2.chatalk.fr:9090'
+                ],
+              },
+            ],
+          }]))
+        }) +
+        secret.mixin.metadata.withNamespace($._config.namespace),
+
+      prometheus+: {
+        spec+: {
+          additionalScrapeConfigs: {
+            name: 'additional-scrape-configs',
+            key: 'prometheus-additional.yaml',
+          },
+        },
+      },
+    },
     _config+:: {
       namespace: 'monitoring',
       grafana+:: {
@@ -22,7 +72,7 @@ local kp =
         plugins+: [
           'grafana-piechart-panel',
         ],
-      }
+      },
     },
   };
 
