@@ -41,10 +41,10 @@ const bindEvents = p => {
 }
 
 const startPeer = initiator => {
-  navigator.getUserMedia({
+  let stream = navigator.mediaDevices.getUserMedia({
     video: true,
     audio: true,
-  }, stream => {
+  }).then(stream => {
     let p = new SimplePeer({
       initiator,
       stream,
@@ -54,9 +54,7 @@ const startPeer = initiator => {
     bindEvents(p);
     videoMe.srcObject = stream;
     videoMe.play();
-  }, () => {
-
-  });
+  }).catch(err => console.error('error', err));
 }
 
 videoStart.addEventListener('click', () => startPeer(true));
