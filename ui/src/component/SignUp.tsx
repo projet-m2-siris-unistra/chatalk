@@ -92,15 +92,22 @@ const SignUp: React.FC = () => {
       return;
     }
 
-    const diffie = crypto.getDiffieHellman('modp1');
-    diffie.generateKeys();
-
-    const publicKey = diffie.getPublicKey().toString('base64');
-    const privateKey = diffie.getPrivateKey().toString('base64');
-
-    localStorage.setItem(`publicKey_${username}`, publicKey);
-    localStorage.setItem(`privateKey_${username}`, privateKey);
-    console.log(`publicKey_${username}`, publicKey);
+    const keyPair = crypto.generateKeyPairSync('rsa', {
+      modulusLength: 4096,
+      publicKeyEncoding: {
+        type: 'spki',
+        format: 'pem'
+      },
+      privateKeyEncoding: {
+        type: 'pkcs8',
+        format: 'pem',
+        cipher: 'aes-256-cbc',
+        passphrase: 'top secret'
+      }
+    });
+    localStorage.setItem(`publicKey_${username}`, keyPair.publicKey);
+    localStorage.setItem(`privateKey_${username}`, keyPair.privateKey);
+    console.log(`publicKey_${username}`, keyPair.publicKey);
 
     connection.send(
       JSON.stringify({
@@ -110,7 +117,7 @@ const SignUp: React.FC = () => {
           email,
           password,
           'password-confirmation': passwordconf,
-          publickey : publicKey,
+          publickey : keyPair.publicKey,
         },
       })
     );

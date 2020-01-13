@@ -212,16 +212,19 @@ const NewConversation: React.FC = () => {
 
     const init_vect = crypto.randomBytes(16);
     const random_key = crypto.randomBytes(32);
-    const shared_key = Buffer.concat([random_key, init_vect]);
+    const sharedkey = Buffer.concat([random_key, init_vect]).toString('utf8');
+    const shared_key = Buffer.from(sharedkey, 'base64')
+
+
     console.log('wtf1');
-    const pubkeystr = localStorage.getItem(`publicKey_${auth.username}`);
-    if(pubkeystr === null){
+    const pubkey = localStorage.getItem(`publicKey_${auth.username}`);
+    if(pubkey === null){
       console.error('No public key for this user.');
       return;
     }
+    console.log(pubkey);
     console.log('wtf2');
 
-    const pubkey = Buffer.from(pubkeystr, 'base64');
     const encryptedsk = crypto.publicEncrypt(pubkey, shared_key)
     const encrypted_sk = encryptedsk.toString();
     console.log('wtf3');
