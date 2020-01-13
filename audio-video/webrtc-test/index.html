@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    h1 {
+      text-align: center;
+    }
+    .container {
+      display: flex;
+      justify-content: space-around;
+    }
+    .left, .right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-content: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>WebRTC Test</h1>
+  <div class="container">
+    <div class="left">
+      <h2>Me</h2>
+      <video id="video-me" controls muted></video>
+      <button id="video-start">Start</button>
+      <textarea id="video-me-offer"></textarea>
+    </div>
+    <div class="right">
+      <h2>Other</h2>
+      <video id="video-other" controls></video>
+      <button id="video-get">Get</button>
+      <textarea id="video-other-offer"></textarea>
+      <button id="video-join">Join</button>
+    </div>
+  </div>
+  <script src="simplepeer.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
