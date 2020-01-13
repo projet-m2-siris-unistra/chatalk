@@ -251,7 +251,7 @@ class WebsocketProvider extends React.Component<Props, State> {
   serviceResponseMsgSender(data: any) {
     console.log('svc/msg_sender: ', data);
 
-    if (!data.type || data.type == 'text') {
+    if (!data.type || data.type === 'text') {
       this.props.dispatch(
         updateMessages({
           msgid: data.msgid,
