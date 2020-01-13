@@ -95,14 +95,13 @@ const SignUp: React.FC = () => {
     const diffie = crypto.getDiffieHellman('modp1');
     diffie.generateKeys();
 
-
     const publicKey = diffie.getPublicKey().toString();
     const privateKey = diffie.getPrivateKey().toString();
 
     localStorage.setItem(`publicKey_${username}`, publicKey);
-    localStorage.setItem(`privateKey_${username}`, privateKey);    
+    localStorage.setItem(`privateKey_${username}`, privateKey);
     console.log(`publicKey_${username}`, publicKey);
-    
+
     connection.send(
       JSON.stringify({
         action: 'register',
@@ -111,7 +110,7 @@ const SignUp: React.FC = () => {
           email,
           password,
           'password-confirmation': passwordconf,
-          publickey : publicKey,
+          publickey: publicKey,
         },
       })
     );

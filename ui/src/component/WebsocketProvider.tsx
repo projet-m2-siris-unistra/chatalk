@@ -15,7 +15,7 @@ import {
   changeConversations,
   changeUser,
 } from '../store/actions';
-import { DispatchProp, connect} from 'react-redux';
+import { DispatchProp, connect } from 'react-redux';
 
 interface WebsocketContextValue {
   isOpen: boolean;
@@ -180,7 +180,7 @@ class WebsocketProvider extends React.Component<Props, State> {
     }
   }
 
-  serviceResponseConvChange(data:any) {
+  serviceResponseConvChange(data: any) {
     console.log('svc/conv_manag: ', data);
     if (!data.success) {
       this.props.dispatch(
@@ -191,9 +191,7 @@ class WebsocketProvider extends React.Component<Props, State> {
       return;
     }
     if (data.success) {
-      this.props.dispatch(
-        alertInfo('The conversation was changed.')
-      );
+      this.props.dispatch(alertInfo('The conversation was changed.'));
       this.props.dispatch(
         changeConversations({
           convid: data.convid,
@@ -205,7 +203,7 @@ class WebsocketProvider extends React.Component<Props, State> {
     }
   }
 
-  serviceResponseUserChange(data:any) {
+  serviceResponseUserChange(data: any) {
     console.log('svc/user_manag: ', data);
     if (!data.success) {
       this.props.dispatch(
@@ -216,24 +214,20 @@ class WebsocketProvider extends React.Component<Props, State> {
       return;
     }
     if (data.success) {
-      if(data.error){
-        this.props.dispatch(
-          alertInfo(data.error)
-        );
+      if (data.error) {
+        this.props.dispatch(alertInfo(data.error));
         return;
       }
 
-      if( data.userid === this.state.userid) {
-        this.props.dispatch(
-          alertInfo("Profil Changed")
-        );
+      if (data.userid === this.state.userid) {
+        this.props.dispatch(alertInfo('Profil Changed'));
 
         setAuth({
           userid: data.userid,
           username: data.username,
           displayname: `${data.displayname}@${data['ws-id']}`,
           avatar: data.picture,
-        })
+        });
         return;
       }
       this.props.dispatch(

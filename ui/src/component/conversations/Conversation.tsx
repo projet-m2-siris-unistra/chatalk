@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Switch, Route} from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Link, useParams } from 'react-router-dom';
@@ -12,6 +12,7 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import EditIcon from '@material-ui/icons/Edit';
+import VideocamIcon from '@material-ui/icons/Videocam';
 import ConvSettings from './ConvSettings';
 
 const useStyles = makeStyles(theme => ({
@@ -203,6 +204,13 @@ const Conversation: React.FC = () => {
               {conversationName}
               <small className={classes.smallTitle}>#{id}</small>
             </span>
+            {users.length === 2 && (
+              <Link to={`/conversation/${id}/convsettings`}>
+                <IconButton aria-label="start a videocall" size="small">
+                  <VideocamIcon />
+                </IconButton>
+              </Link>
+            )}
             <Link to={`/conversation/${id}/convsettings`}>
               <IconButton aria-label="manage conversation" size="small">
                 <EditIcon />

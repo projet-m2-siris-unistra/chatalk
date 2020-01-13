@@ -61,7 +61,6 @@ const Settings: React.FC = () => {
   const [password, setPswd] = useState('');
   const [passwordconf, setPswdConf] = useState('');
 
-
   const usermanag = () => {
     if (!isOpen || connection === null) {
       console.error('ws is not open');
@@ -83,7 +82,7 @@ const Settings: React.FC = () => {
           displayname,
           email,
           password,
-          passwordconf
+          passwordconf,
         },
       })
     );
@@ -102,19 +101,22 @@ const Settings: React.FC = () => {
         On this page you can change some settings and logout if you want.
       </p>
       <div className={classes.form}>
-        <TextField 
-          label="Username" 
+        <TextField
+          label="Username"
           variant="outlined"
-          onChange={e => setUName(e.target.value)} />
-        <TextField 
+          onChange={e => setUName(e.target.value)}
+        />
+        <TextField
           label="Display name"
           variant="outlined"
-          onChange={e => setDName(e.target.value)} />
-        <TextField 
-          label="Email" 
-          type="email" 
+          onChange={e => setDName(e.target.value)}
+        />
+        <TextField
+          label="Email"
+          type="email"
           variant="outlined"
-          onChange={e => setEmail(e.target.value)} />
+          onChange={e => setEmail(e.target.value)}
+        />
         <TextField
           label="Password (leave empty if no change)"
           type="password"
@@ -127,11 +129,12 @@ const Settings: React.FC = () => {
           variant="outlined"
           onChange={e => setPswdConf(e.target.value)}
         />
-        <Button 
-            type="button" 
-            variant="contained" 
-            color="primary"
-            onClick={usermanag}>
+        <Button
+          type="button"
+          variant="contained"
+          color="primary"
+          onClick={usermanag}
+        >
           Submit
         </Button>
       </div>
