@@ -140,12 +140,10 @@ const Conversation: React.FC = () => {
   const msg = messages.map(m => {
     let classToUse = classes.msgOther;
     const user = users.filter(u => u.userid === m.senderid);
-    // var avatar = user[0].avatar;
     let username = user[0].username;
     if (m.senderid === me.id) {
       classToUse = classes.msgMe;
       username = '';
-      // avatar = '';
     }
     return (
       <div key={`msg-${m.msgid}`} className={classes.msg}>
@@ -177,6 +175,7 @@ const Conversation: React.FC = () => {
     connection.send(
       JSON.stringify({
         action: 'msg_sender',
+        type: 'text',
         source: `${auth.userid}`,
         destination: `${convid}`,
         device: '1',

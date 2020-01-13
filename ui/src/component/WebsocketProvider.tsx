@@ -179,7 +179,7 @@ class WebsocketProvider extends React.Component<Props, State> {
       }
     }
   }
-  
+
   serviceResponseConvChange(data:any) {
     console.log('svc/conv_manag: ', data);
     if (!data.success) {
@@ -222,7 +222,7 @@ class WebsocketProvider extends React.Component<Props, State> {
         );
         return;
       }
-      
+
       if( data.userid === this.state.userid) {
         this.props.dispatch(
           alertInfo("Profil Changed")
@@ -235,7 +235,7 @@ class WebsocketProvider extends React.Component<Props, State> {
           avatar: data.picture,
         })
         return;
-      } 
+      }
       this.props.dispatch(
         changeUser({
           userid: data.userid,
@@ -251,14 +251,16 @@ class WebsocketProvider extends React.Component<Props, State> {
   serviceResponseMsgSender(data: any) {
     console.log('svc/msg_sender: ', data);
 
-    this.props.dispatch(
-      updateMessages({
-        msgid: data.msgid,
-        senderid: data.source,
-        convid: data.destination,
-        content: data.payload,
-      })
-    );
+    if (!data.type || data.type == 'text') {
+      this.props.dispatch(
+        updateMessages({
+          msgid: data.msgid,
+          senderid: data.source,
+          convid: data.destination,
+          content: data.payload,
+        })
+      );
+    }
   }
 
   serviceResponseConvSub(data: any) {

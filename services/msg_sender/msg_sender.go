@@ -17,11 +17,12 @@ import (
 )
 
 type messageIngress struct {
-	WsID    string `json:"ws-id"`
-	Src     string `json:"source"`
-	Dst     string `json:"destination"`
-	Dev     string `json:"device"`
-	Payload string `json:"payload"`
+	WsID    string  `json:"ws-id"`
+	Src     string  `json:"source"`
+	Dst     string  `json:"destination"`
+	Dev     string  `json:"device"`
+	Type    *string `json:"type,omitempty"`
+	Payload string  `json:"payload"`
 }
 
 type messageBroad struct {
@@ -29,6 +30,7 @@ type messageBroad struct {
 	MsgID   int    `json:"msgid"`
 	Src     int    `json:"source"`
 	Dst     int    `json:"destination"`
+	Type    string `json:"type"`
 	Payload string `json:"payload"`
 }
 
@@ -106,14 +108,27 @@ func main() {
 			userID, err = strconv.Atoi(msg.Src)
 			convID, err = strconv.Atoi(msg.Dst)
 
-			err = db.QueryRow(`
-				INSERT INTO messages(time, user_id, conv_id, content, archived)
-				VALUES (now(), $1, $2, $3, false)
-				RETURNING msg_id;
-			`, userID, convID, msg.Payload).Scan(&msgID)
+			msgType := "text"
+
+			if msg.Type == nil || *msg.Type == "text" {
+				err = db.QueryRow(`
+					INSERT INTO messages(time, user_id, conv_id, content, archived)
+					VALUES (now(), $1, $2, $3, false)
+					RETURNING msg_id;
+				`, userID, convID, msg.Payload).Scan(&msgID)
+			} else {
+				msgType = *msg.Type
+			}
 
 			message := fmt.Sprintf("Message ID is: %s", msgID)
-			jm, err := json.Marshal(messageBroad{Action: "msg_sender", MsgID: msgID, Src: userID, Dst: convID, Payload: msg.Payload})
+			jm, err := json.Marshal(messageBroad{
+				Action:  "msg_sender",
+				MsgID:   msgID,
+				Src:     userID,
+				Dst:     convID,
+				Type:    msgType,
+				Payload: msg.Payload,
+			})
 			nc.Publish("conv."+msg.Dst, []byte(jm))
 
 			response = messageResponse{
