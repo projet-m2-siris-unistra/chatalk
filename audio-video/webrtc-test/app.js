@@ -27,7 +27,10 @@ const bindEvents = p => {
   });
 
   p.on('signal', data => {
-    videoMeOffer.textContent = JSON.stringify(data);
+    videoMeOffer.textContent =
+      window.btoa(unescape(encodeURIComponent(
+        JSON.stringify(data)
+      )));
   });
 
   p.on('stream', stream => {
@@ -36,12 +39,14 @@ const bindEvents = p => {
   });
 
   videoJoin.addEventListener('click', () => {
-    p.signal(JSON.parse(videoOtherOffer.value))
+    p.signal(decodeURIComponent(escape(window.atob(
+      JSON.parse(videoOtherOffer.value))
+    )));
   });
 }
 
 const startPeer = initiator => {
-  let stream = navigator.mediaDevices.getUserMedia({
+  navigator.mediaDevices.getUserMedia({
     video: true,
     audio: true,
   }).then(stream => {
@@ -59,3 +64,7 @@ const startPeer = initiator => {
 
 videoStart.addEventListener('click', () => startPeer(true));
 videoGet.addEventListener('click', () => startPeer(false));
+videoMeOffer.addEventListener('click', () => {
+  videoMeOffer.select();
+  videoMeOffer.execCommand('copy');
+});
