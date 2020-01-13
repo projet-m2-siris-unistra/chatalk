@@ -1,0 +1,11 @@
+{
+  "name": "webrtc",
+  "description": "Video communication with webRTC",
+  "dependencies": {
+    "bufferutil": "^4.0.1",
+    "node-static": "^0.7.11",
+    "socket.io": "^2.3.0",
+    "utf-8-validate": "^5.0.2",
+    "webrtc-adapter": "^7.3.0"
+  }
+}
