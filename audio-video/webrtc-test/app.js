@@ -39,9 +39,13 @@ const bindEvents = p => {
   });
 
   videoJoin.addEventListener('click', () => {
-    p.signal(decodeURIComponent(escape(window.atob(
-      JSON.parse(videoOtherOffer.value))
-    )));
+    p.signal(
+      JSON.parse(
+        decodeURIComponent(escape(window.atob(
+          videoOtherOffer.value
+        )))
+      )
+    );
   });
 }
 
@@ -66,5 +70,5 @@ videoStart.addEventListener('click', () => startPeer(true));
 videoGet.addEventListener('click', () => startPeer(false));
 videoMeOffer.addEventListener('click', () => {
   videoMeOffer.select();
-  videoMeOffer.execCommand('copy');
+  document.execCommand('copy');
 });
