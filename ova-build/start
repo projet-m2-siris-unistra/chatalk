@@ -1,0 +1,10 @@
+#! /bin/bash
+
+SLEEP="30"
+DC_PATH=$HOME"/chatalk/services"
+DC_FILE="docker-compose.yaml"
+
+/usr/bin/docker-compose -f $DC_PATH/$DC_FILE -d up --build
+sleep $SLEEP
+/usr/bin/docker-compose -f $DC_PATH/$DC_FILE stop
+/usr/bin/docker-compose -f $DC_PATH/$DC_FILE -d up --build
