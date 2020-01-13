@@ -50,20 +50,27 @@ const bindEvents = p => {
 }
 
 const startPeer = initiator => {
-  navigator.mediaDevices.getUserMedia({
-    video: true,
-    audio: true,
-  }).then(stream => {
-    let p = new SimplePeer({
-      initiator,
-      stream,
-      config: peerConfig,
-      trickle: false,
-    });
-    bindEvents(p);
-    videoMe.srcObject = stream;
-    videoMe.play();
-  }).catch(err => console.error('error', err));
+  navigator.mediaDevices.enumerateDevices().then(devices => {
+    if (Array.isArray(devices)) {
+      const kinds = devices.map(d => d.kind);
+      const video = kinds.includes('videoinput');
+      const audio = kinds.includes('audioinput');
+      navigator.mediaDevices.getUserMedia({
+        video,
+        audio,
+      }).then(stream => {
+        let p = new SimplePeer({
+          initiator,
+          stream,
+          config: peerConfig,
+          trickle: false,
+        });
+        bindEvents(p);
+        videoMe.srcObject = stream;
+        videoMe.play();
+      }).catch(err => console.error('error', err));
+    }
+  }).catch(err => console.log(err));
 }
 
 videoStart.addEventListener('click', () => startPeer(true));
