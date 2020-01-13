@@ -27,9 +27,15 @@ var remoteStream;
 var turnReady;
 
 var pcConfig = {
-  'iceServers': [{
-    'urls': 'stun:stun.l.google.com:19302'
-  }]
+  'iceServers': [
+    {
+      'urls': 'stun:stun.l.google.com:19302'
+    },
+    {
+      'urls': 'turn:chatalk@turn.chatalk.fr:3478',
+      'credential': 'xongah3ieR4ashie7aekeija',
+    },
+  ],
 };
 
 // Set up audio and video regardless of what devices are present.
@@ -90,7 +96,7 @@ socket.on('log', function(array) {
 
 /**
  * Send message to signaling server.
- * @param {*} message 
+ * @param {*} message
  */
 function sendMessage(message) {
   console.log(time() + ' Client sending message: ', message);
@@ -102,24 +108,24 @@ socket.on('message', function(message) {
   console.log(time() + ' Client received message: ', message);
   if (message === 'got user media') {
     maybeStart();
-  } 
+  }
   else if (message.type === 'offer') {
     if (!isInitiator && !isStarted) {
       maybeStart();
     }
     pc.setRemoteDescription(new RTCSessionDescription(message));
     doAnswer();
-  } 
+  }
   else if (message.type === 'answer' && isStarted) {
     pc.setRemoteDescription(new RTCSessionDescription(message));
-  } 
+  }
   else if (message.type === 'candidate' && isStarted) {
     var candidate = new RTCIceCandidate({
       sdpMLineIndex: message.label,
       candidate: message.candidate
     });
     pc.addIceCandidate(candidate);
-  } 
+  }
   else if (message === 'bye' && isStarted) {
     handleRemoteHangup();
   }
@@ -133,7 +139,7 @@ socket.on('message', function(message) {
 
  /**
   * Sets the MediaStream as the video element src.
-  * @param {*} stream 
+  * @param {*} stream
   */
 function gotStream(stream) {
   console.log(time() + ' Adding local stream.');
@@ -187,7 +193,7 @@ window.onbeforeunload = function() {
  */
 
  /**
-  * 
+  *
   */
 function createPeerConnection() {
   try {
@@ -196,7 +202,7 @@ function createPeerConnection() {
     pc.onaddstream = handleRemoteStreamAdded;
     pc.onremovestream = handleRemoteStreamRemoved;
     console.log(time() + ' Created RTCPeerConnnection');
-  } 
+  }
   catch (e) {
     console.log(time() + ' Failed to create PeerConnection, exception: ', e.message);
     alert('Cannot create RTCPeerConnection object.');
@@ -205,8 +211,8 @@ function createPeerConnection() {
 }
 
 /**
- * 
- * @param {*} event 
+ *
+ * @param {*} event
  */
 function handleIceCandidate(event) {
   console.log(time() + ' icecandidate event: ', event);
@@ -223,15 +229,15 @@ function handleIceCandidate(event) {
 }
 
 /**
- * 
- * @param {*} event 
+ *
+ * @param {*} event
  */
 function handleCreateOfferError(event) {
   console.log(time() + ' createOffer() error: ', event);
 }
 
 /**
- * 
+ *
  */
 function doCall() {
   console.log(time() + ' Sending offer to peer');
@@ -239,7 +245,7 @@ function doCall() {
 }
 
 /**
- * 
+ *
  */
 function doAnswer() {
   console.log(time() + ' Sending answer to peer.');
@@ -250,8 +256,8 @@ function doAnswer() {
 }
 
 /**
- * 
- * @param {*} sessionDescription 
+ *
+ * @param {*} sessionDescription
  */
 function setLocalAndSendMessage(sessionDescription) {
   pc.setLocalDescription(sessionDescription);
@@ -260,18 +266,18 @@ function setLocalAndSendMessage(sessionDescription) {
 }
 
 /**
- * 
- * @param {*} error 
+ *
+ * @param {*} error
  */
 function onCreateSessionDescriptionError(error) {
   console.log(time() + ' Failed to create session description: ' + error.toString());
 }
 
 /**
- * 
- * @param {*} turnURL 
+ *
+ * @param {*} turnURL
  */
-function requestTurn(turnURL) {
+function requestTurn(_turnURL) {
   var turnExists = false;
   for (var i in pcConfig.iceServers) {
     if (pcConfig.iceServers[i].urls.substr(0, 5) === 'turn:') {
@@ -281,28 +287,17 @@ function requestTurn(turnURL) {
     }
   }
   if (!turnExists) {
-    console.log(time() + ' Getting TURN server from ', turnURL);
-    // No TURN server. Get one from computeengineondemand.appspot.com:
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-        var turnServer = JSON.parse(xhr.responseText);
-        console.log(time() + ' Got TURN server: ', turnServer);
-        pcConfig.iceServers.push({
-          'urls': 'turn:' + turnServer.username + '@' + turnServer.turn,
-          'credential': turnServer.password
-        });
-        turnReady = true;
-      }
-    };
-    xhr.open('GET', turnURL, true);
-    xhr.send();
+    pcConfig.iceServers.push({
+      'urls': 'turn:chatalk@turn.chatalk.fr:3478',
+      'credential': 'xongah3ieR4ashie7aekeija',
+    });
+    turnReady = true;
   }
 }
 
 /**
- * 
- * @param {*} event 
+ *
+ * @param {*} event
  */
 function handleRemoteStreamAdded(event) {
   console.log(time() + ' Remote stream added.');
@@ -311,8 +306,8 @@ function handleRemoteStreamAdded(event) {
 }
 
 /**
- * 
- * @param {*} event 
+ *
+ * @param {*} event
  */
 function handleRemoteStreamRemoved(event) {
   console.log(time() + ' Remote stream removed. Event: ' + event);
@@ -398,7 +393,7 @@ hangupButton.addEventListener('click', hangupAction);
  */
 
 /**
- * Gives the time 
+ * Gives the time
  */
 function time() {
   const now = (window.performance.now() / 1000).toFixed(3);

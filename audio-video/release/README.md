@@ -28,3 +28,5 @@ Pour appeller, la seule possibilité, c'est que celui qui n'initialise pas la ro
 - tenter des appels entre plusieurs ordinateur (enlever les deux videos côte à côte)
 - trouver pourquoi ça ne marche que dans un cas
 - finir ce README ;)
+
+Ressource : https://github.com/googlecodelabs/webrtc-web
