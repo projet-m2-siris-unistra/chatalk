@@ -15,6 +15,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import VideocamIcon from '@material-ui/icons/Videocam';
 import ConvSettings from './ConvSettings';
 import { useWebRTC } from '../WebRTCProvider';
+import crypto from 'crypto';
 
 const useStyles = makeStyles(theme => ({
   msg: {
@@ -106,6 +107,7 @@ const Conversation: React.FC = () => {
   const isDesktop = useMediaQuery('(min-width:1000px)');
   const auth = useSelector((state: State) => state.auth);
   const conmsgs = useSelector((state: State) => state.messages);
+  const convmsgs = conmsgs.filter(m => m.convid === convid);
   const conv = useSelector((state: State) => state.conversations).filter(
     c => parseInt(c.convid) === convid
   );
@@ -139,8 +141,26 @@ const Conversation: React.FC = () => {
     me.id = auth.userid;
   }
 
-  const messages = conmsgs.filter(m => m.convid === convid);
+  
+  const sharedkey = Buffer.from(conv[0].sharedkey, 'utf-8');
+  const myiv = new Buffer(16);
+  const key = new Buffer(32);
 
+  for (var i = 0; i < 48; i++) {
+    if(i < 16) {
+      myiv[i] = sharedkey[i];
+    } else {
+      key[i-16] = sharedkey[i];
+    }
+  } 
+
+  const encryptvar = crypto.createCipheriv('aes-256-cbc',key, myiv);
+  const decryptvar = crypto.createDecipheriv('aes-256-cbc', key, myiv);
+
+  const messages = convmsgs.map((m: any) => ({
+    ...m,
+    content : decryptvar.update(m.content, 'binary', 'utf8') + decryptvar.final('utf8'),
+  }));
   const msg = messages.map(m => {
     let classToUse = classes.msgOther;
     const user = users.filter(u => u.userid === m.senderid);
@@ -180,6 +200,9 @@ const Conversation: React.FC = () => {
     }
     // encrypt ownmsg with shared_key
     console.log('send message:', auth.userid, ownmsg);
+    var omsg = encryptvar.update(ownmsg, 'utf8', 'binary');
+    omsg += encryptvar.final('binary');
+
     connection.send(
       JSON.stringify({
         action: 'msg_sender',
@@ -187,7 +210,7 @@ const Conversation: React.FC = () => {
         source: `${auth.userid}`,
         destination: `${convid}`,
         device: '1',
-        payload: ownmsg,
+        payload: omsg,
       })
     );
     setOwnMsg('');

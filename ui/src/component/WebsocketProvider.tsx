@@ -18,6 +18,7 @@ import {
 } from '../store/actions';
 import { DispatchProp, connect } from 'react-redux';
 import { WebRTCContext } from './WebRTCProvider';
+import crypto from 'crypto';
 
 interface WebsocketContextValue {
   isOpen: boolean;
@@ -48,6 +49,7 @@ interface State {
   isOpen: boolean;
   ping: ReturnType<typeof setInterval> | null;
   userid: number | null;
+  username: string | null;
   token: string | null;
   refresh: ReturnType<typeof setInterval> | null;
 }
@@ -59,6 +61,7 @@ class WebsocketProvider extends React.Component<Props, State> {
     isOpen: false,
     ping: null,
     userid: null,
+    username: null,
     token: localStorage.getItem('token'),
     refresh: null,
   };
@@ -75,15 +78,23 @@ class WebsocketProvider extends React.Component<Props, State> {
     }
 
     if (data.convs) {
+      const priKey = localStorage.getItem(`privateKey_${this.state.username}`)
+      if(priKey === null){
+        console.error('No public key for this user.');
+        return;
+      }
       //decrypt crypto.privateDecrypt(privateKey, buffer)
-      //each shared_key then add
-      this.props.dispatch(setConversations(data.convs));
+      //each sharedkey then add
+      const conversations = data.convs.map( (c: any) => ( {...c,
+        sharedkey: crypto.privateDecrypt(priKey, new Buffer(c.sharedkey, 'base64')).toString('utf8'),
+      }))
+      this.props.dispatch(setConversations(conversations));
     }
     if (data.users) {
       this.props.dispatch(setUsers(data.users));
     }
     if (data.messages) {
-      // decrypt each messages with shared_key
+      // decrypt each messages with sharedkey
       // from the convs directly
       this.props.dispatch(setMessages(data.messages));
     }
@@ -143,6 +154,7 @@ class WebsocketProvider extends React.Component<Props, State> {
     localStorage.setItem('token', data.token);
     this.setState({
       userid: data.userid,
+      username: data.username,
       token: data.token,
     });
   }
@@ -159,12 +171,17 @@ class WebsocketProvider extends React.Component<Props, State> {
     }
 
     if (data.success) {
+      const priKey = localStorage.getItem(`privateKey_${this.state.username}`)
+      if(priKey === null){
+        console.error('No public key for this user.');
+        return;
+      }
       this.props.dispatch(alertInfo('The conversation was created.'));
       this.props.dispatch(
         updateConversations({
           convid: data.convid,
           convname: data.convname,
-          shared_key: data.sharedkey,
+          sharedkey: crypto.privateDecrypt(priKey, new Buffer(data.sharedkey, 'base64')).toString('utf8'),
           members: data.members,
         })
       );
@@ -200,12 +217,17 @@ class WebsocketProvider extends React.Component<Props, State> {
     }
     if (data.success) {
       // here use crypto.privateDecrypt(privateKey, buffer)
+      const priKey = localStorage.getItem(`privateKey_${this.state.username}`)
+      if(priKey === null){
+        console.error('No public key for this user.');
+        return;
+      }
       this.props.dispatch(alertInfo('The conversation was changed.'));
       this.props.dispatch(
         changeConversations({
           convid: data.convid,
           convname: data.convname,
-          shared_key: data.sharedkey,
+          sharedkey: crypto.privateDecrypt(priKey, new Buffer(data.sharedkey, 'base64')).toString('utf8'),
           members: data.members,
         })
       );

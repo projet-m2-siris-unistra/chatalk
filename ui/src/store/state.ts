@@ -26,7 +26,7 @@ export interface Message {
 export interface Conversation {
   convid: string;
   convname: string;
-  shared_key: string;
+  sharedkey: string;
   members: string;
   // messages: Message[];
 }
