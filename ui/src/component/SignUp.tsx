@@ -92,35 +92,56 @@ const SignUp: React.FC = () => {
       return;
     }
 
-    const keyPair = crypto.generateKeyPairSync('rsa', {
-      modulusLength: 4096,
-      publicKeyEncoding: {
-        type: 'spki',
-        format: 'pem'
-      },
-      privateKeyEncoding: {
-        type: 'pkcs8',
-        format: 'pem',
-        cipher: 'aes-256-cbc',
-        passphrase: 'top secret'
-      }
-    });
-    localStorage.setItem(`publicKey_${username}`, keyPair.publicKey);
-    localStorage.setItem(`privateKey_${username}`, keyPair.privateKey);
-    console.log(`publicKey_${username}`, keyPair.publicKey);
+  window.crypto.subtle.generateKey(
+    {
+    name: "RSA-OAEP",
+    // Consider using a 4096-bit key for systems that require long-term security
+    modulusLength: 2048,
+    publicExponent: new Uint8Array([1, 0, 1]),
+    hash: "SHA-256",
+    },
+    true,
+    ["encrypt", "decrypt"]
+  ).then((keyPair) => {
 
-    connection.send(
-      JSON.stringify({
-        action: 'register',
-        payload: {
-          username,
-          email,
-          password,
-          'password-confirmation': passwordconf,
-          publickey : keyPair.publicKey,
-        },
-      })
-    );
+    window.crypto.subtle.exportKey(
+    "pkcs8",
+    keyPair.privateKey
+    ).then((exported) => {
+      var uint8array = new Uint8Array(exported);
+      const str = String.fromCharCode.apply(null, Array.from(uint8array));
+      const exportedAsBase64 = window.btoa(str);
+      const pemExported = `-----BEGIN PRIVATE KEY-----\n${exportedAsBase64}\n-----END PRIVATE KEY-----`;
+      localStorage.setItem(`privateKey_${username}`, pemExported);
+    });
+
+    window.crypto.subtle.exportKey(
+    "spki",
+    keyPair.publicKey
+    ).then((exported) => {
+      var uint8array = new Uint8Array(exported);
+      const str = String.fromCharCode.apply(null, Array.from(uint8array));
+      const exportedAsBase64 = window.btoa(str);
+      const pemExported = `-----BEGIN PUBLIC KEY-----\n${exportedAsBase64}\n-----END PUBLIC KEY-----`;
+      localStorage.setItem(`publicKey_${username}`, pemExported);
+      
+      connection.send(
+        JSON.stringify({
+          action: 'register',
+          payload: {
+            username,
+            email,
+            password,
+            'password-confirmation': passwordconf,
+            publickey : pemExported,
+          },
+        })
+      );
+    });
+  });
+    
+
+
   };
 
   return (

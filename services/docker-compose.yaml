@@ -193,9 +193,9 @@ services:
     ports:
       - 1234:80
 
-  ui:
-    build: ../ui/
-    ports:
-      - 4321:80
-    environment:
-      - BACKEND_URL=ws://localhost:42042
+  # ui:
+  #   build: ../ui/
+  #   ports:
+  #     - 4321:80
+  #   environment:
+  #     - BACKEND_URL=ws://localhost:42042

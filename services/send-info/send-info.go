@@ -29,7 +29,7 @@ type User struct {
 	Username    string      `json:"username"`
 	DisplayName null.String `json:"displayname"`
 	PictureURL  null.String `json:"picture"`
-	PublicKey   string      `json:"publickay"`
+	PublicKey   string      `json:"publickey"`
 }
 
 // Conv is the representation of a conversation
