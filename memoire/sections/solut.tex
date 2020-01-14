@@ -1,1 +1,90 @@
-\section{Solution}
+\chapter{Solution}
+
+La solution telle que nous l'avons conçue comprenait plusieurs
+éléments que nous allons rappeler ci-dessous.
+
+\paragraph{Tolérance aux pannes et passage à l'échelle} Grâce
+à son infrasctucture basée sur Kubernetes et à son
+architecture en micro-services, notre application est
+aisément capable de passer à l'échelle et de supporter la
+montée en charge, ainsi que de résister à la perte de
+machines dans les grappes Kubernetes. Dans les pires cas, les
+les fonctionnalités passent en mode dégradé. Ce mode dégradé
+permet la consultation des archives de conversations et donc
+de conserver une partie des activités des utilisateurs du
+service.
+
+\paragraph{Sécurité} Notre application devait garantir la
+sécurité des flux de données, en particulier d'un point de
+vue intégrité et confidentialité. Seuls les envoyeurs et
+récepteurs des messages devaient avoir accès aux données.\\
+Nous avons partiellement rempli cet objectif, des contraintes
+de temps liées à nos retards nous ayant forcé à abandonner le
+chiffrement des flux audiovisuels. L'authentification des
+utilisateurs a néanmoins été réalisée. Une couche de sécurité
+minimale basée sur SSL/TLS assure un niveau de sécurité
+décent, tant que les utilisateurs du service font confiance
+à l'administrateur des serveurs sur lesquels fonctionne la
+solution.
+
+\paragraph{Déploiement facile} Notre application devait
+pouvoir être facilement déployée par un néophyte, sur
+n'importe quelle machine de type Linux, rapidement et sans
+connexion Internet. Cette tâche était d'une priorité maximale
+%[[Expliquer]]
+
+\paragraph{Temps réel} Notre application devait assurer des
+conversations en temps réel entre les utilisateurs.\\
+Nos tests actuels ne sont pas représentatifs d'une utilisation
+réelle, mais montrent que la latence des communications
+textuelles sur notre solution est imperceptible à l'humain
+pour un petit nombre d'utilisateurs.
+
+\paragraph{Interface utilisateur} Notre solution devait
+proposer une interface utilisateur compatible avec un maximum
+d'appareils.\\
+Notre application frontale Web est utilisable sur tous les
+navigateurs modernes sans modification et sans distinction
+de système d'expoitation. De plus elle s'adapte à des tailles
+d'écran diverses et à des appareils de puissance variée. Bien
+que cette interface Web puisse être utilisée en tant
+qu'application mobile, une application mobile pour Android
+en Kotlin est également disponible, plus adaptée à
+l'utilisation sur des téléphones intelligents.\\
+Nous avons choisi une interface utilisateur épurée, en
+conservant les icônograpies habituelles, afin de permettre
+une meilleure expérience utilisateur et une plus grande
+ergonomie.
+
+\paragraph{Modularité} Notre solution devait permettre à un
+individu déployant un serveur de choisir les capacités qu'il
+souhaitait donner à celui-ci.\\
+À cause des contraintes de temps, et puisque la tâche n'était
+pas prioritaire, elle a été la première abandonnée totalement.
+Les fonctionnalités supplémentaires audio et vidéo ont été
+incluses directement dans l'application d'arrière-plan
+principale et le concept de modules serveur a été laissé à
+l'abandon.
+
+\paragraph{Compatibilité et standards} Notre application
+devait être compatible avec un maximum de standards et ne
+pas utiliser de technologies trop peu orthodoxes.\\
+Puisque l'interface utilisée est une interface Web, les quatre
+systèmes d'exploitation les plus courants, Microsoft Windows,
+Apple macOS, Apple iOS et Android, sont couverts tant qu'ils
+possèdent un navigateur Internet à jour. De plus, les systèmes
+d'exploitation GNU/Linux et BSD sont également couverts tant
+qu'ils possèdent un navigateur Internet à jour. Enfin, s'il
+n'existe pas d'application native pour iOS, il en existe une
+pour Android.\\
+D'un point de vue des standards, notre application est
+accessible à des clients utilisant indifféremment de l'IPv4,
+de l'IPv6 ou les deux.
+
+\paragraph{Internationalisation} Notre application se devait
+de supporter les principaux alphabets du monde et d'être
+disponible à minima en Anglais.\\
+Puisque tous les textes que nous utilisons sont encodés en
+UTF-8, les alphabets divers sont gérés dans l'application.
+L'interface que nous avons développée l'a été en Anglais et
+est donc utilisable par des utilisateurs anglophones.

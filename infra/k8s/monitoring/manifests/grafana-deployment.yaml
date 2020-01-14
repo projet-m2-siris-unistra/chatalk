@@ -16,7 +16,10 @@ spec:
         app: grafana
     spec:
       containers:
-      - image: grafana/grafana:6.4.3
+      - env:
+        - name: GF_INSTALL_PLUGINS
+          value: grafana-piechart-panel
+        image: grafana/grafana:6.4.3
         name: grafana
         ports:
         - containerPort: 3000
@@ -77,6 +80,9 @@ spec:
           readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/namespace-by-workload
           name: grafana-dashboard-namespace-by-workload
+          readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/nats
+          name: grafana-dashboard-nats
           readOnly: false
         - mountPath: /grafana-dashboard-definitions/0/node-cluster-rsrc-use
           name: grafana-dashboard-node-cluster-rsrc-use
@@ -168,6 +174,9 @@ spec:
       - configMap:
           name: grafana-dashboard-namespace-by-workload
         name: grafana-dashboard-namespace-by-workload
+      - configMap:
+          name: grafana-dashboard-nats
+        name: grafana-dashboard-nats
       - configMap:
           name: grafana-dashboard-node-cluster-rsrc-use
         name: grafana-dashboard-node-cluster-rsrc-use

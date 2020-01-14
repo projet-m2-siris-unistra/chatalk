@@ -6,6 +6,9 @@ metadata:
   name: k8s
   namespace: monitoring
 spec:
+  additionalScrapeConfigs:
+    key: prometheus-additional.yaml
+    name: additional-scrape-configs
   affinity:
     podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:

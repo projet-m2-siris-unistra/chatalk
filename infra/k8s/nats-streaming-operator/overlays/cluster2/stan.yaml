@@ -5,3 +5,15 @@ metadata:
 spec:
   size: 3
   natsSvc: "nats"
+
+  template:
+    spec:
+      containers:
+      - name: "stan"
+      - name: "metrics"
+        image: "synadia/prometheus-nats-exporter:0.6.0"
+        args: ["-varz", "-channelz", "-serverz", "http://localhost:8222"]
+        ports:
+        - name: metrics
+          containerPort: 7777
+          protocol: TCP

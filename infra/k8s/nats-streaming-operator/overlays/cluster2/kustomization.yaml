@@ -10,3 +10,4 @@ resources:
 - nats.yaml
 - stan.yaml
 - servicemonitor.yaml
+- stan-service.yaml

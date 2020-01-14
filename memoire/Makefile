@@ -4,6 +4,7 @@ all: memoire clean
 
 memoire:
 	$(LATEX) memoire.tex
+	$(LATEX) memoire.tex
 	bibtex memoire
 	$(LATEX) memoire.tex
 	$(LATEX) memoire.tex

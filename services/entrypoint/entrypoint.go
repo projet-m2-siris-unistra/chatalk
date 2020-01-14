@@ -116,10 +116,9 @@ func handleWS(w http.ResponseWriter, r *http.Request) {
 	for {
 		_, message, err := c.ReadMessage()
 		if err != nil {
-			log.Print("read: ", wsID, " -- ", err)
+			log.Print("failed to read message for #", wsID, " -- ", err)
 			break
 		}
-		log.Printf("recv (#%s): %s", wsID, message)
 
 		// parse JSON receved message
 		var j map[string]interface{}
