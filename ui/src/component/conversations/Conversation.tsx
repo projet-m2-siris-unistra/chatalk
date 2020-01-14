@@ -183,10 +183,30 @@ const Conversation: React.FC = () => {
     });
 
     p.on('signal', (data: any) => {
-      console.log('my offer',
-        window.btoa(unescape(encodeURIComponent(
-          JSON.stringify(data)
-        ))));
+      const offer = window.btoa(unescape(encodeURIComponent(
+        JSON.stringify(data)
+      )));
+
+      if (!isOpen || connection === null) {
+        console.error('ws is not open');
+        return;
+      }
+
+      if (!auth) {
+        console.error('user is not logged in');
+        return;
+      }
+
+      connection.send(
+        JSON.stringify({
+          action: 'msg_sender',
+          type: 'webrtc-offer',
+          source: `${auth.userid}`,
+          destination: `${convid}`,
+          device: '1',
+          payload: offer,
+        })
+      );
     });
 
     p.on('stream', (stream: MediaStream) => {
