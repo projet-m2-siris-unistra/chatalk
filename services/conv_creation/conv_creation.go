@@ -153,10 +153,10 @@ func main() {
 				_, err = db.Query(
 					`INSERT INTO conv_keys(user_id, conv_id, shared_key, timefrom, timeto, favorite, audio)
 					VALUES($1, $2, $3, current_timestamp, NULL, false, false);`, userID, convID, msg.Payload.Sharedkey)
-				for _, v := range members {
+				for j, v := range members {
 					_, err = db.Query(
 						`INSERT INTO conv_keys(user_id, conv_id, shared_key, timefrom, timeto, favorite, audio)
-						VALUES($1, $2, 0, current_timestamp, NULL, false, false);`, v, convID)
+						VALUES($1, $2, $3, current_timestamp, NULL, false, false);`, v, convID, memberssk[j])
 				}
 
 				response = registerResponse{
@@ -168,12 +168,14 @@ func main() {
 					Sharedkey: "0",
 					Members:   allmembers,
 				}
-				jm, _ := json.Marshal(response)
-				for _, v := range members {
+				for j, v := range members {
+					response.Sharedkey = memberssk[j]
+					jm, _ := json.Marshal(response)
 					nc.Publish("user."+strconv.Itoa(v), []byte(jm))
 				}
 				topicName = "conv." + strconv.Itoa(convID)
 				nc.Publish("ws."+msg.WsID+".sub", []byte(topicName))
+				response.Sharedkey = msg.Payload.Sharedkey
 			} else {
 				dberr := dberror.GetError(err)
 				switch e := dberr.(type) {
