@@ -100,6 +100,7 @@ class WebSocketProvider(
             .addTo(disposable)
 
         service.observeMsgSender()
+            .filter { it.type == "text" }
             .map { MessageEntity(it.msgid!!, it.source!!, it.destination!!, it.payload) }
             .flatMapSingle { message ->
                 database.messageDao().insert(message)

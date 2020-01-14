@@ -16,6 +16,10 @@ FROM nginx:1.17-alpine
 EXPOSE 80
 WORKDIR /usr/share/nginx/html
 COPY --from=build /app/build .
+RUN sed -i \
+  '/index.htm/a try_files $uri $uri/ /index.html =404;' \
+  /etc/nginx/conf.d/default.conf
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 COPY init.sh .
 RUN chmod +x init.sh
 CMD [ "./init.sh" ]

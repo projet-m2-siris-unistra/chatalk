@@ -1,4 +1,4 @@
-import { initialState, State} from './state';
+import { initialState, State } from './state';
 import * as actions from './actions';
 
 export default (state: State = initialState, action: actions.Action): State => {
@@ -38,7 +38,7 @@ export default (state: State = initialState, action: actions.Action): State => {
       //   ...c,
       //   messages: [...c.messages, ...action.messages]
       // } : c);
-      //sort + dedupli 
+      //sort + dedupli
       return {
         ...state,
         messages: action.messages,
@@ -54,13 +54,17 @@ export default (state: State = initialState, action: actions.Action): State => {
         conversations: [...state.conversations, action.conversation],
       };
     case actions.CHANGE_CONVERSATIONS:
-      var conversations = state.conversations.map(c => (c.convid === action.convchange.convid) ? action.convchange : c);
+      var conversations = state.conversations.map(c =>
+        c.convid === action.convchange.convid ? action.convchange : c
+      );
       return {
         ...state,
         conversations,
       };
     case actions.CHANGE_USER:
-      var users = state.users.map(u => (u.userid === action.userchange.userid) ? action.userchange : u);
+      var users = state.users.map(u =>
+        u.userid === action.userchange.userid ? action.userchange : u
+      );
       return {
         ...state,
         users,

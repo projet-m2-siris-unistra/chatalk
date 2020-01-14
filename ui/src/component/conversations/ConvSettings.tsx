@@ -183,10 +183,20 @@ const ConvSettings: React.FC = () => {
   const auth = useSelector((state: State) => state.auth);
   const [convname, setName] = useState('');
   const [convtopic, setTopic] = useState('');
-  const conv = useSelector((state: State) => state.conversations).filter(c => parseInt(c.convid) === convid)[0];
-  const membersList = conv.members.replace('{','').replace('}','').split(',').map(n => parseInt(n));
-  const users = useSelector((state: State) => state.users).filter(u => membersList.indexOf(u.userid) < 0);
-  const members = useSelector((state: State) => state.users).filter(u => membersList.indexOf(u.userid) > -1);
+  const conv = useSelector((state: State) => state.conversations).filter(
+    c => parseInt(c.convid) === convid
+  )[0];
+  const membersList = conv.members
+    .replace('{', '')
+    .replace('}', '')
+    .split(',')
+    .map(n => parseInt(n));
+  const users = useSelector((state: State) => state.users).filter(
+    u => membersList.indexOf(u.userid) < 0
+  );
+  const members = useSelector((state: State) => state.users).filter(
+    u => membersList.indexOf(u.userid) > -1
+  );
 
   const {
     getRootProps,
@@ -226,8 +236,8 @@ const ConvSettings: React.FC = () => {
       return;
     }
 
-    const newmembers = value.map((user:any) => user.userid)
-    const delmembers = del.value.map((user:any) => user.userid)
+    const newmembers = value.map((user: any) => user.userid);
+    const delmembers = del.value.map((user: any) => user.userid);
     console.log('ConvSettings:change conv_settings', convname, convtopic);
     connection.send(
       JSON.stringify({
@@ -256,24 +266,29 @@ const ConvSettings: React.FC = () => {
         Manage Conversation: <strong>{conv.convname}</strong> .
       </p>
       <div className={classes.form}>
-        <TextField 
-                name="convname"
-                label="Conversation Name"
-                id="convname"
-                onChange={e => setName(e.target.value)} 
-                variant="outlined" />
         <TextField
-                variant="outlined"
-                fullWidth
-                id="topic"
-                label="Topic"
-                name="topic"
-                onChange={e => setTopic(e.target.value)} />
+          name="convname"
+          label="Conversation Name"
+          id="convname"
+          onChange={e => setName(e.target.value)}
+          variant="outlined"
+        />
+        <TextField
+          variant="outlined"
+          fullWidth
+          id="topic"
+          label="Topic"
+          name="topic"
+          onChange={e => setTopic(e.target.value)}
+        />
         <div>
           <div {...getRootProps()}>
             <Label {...getInputLabelProps()}>Add Members:</Label>
-            <InputWrapper ref={setAnchorEl} className={focused ? 'focused' : ''}>
-              {value.map((option:any, index:any) => (
+            <InputWrapper
+              ref={setAnchorEl}
+              className={focused ? 'focused' : ''}
+            >
+              {value.map((option: any, index: any) => (
                 <Tag label={option.username} {...getTagProps({ index })} />
               ))}
 
@@ -295,8 +310,11 @@ const ConvSettings: React.FC = () => {
         <div>
           <div {...del.getRootProps()}>
             <Label {...del.getInputLabelProps()}>Delete Members:</Label>
-            <InputWrapper ref={del.setAnchorEl} className={focused ? 'focused' : ''}>
-              {del.value.map((option:any, index:any) => (
+            <InputWrapper
+              ref={del.setAnchorEl}
+              className={focused ? 'focused' : ''}
+            >
+              {del.value.map((option: any, index: any) => (
                 <Tag label={option.username} {...del.getTagProps({ index })} />
               ))}
 
@@ -315,10 +333,10 @@ const ConvSettings: React.FC = () => {
           ) : null}
         </div>
         <Button
-              fullWidth
-              variant="contained"
-              color="primary"
-              onClick={convmanagement}
+          fullWidth
+          variant="contained"
+          color="primary"
+          onClick={convmanagement}
         >
           Save changes
         </Button>
@@ -334,7 +352,6 @@ const ConvSettings: React.FC = () => {
           Credits
         </Link>
       </nav>
-
     </div>
   );
 };

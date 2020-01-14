@@ -170,7 +170,7 @@ const NewConversation: React.FC = () => {
   const [name, setName] = useState('');
   const [topic, setTopic] = useState('');
   const auth = useSelector((state: State) => state.auth);
-  var users = useSelector((state: State) => state.users);
+  let users = useSelector((state: State) => state.users);
   if (auth) {
     users = users.filter(u => u.userid !== auth.userid);
   }

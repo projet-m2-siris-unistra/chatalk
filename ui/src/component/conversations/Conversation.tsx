@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Switch, Route} from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Link, useParams } from 'react-router-dom';
@@ -12,7 +12,9 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import EditIcon from '@material-ui/icons/Edit';
+import VideocamIcon from '@material-ui/icons/Videocam';
 import ConvSettings from './ConvSettings';
+import SimplePeer from 'simple-peer';
 
 const useStyles = makeStyles(theme => ({
   msg: {
@@ -140,12 +142,10 @@ const Conversation: React.FC = () => {
   const msg = messages.map(m => {
     let classToUse = classes.msgOther;
     const user = users.filter(u => u.userid === m.senderid);
-    // var avatar = user[0].avatar;
     let username = user[0].username;
     if (m.senderid === me.id) {
       classToUse = classes.msgMe;
       username = '';
-      // avatar = '';
     }
     return (
       <div key={`msg-${m.msgid}`} className={classes.msg}>
@@ -162,6 +162,60 @@ const Conversation: React.FC = () => {
     displayBackBtn = classes.hidden;
   }
 
+  const peerConfig = {
+    iceServers: [
+      {
+        'urls': 'stun:turn.chatalk.fr:3478',
+        'username': 'chatalk',
+        'credential': 'xongah3ieR4ashie7aekeija',
+      },
+      {
+        'urls': 'turn:turn.chatalk.fr:3478',
+        'username': 'chatalk',
+        'credential': 'xongah3ieR4ashie7aekeija',
+      },
+    ],
+  };
+
+  const bindEvents = (p: any) => {
+    p.on('error', (err: any) => {
+      console.error('error', err);
+    });
+
+    p.on('signal', (data: any) => {
+      console.log('my offer',
+        window.btoa(unescape(encodeURIComponent(
+          JSON.stringify(data)
+        ))));
+    });
+
+    p.on('stream', (stream: MediaStream) => {
+      console.log('got stream');
+    });
+  };
+
+  const startPeer = (initiator: boolean) => {
+    navigator.mediaDevices.enumerateDevices().then(devices => {
+      if (Array.isArray(devices)) {
+        const kinds = devices.map(d => d.kind);
+        const video = kinds.includes('videoinput');
+        const audio = kinds.includes('audioinput');
+        navigator.mediaDevices.getUserMedia({
+          video,
+          audio,
+        }).then(stream => {
+          let p = new SimplePeer({
+            initiator,
+            stream,
+            config: peerConfig,
+            trickle: false,
+          });
+          bindEvents(p);
+        }).catch(err => console.error('error', err));
+      }
+    }).catch(err => console.log(err));
+  };
+
   const sendMessage = () => {
     if (!isOpen || connection === null) {
       console.error('ws is not open');
@@ -177,6 +231,7 @@ const Conversation: React.FC = () => {
     connection.send(
       JSON.stringify({
         action: 'msg_sender',
+        type: 'text',
         source: `${auth.userid}`,
         destination: `${convid}`,
         device: '1',
@@ -204,6 +259,11 @@ const Conversation: React.FC = () => {
               {conversationName}
               <small className={classes.smallTitle}>#{id}</small>
             </span>
+            {users.length === 2 && (
+              <IconButton aria-label="start a videocall" size="small" onClick={() => startPeer(true)}>
+                <VideocamIcon />
+              </IconButton>
+            )}
             <Link to={`/conversation/${id}/convsettings`}>
               <IconButton aria-label="manage conversation" size="small">
                 <EditIcon />
