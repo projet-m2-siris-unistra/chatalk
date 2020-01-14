@@ -3,6 +3,7 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import {
   Action,
   setAuth,
+  setCall,
   clearAuth,
   alertError,
   alertInfo,
@@ -16,6 +17,7 @@ import {
   changeUser,
 } from '../store/actions';
 import { DispatchProp, connect } from 'react-redux';
+import { WebRTCContext } from './WebRTCProvider';
 
 interface WebsocketContextValue {
   isOpen: boolean;
@@ -51,6 +53,7 @@ interface State {
 }
 
 class WebsocketProvider extends React.Component<Props, State> {
+  static contextType = WebRTCContext;
   state: State = {
     socket: null,
     isOpen: false,
@@ -254,6 +257,22 @@ class WebsocketProvider extends React.Component<Props, State> {
           content: data.payload,
         })
       );
+    } else if (data.type === 'webrtc-offer') {
+      if (data.source === this.state.userid || data.source === 0)
+        return;
+      this.props.dispatch(setCall({
+        state: 'incoming',
+        conversationId: data.destination,
+        offer: data.payload,
+      }));
+    } else if (data.type === 'webrtc-join') {
+      if (data.source === this.state.userid || data.source === 0)
+        return;
+      this.props.dispatch(setCall({
+        state: 'call',
+        conversationId: data.destination,
+        offer: data.payload,
+      }));
     }
   }
 

@@ -69,6 +69,11 @@ export default (state: State = initialState, action: actions.Action): State => {
         ...state,
         users,
       };
+    case actions.SET_CALL:
+      return {
+        ...state,
+        call: action.call,
+      };
   }
   return state;
 };

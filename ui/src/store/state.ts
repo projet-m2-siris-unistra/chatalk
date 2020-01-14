@@ -10,6 +10,12 @@ export interface Alert {
   content: string;
 }
 
+export interface Call {
+  state: 'incoming' | 'calling' | 'call' | 'inactive';
+  conversationId: number | null;
+  offer: string | null;
+}
+
 export interface Message {
   msgid: number;
   senderid: number;
@@ -36,6 +42,7 @@ export interface State {
   conversations: Conversation[];
   users: User[];
   messages: Message[];
+  call: Call;
 }
 
 export const initialState: State = {
@@ -44,4 +51,9 @@ export const initialState: State = {
   conversations: [],
   users: [],
   messages: [],
+  call: {
+    state: 'inactive',
+    conversationId: null,
+    offer: null,
+  },
 };
