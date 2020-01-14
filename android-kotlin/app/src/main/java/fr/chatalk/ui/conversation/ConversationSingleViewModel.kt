@@ -26,6 +26,7 @@ class ConversationSingleViewModel internal constructor(
                         source = userId,
                         destination = conversationId.toString(),
                         device = "1",
+                        type = "text",
                         payload = content
                     )
                 )

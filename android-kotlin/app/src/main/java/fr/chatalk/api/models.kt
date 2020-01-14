@@ -66,7 +66,8 @@ data class MsgSenderRequest(
     val source: String,
     val destination: String,
     val device: String,
-    val payload: String
+    val payload: String,
+    val type: String
 ) : Request(ActionType.msgSender)
 
 @JsonClass(generateAdapter = true)
@@ -75,7 +76,8 @@ data class MsgSenderResponse(
     val source: Int?,
     val destination: Int?,
     val device: Int?,
-    val payload: String
+    val payload: String,
+    val type: String?
 ) : Response(ActionType.msgSender)
 
 data class InfosUser(
