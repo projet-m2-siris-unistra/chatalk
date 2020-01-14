@@ -266,13 +266,24 @@ class WebsocketProvider extends React.Component<Props, State> {
         offer: data.payload,
       }));
     } else if (data.type === 'webrtc-join') {
-      if (data.source === this.state.userid || data.source === 0)
-        return;
       this.props.dispatch(setCall({
         state: 'call',
         conversationId: data.destination,
         offer: data.payload,
       }));
+    } else if (data.type === 'webrtc-end') {
+      this.props.dispatch(setCall({
+        state: 'inactive',
+        conversationId: null,
+        offer: null,
+      }));
+
+      if (this.context.myStream) {
+        this.context.myStream.getTracks().forEach((track: MediaStreamTrack) => track.stop());
+      }
+      if (this.context.otherStream) {
+        this.context.otherStream.getTracks().forEach((track: MediaStreamTrack) => track.stop());
+      }
     }
   }
 

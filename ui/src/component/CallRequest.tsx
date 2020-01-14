@@ -70,6 +70,21 @@ const CallRequest: React.FC = () => {
     });
   };
 
+  const declineCall = () => {
+    if (connection === null || !isOpen || !myUserId) {
+      console.warn('ws is closed or unable to get userId');
+      return;
+    }
+    connection.send(JSON.stringify({
+      action: 'msg_sender',
+      type: 'webrtc-end',
+      source: '' + myUserId,
+      destination: '' + call.conversationId,
+      device: '1',
+      payload: 'end call',
+    }));
+  };
+
   return (
     <div className={classes.fs}>
       <header className={classes.header}>
@@ -78,7 +93,7 @@ const CallRequest: React.FC = () => {
       <section className={classes.description}>
         <p>Accept or decline the call</p>
         <p>
-          <Fab color="secondary" className={classes.icon}>
+          <Fab color="secondary" className={classes.icon} onClick={declineCall}>
             <CallEndIcon />
           </Fab>
           <Fab color="primary" className={classes.icon} onClick={acceptCall}>

@@ -1,6 +1,6 @@
 import React, { ReactNode, Context, useContext } from 'react';
 import { DispatchProp, connect } from 'react-redux';
-import { Action } from '../store/actions';
+import { Action, setCall } from '../store/actions';
 import SimplePeer from 'simple-peer';
 
 interface WebRTCContextValue {
@@ -37,6 +37,7 @@ interface State {
   otherStream: MediaStream | null;
   peer: SimplePeer.Instance | null;
   onSignal: (offer: string) => void;
+  signaled: boolean;
 }
 
 const peerConfig = {
@@ -59,8 +60,10 @@ class WebRTCProvider extends React.Component<Props, State> {
     myStream: null,
     otherStream: null,
     peer: null,
+    signaled: false,
     onSignal: (offer: string) => { console.log("offer", offer); },
   };
+  signaled = false;
 
   initLocalStream(): Promise<MediaStream> {
     return navigator.mediaDevices.enumerateDevices()
@@ -78,6 +81,7 @@ class WebRTCProvider extends React.Component<Props, State> {
   }
 
   startPeer(): Promise<string> {
+    this.signaled = false;
     return this.initLocalStream()
       .then(stream => {
         let p = new SimplePeer({
@@ -104,6 +108,7 @@ class WebRTCProvider extends React.Component<Props, State> {
   };
 
   joinPeer(offer: string): Promise<string> {
+    this.signaled = false;
     return this.initLocalStream()
       .then(stream => {
         let p = new SimplePeer({
@@ -138,10 +143,14 @@ class WebRTCProvider extends React.Component<Props, State> {
 
     this.state.peer.on('error', (err: any) => {
       console.error('error', err);
+      this.props.dispatch(setCall({
+        state: 'inactive',
+        conversationId: null,
+        offer: null,
+      }));
     });
 
     this.state.peer.on('signal', (data: any) => {
-      console.log("signal", data);
       const offer = window.btoa(unescape(encodeURIComponent(
         JSON.stringify(data)
       )));
@@ -155,6 +164,9 @@ class WebRTCProvider extends React.Component<Props, State> {
   };
 
   signal(data: string) {
+    if (this.signaled) {
+      return;
+    }
     if (this.state.peer === null) {
       console.warn('signal with no peer');
       return;
@@ -163,6 +175,7 @@ class WebRTCProvider extends React.Component<Props, State> {
     const offer = JSON.parse(decodeURIComponent(escape(window.atob(data))));
     try {
       this.state.peer.signal(offer);
+      this.signaled = true;
     } catch(err) {
       console.error(err);
     };

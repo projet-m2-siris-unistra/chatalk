@@ -55,17 +55,6 @@ const Call: React.FC = () => {
     // eslint-disable-next-line
   }, [ call ]);
 
-  useEffect(() => {
-    if (myStream !== null && myVideoRef.current !== null) {
-      myVideoRef.current.srcObject = myStream;
-      myVideoRef.current.play();
-    }
-    if (otherStream !== null && otherVideoRef.current !== null) {
-      otherVideoRef.current.srcObject = otherStream;
-      otherVideoRef.current.play();
-    }
-  });
-
   const endCall = () => {
     if (connection === null || !isOpen || !myUserId) {
       console.warn('ws is closed or unable to get userId');
@@ -79,15 +68,34 @@ const Call: React.FC = () => {
       device: '1',
       payload: 'end call',
     }));
-  }
+  };
+
+  useEffect(() => {
+    try {
+      if (myStream !== null && myVideoRef.current !== null) {
+        myVideoRef.current.srcObject = myStream;
+        myVideoRef.current.play().catch(err => {
+          console.error(err);
+        });
+      }
+      if (otherStream !== null && otherVideoRef.current !== null) {
+        otherVideoRef.current.srcObject = otherStream;
+        otherVideoRef.current.play().catch(err => {
+          console.error(err);
+        });
+      }
+    } catch(err) {
+      console.error(err);
+      endCall();
+    }
+  });
 
   return (
     <div className={classes.fs}>
       <header className={classes.header}>
-        <h1 className={classes.headerTitle}>Call Request</h1>
+        <h1 className={classes.headerTitle}>Call</h1>
       </header>
       <section className={classes.description}>
-        <p>Accept or decline the call</p>
         <p>
           <video ref={otherVideoRef} controls></video>
           <video ref={myVideoRef} controls muted></video>
