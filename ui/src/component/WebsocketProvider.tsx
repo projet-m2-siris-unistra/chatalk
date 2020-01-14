@@ -72,12 +72,16 @@ class WebsocketProvider extends React.Component<Props, State> {
     }
 
     if (data.convs) {
+      //decrypt crypto.privateDecrypt(privateKey, buffer)
+      //each shared_key then add
       this.props.dispatch(setConversations(data.convs));
     }
     if (data.users) {
       this.props.dispatch(setUsers(data.users));
     }
     if (data.messages) {
+      // decrypt each messages with shared_key
+      // from the convs directly
       this.props.dispatch(setMessages(data.messages));
     }
   }
@@ -161,6 +165,7 @@ class WebsocketProvider extends React.Component<Props, State> {
           members: data.members,
         })
       );
+      // here use crypto.privateDecrypt(privateKey, buffer)
 
       if (data.creator === this.state.userid) {
         this.props.history.push(`/conversation/${data.convid}`);
@@ -191,6 +196,7 @@ class WebsocketProvider extends React.Component<Props, State> {
       return;
     }
     if (data.success) {
+      // here use crypto.privateDecrypt(privateKey, buffer)
       this.props.dispatch(alertInfo('The conversation was changed.'));
       this.props.dispatch(
         changeConversations({
@@ -244,7 +250,7 @@ class WebsocketProvider extends React.Component<Props, State> {
 
   serviceResponseMsgSender(data: any) {
     console.log('svc/msg_sender: ', data);
-
+    // decrypt message
     if (!data.type || data.type === 'text') {
       this.props.dispatch(
         updateMessages({

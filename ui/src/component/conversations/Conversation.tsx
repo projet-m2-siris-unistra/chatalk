@@ -226,7 +226,7 @@ const Conversation: React.FC = () => {
       console.error('user is not logged in');
       return;
     }
-
+    // encrypt ownmsg with shared_key
     console.log('send message:', auth.userid, ownmsg);
     connection.send(
       JSON.stringify({
