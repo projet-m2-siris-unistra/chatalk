@@ -19,6 +19,11 @@ const useStyles = makeStyles({
     zIndex: 999,
   },
   header: {
+    position: 'fixed',
+    zIndex: 3,
+    top: '20px',
+    left: 0,
+    right: 0,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-around',
@@ -32,7 +37,30 @@ const useStyles = makeStyles({
     padding: '20px',
   },
   icon: {
+    zIndex: 3,
     margin: '20px',
+    marginLeft: '-28px',
+    position: 'fixed',
+    bottom: '75px',
+  },
+  videoOther: {
+    position: 'fixed',
+    zIndex: 1,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100vw',
+    height: '100vh',
+  },
+  videoMe: {
+    zIndex: 2,
+    position: 'fixed',
+    bottom: 0,
+    right: 0,
+    width: '40vw',
+    height: '40vw',
+    maxHeight: '80vh',
   },
 });
 
@@ -99,8 +127,17 @@ const Call: React.FC = () => {
       </header>
       <section className={classes.description}>
         <p>
-          <video ref={otherVideoRef} controls></video>
-          <video ref={myVideoRef} controls muted></video>
+          <video
+            className={classes.videoOther}
+            ref={otherVideoRef}
+            controls
+          ></video>
+          <video
+            className={classes.videoMe}
+            ref={myVideoRef}
+            controls
+            muted
+          ></video>
         </p>
         <p>
           <Fab color="secondary" className={classes.icon} onClick={endCall}>

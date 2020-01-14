@@ -11,6 +11,10 @@ import { useWebsocket } from './WebsocketProvider';
 const useStyles = makeStyles({
   fs: {
     position: 'fixed',
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
     top: 0,
     left: 0,
     right: 0,
