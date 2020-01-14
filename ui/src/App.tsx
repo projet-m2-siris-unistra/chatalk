@@ -7,6 +7,7 @@ import AppRouter from './router';
 import Alert from './component/Alert';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import WebRTCProvider from './component/WebRTCProvider';
 
 const theme = createMuiTheme({
   palette: {
@@ -23,13 +24,15 @@ const App: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <Provider store={store}>
-        <Router>
-          <WebsocketProvider wsUrl={websocketEndpoint}>
-            <CssBaseline />
-            <Alert />
-            <AppRouter />
-          </WebsocketProvider>
-        </Router>
+        <WebRTCProvider>
+          <Router>
+            <WebsocketProvider wsUrl={websocketEndpoint}>
+              <CssBaseline />
+              <Alert />
+              <AppRouter />
+            </WebsocketProvider>
+          </Router>
+        </WebRTCProvider>
       </Provider>
     </ThemeProvider>
   );

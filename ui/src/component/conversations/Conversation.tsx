@@ -14,7 +14,7 @@ import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import EditIcon from '@material-ui/icons/Edit';
 import VideocamIcon from '@material-ui/icons/Videocam';
 import ConvSettings from './ConvSettings';
-import SimplePeer from 'simple-peer';
+import { useWebRTC } from '../WebRTCProvider';
 
 const useStyles = makeStyles(theme => ({
   msg: {
@@ -130,6 +130,8 @@ const Conversation: React.FC = () => {
     }
   });
 
+  const { startPeer } = useWebRTC();
+
   const me = {
     id: 0,
   };
@@ -162,59 +164,9 @@ const Conversation: React.FC = () => {
     displayBackBtn = classes.hidden;
   }
 
-  const peerConfig = {
-    iceServers: [
-      {
-        'urls': 'stun:turn.chatalk.fr:3478',
-        'username': 'chatalk',
-        'credential': 'xongah3ieR4ashie7aekeija',
-      },
-      {
-        'urls': 'turn:turn.chatalk.fr:3478',
-        'username': 'chatalk',
-        'credential': 'xongah3ieR4ashie7aekeija',
-      },
-    ],
-  };
+  /*
 
-  const bindEvents = (p: any) => {
-    p.on('error', (err: any) => {
-      console.error('error', err);
-    });
-
-    p.on('signal', (data: any) => {
-      console.log('my offer',
-        window.btoa(unescape(encodeURIComponent(
-          JSON.stringify(data)
-        ))));
-    });
-
-    p.on('stream', (stream: MediaStream) => {
-      console.log('got stream');
-    });
-  };
-
-  const startPeer = (initiator: boolean) => {
-    navigator.mediaDevices.enumerateDevices().then(devices => {
-      if (Array.isArray(devices)) {
-        const kinds = devices.map(d => d.kind);
-        const video = kinds.includes('videoinput');
-        const audio = kinds.includes('audioinput');
-        navigator.mediaDevices.getUserMedia({
-          video,
-          audio,
-        }).then(stream => {
-          let p = new SimplePeer({
-            initiator,
-            stream,
-            config: peerConfig,
-            trickle: false,
-          });
-          bindEvents(p);
-        }).catch(err => console.error('error', err));
-      }
-    }).catch(err => console.log(err));
-  };
+  */
 
   const sendMessage = () => {
     if (!isOpen || connection === null) {
@@ -241,6 +193,25 @@ const Conversation: React.FC = () => {
     setOwnMsg('');
   };
 
+  const start = () => {
+    startPeer().then(offer => {
+      if (connection === null || auth === false) {
+        return;
+      }
+
+      connection.send(
+        JSON.stringify({
+          action: 'msg_sender',
+          type: 'webrtc-offer',
+          source: `${auth.userid}`,
+          destination: `${convid}`,
+          device: '1',
+          payload: offer,
+        })
+      );
+    });
+  };
+
   return (
     <>
       <Switch>
@@ -260,7 +231,11 @@ const Conversation: React.FC = () => {
               <small className={classes.smallTitle}>#{id}</small>
             </span>
             {users.length === 2 && (
-              <IconButton aria-label="start a videocall" size="small" onClick={() => startPeer(true)}>
+              <IconButton
+                aria-label="start a videocall"
+                size="small"
+                onClick={() => start()}
+              >
                 <VideocamIcon />
               </IconButton>
             )}

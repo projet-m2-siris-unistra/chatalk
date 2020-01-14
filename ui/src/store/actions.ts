@@ -1,4 +1,4 @@
-import { Auth, Alert, Conversation, User, Message } from './state';
+import { Auth, Alert, Conversation, User, Message, Call } from './state';
 
 export const SET_AUTH = 'SET_AUTH';
 export const CLEAR_AUTH = 'CLEAR_AUTH';
@@ -11,6 +11,7 @@ export const UPDATE_MESSAGES = 'UPDATE_MESSAGES';
 export const UPDATE_CONVERSATIONS = 'UPDATE_CONVERSATIONS';
 export const CHANGE_CONVERSATIONS = 'CHANGE_CONVERSATIONS';
 export const CHANGE_USER = 'CHANGE_USER';
+export const SET_CALL = 'SET_CALL';
 
 interface SetAuthAction {
   type: typeof SET_AUTH;
@@ -66,6 +67,11 @@ interface ChangeUserAction {
   userchange: User;
 }
 
+interface SetCallAction {
+  type: typeof SET_CALL;
+  call: Call;
+}
+
 export type AuthAction = SetAuthAction | ClearAuthAction;
 export type AlertAction = SetAlertAction | ClearAlertAction;
 export type Action =
@@ -77,7 +83,8 @@ export type Action =
   | UpdateMessagesAction
   | UpdateConversationsAction
   | ChangeConversationsAction
-  | ChangeUserAction;
+  | ChangeUserAction
+  | SetCallAction;
 
 export function setAuth(auth: Auth): SetAuthAction {
   return {
@@ -174,5 +181,12 @@ export function changeUser(userchange: User): ChangeUserAction {
   return {
     type: CHANGE_USER,
     userchange,
+  };
+}
+
+export function setCall(call: Call): SetCallAction {
+  return {
+    type: SET_CALL,
+    call,
   };
 }
