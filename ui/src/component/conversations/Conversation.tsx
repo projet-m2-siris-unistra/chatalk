@@ -164,7 +164,6 @@ const Conversation: React.FC = () => {
     displayBackBtn = classes.hidden;
   }
 
-
   /*
 
   */
@@ -195,24 +194,23 @@ const Conversation: React.FC = () => {
   };
 
   const start = () => {
-    startPeer()
-      .then(offer => {
-        if (connection === null || auth === false) {
-          return;
-        }
+    startPeer().then(offer => {
+      if (connection === null || auth === false) {
+        return;
+      }
 
-        connection.send(
-          JSON.stringify({
-            action: 'msg_sender',
-            type: 'webrtc-offer',
-            source: `${auth.userid}`,
-            destination: `${convid}`,
-            device: '1',
-            payload: offer,
-          })
-        );
-      });
-  }
+      connection.send(
+        JSON.stringify({
+          action: 'msg_sender',
+          type: 'webrtc-offer',
+          source: `${auth.userid}`,
+          destination: `${convid}`,
+          device: '1',
+          payload: offer,
+        })
+      );
+    });
+  };
 
   return (
     <>
@@ -233,7 +231,11 @@ const Conversation: React.FC = () => {
               <small className={classes.smallTitle}>#{id}</small>
             </span>
             {users.length === 2 && (
-              <IconButton aria-label="start a videocall" size="small" onClick={() => start()}>
+              <IconButton
+                aria-label="start a videocall"
+                size="small"
+                onClick={() => start()}
+              >
                 <VideocamIcon />
               </IconButton>
             )}

@@ -43,14 +43,14 @@ interface State {
 const peerConfig = {
   iceServers: [
     {
-      'urls': 'stun:turn.chatalk.fr:3478',
-      'username': 'chatalk',
-      'credential': 'xongah3ieR4ashie7aekeija',
+      urls: 'stun:turn.chatalk.fr:3478',
+      username: 'chatalk',
+      credential: 'xongah3ieR4ashie7aekeija',
     },
     {
-      'urls': 'turn:turn.chatalk.fr:3478',
-      'username': 'chatalk',
-      'credential': 'xongah3ieR4ashie7aekeija',
+      urls: 'turn:turn.chatalk.fr:3478',
+      username: 'chatalk',
+      credential: 'xongah3ieR4ashie7aekeija',
     },
   ],
 };
@@ -61,12 +61,15 @@ class WebRTCProvider extends React.Component<Props, State> {
     otherStream: null,
     peer: null,
     signaled: false,
-    onSignal: (offer: string) => { console.log("offer", offer); },
+    onSignal: (offer: string) => {
+      console.log('offer', offer);
+    },
   };
   signaled = false;
 
   initLocalStream(): Promise<MediaStream> {
-    return navigator.mediaDevices.enumerateDevices()
+    return navigator.mediaDevices
+      .enumerateDevices()
       .then(devices => {
         if (Array.isArray(devices)) {
           const kinds = devices.map(d => d.kind);
@@ -77,14 +80,14 @@ class WebRTCProvider extends React.Component<Props, State> {
           throw new Error('no device found');
         }
       })
-      .then(constraints => navigator.mediaDevices.getUserMedia(constraints))
+      .then(constraints => navigator.mediaDevices.getUserMedia(constraints));
   }
 
   startPeer(): Promise<string> {
     this.signaled = false;
     return this.initLocalStream()
       .then(stream => {
-        let p = new SimplePeer({
+        const p = new SimplePeer({
           initiator: true,
           stream,
           config: peerConfig,
@@ -98,20 +101,20 @@ class WebRTCProvider extends React.Component<Props, State> {
       })
       .then(() => {
         return new Promise<string>(resolve => {
-          this.setState({ onSignal: resolve })
-        })
+          this.setState({ onSignal: resolve });
+        });
       })
       .catch(err => {
-        console.error('error', err)
+        console.error('error', err);
         return new Promise(() => {});
-      })
-  };
+      });
+  }
 
   joinPeer(offer: string): Promise<string> {
     this.signaled = false;
     return this.initLocalStream()
       .then(stream => {
-        let p = new SimplePeer({
+        const p = new SimplePeer({
           initiator: false,
           stream,
           config: peerConfig,
@@ -126,14 +129,14 @@ class WebRTCProvider extends React.Component<Props, State> {
       })
       .then(() => {
         return new Promise<string>(resolve => {
-          this.setState({ onSignal: resolve })
-        })
+          this.setState({ onSignal: resolve });
+        });
       })
       .catch(err => {
-        console.error('error', err)
+        console.error('error', err);
         return new Promise(() => {});
-      })
-  };
+      });
+  }
 
   bindEvents() {
     if (this.state.peer === null) {
@@ -143,17 +146,19 @@ class WebRTCProvider extends React.Component<Props, State> {
 
     this.state.peer.on('error', (err: any) => {
       console.error('error', err);
-      this.props.dispatch(setCall({
-        state: 'inactive',
-        conversationId: null,
-        offer: null,
-      }));
+      this.props.dispatch(
+        setCall({
+          state: 'inactive',
+          conversationId: null,
+          offer: null,
+        })
+      );
     });
 
     this.state.peer.on('signal', (data: any) => {
-      const offer = window.btoa(unescape(encodeURIComponent(
-        JSON.stringify(data)
-      )));
+      const offer = window.btoa(
+        unescape(encodeURIComponent(JSON.stringify(data)))
+      );
       this.state.onSignal(offer);
     });
 
@@ -161,7 +166,7 @@ class WebRTCProvider extends React.Component<Props, State> {
       console.log('got stream');
       this.setState({ otherStream: stream });
     });
-  };
+  }
 
   signal(data: string) {
     if (this.signaled) {
@@ -176,9 +181,9 @@ class WebRTCProvider extends React.Component<Props, State> {
     try {
       this.state.peer.signal(offer);
       this.signaled = true;
-    } catch(err) {
+    } catch (err) {
       console.error(err);
-    };
+    }
   }
 
   render() {

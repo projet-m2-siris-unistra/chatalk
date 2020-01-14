@@ -59,14 +59,16 @@ const CallRequest: React.FC = () => {
       return;
     }
     joinPeer(call.offer).then(answer => {
-      connection.send(JSON.stringify({
-        action: 'msg_sender',
-        type: 'webrtc-join',
-        source: '' + myUserId,
-        destination: '' + call.conversationId,
-        device: '1',
-        payload: answer,
-      }));
+      connection.send(
+        JSON.stringify({
+          action: 'msg_sender',
+          type: 'webrtc-join',
+          source: '' + myUserId,
+          destination: '' + call.conversationId,
+          device: '1',
+          payload: answer,
+        })
+      );
     });
   };
 
@@ -75,14 +77,16 @@ const CallRequest: React.FC = () => {
       console.warn('ws is closed or unable to get userId');
       return;
     }
-    connection.send(JSON.stringify({
-      action: 'msg_sender',
-      type: 'webrtc-end',
-      source: '' + myUserId,
-      destination: '' + call.conversationId,
-      device: '1',
-      payload: 'end call',
-    }));
+    connection.send(
+      JSON.stringify({
+        action: 'msg_sender',
+        type: 'webrtc-end',
+        source: '' + myUserId,
+        destination: '' + call.conversationId,
+        device: '1',
+        payload: 'end call',
+      })
+    );
   };
 
   return (

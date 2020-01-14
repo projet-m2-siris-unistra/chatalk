@@ -258,31 +258,40 @@ class WebsocketProvider extends React.Component<Props, State> {
         })
       );
     } else if (data.type === 'webrtc-offer') {
-      if (data.source === this.state.userid || data.source === 0)
-        return;
-      this.props.dispatch(setCall({
-        state: 'incoming',
-        conversationId: data.destination,
-        offer: data.payload,
-      }));
+      if (data.source === this.state.userid || data.source === 0) return;
+      this.props.dispatch(
+        setCall({
+          state: 'incoming',
+          conversationId: data.destination,
+          offer: data.payload,
+        })
+      );
     } else if (data.type === 'webrtc-join') {
-      this.props.dispatch(setCall({
-        state: 'call',
-        conversationId: data.destination,
-        offer: data.payload,
-      }));
+      this.props.dispatch(
+        setCall({
+          state: 'call',
+          conversationId: data.destination,
+          offer: data.payload,
+        })
+      );
     } else if (data.type === 'webrtc-end') {
-      this.props.dispatch(setCall({
-        state: 'inactive',
-        conversationId: null,
-        offer: null,
-      }));
+      this.props.dispatch(
+        setCall({
+          state: 'inactive',
+          conversationId: null,
+          offer: null,
+        })
+      );
 
       if (this.context.myStream) {
-        this.context.myStream.getTracks().forEach((track: MediaStreamTrack) => track.stop());
+        this.context.myStream
+          .getTracks()
+          .forEach((track: MediaStreamTrack) => track.stop());
       }
       if (this.context.otherStream) {
-        this.context.otherStream.getTracks().forEach((track: MediaStreamTrack) => track.stop());
+        this.context.otherStream
+          .getTracks()
+          .forEach((track: MediaStreamTrack) => track.stop());
       }
     }
   }

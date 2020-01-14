@@ -60,14 +60,16 @@ const Call: React.FC = () => {
       console.warn('ws is closed or unable to get userId');
       return;
     }
-    connection.send(JSON.stringify({
-      action: 'msg_sender',
-      type: 'webrtc-end',
-      source: '' + myUserId,
-      destination: '' + call.conversationId,
-      device: '1',
-      payload: 'end call',
-    }));
+    connection.send(
+      JSON.stringify({
+        action: 'msg_sender',
+        type: 'webrtc-end',
+        source: '' + myUserId,
+        destination: '' + call.conversationId,
+        device: '1',
+        payload: 'end call',
+      })
+    );
   };
 
   useEffect(() => {
@@ -84,7 +86,7 @@ const Call: React.FC = () => {
           console.error(err);
         });
       }
-    } catch(err) {
+    } catch (err) {
       console.error(err);
       endCall();
     }
