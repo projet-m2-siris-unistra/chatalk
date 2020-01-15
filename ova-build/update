@@ -3,9 +3,15 @@
 GIT_DEP=$HOME"/chatalk"
 DC_PATH=$DC_PATH"/services"
 DC_FILE="docker-compose.yaml"
+SLEEP=30
 
 cd $GIT_DEP
 /usr/bin/git pull
 cd ~
 /usr/bin/docker-compose -f $DC_PATH/$DC_FILE down
 /usr/bin/docker-compose -f $DC_PATH/$DC_FILE build --pull
+/usr/bin/docker-compose -f $DC_PATH/$DC_FILE up --build
+sleep $SLEEP
+/usr/bin/docker-compose -f $DC_PATH/$DC_FILE stop
+
+
