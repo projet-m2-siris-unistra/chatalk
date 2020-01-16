@@ -8,6 +8,7 @@ namespace: chatalk
 
 bases:
 - conv_creation
+- conv-sub
 - conv_manag
 - db-migrations
 - entrypoint
