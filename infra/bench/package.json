@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "bench:ws": "artillery run scenarios/ws.yaml",
+    "bench:http": "artillery run scenarios/http.yaml",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

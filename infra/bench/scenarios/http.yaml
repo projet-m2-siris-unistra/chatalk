@@ -1,0 +1,19 @@
+config:
+  target: "http://chatalk.fr"
+  phases:
+  - duration: 10
+    arrivalRate: 1
+scenarios:
+- flow:
+  - get:
+      url: '/'
+  - think: 2
+  - loop:
+    - get:
+        url: '/'
+    count: 1000
+  - think: 2
+  - loop:
+    - get:
+        url: '/'
+    count: 10000
