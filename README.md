@@ -13,7 +13,7 @@ All manifests for Kubernetes (k8s) to deploy all applications that we need in ou
 
 ### blog
 
-The sources of the blog that is available here: https://blog.chatalk.fr/
+The sources of the blog.
 
 ### database
 
@@ -33,4 +33,4 @@ Security specifications and choices.
 
 ### ui
 
-Sources of the web interface, deployed here: https://chatalk.fr/
+Sources of the web interface.
